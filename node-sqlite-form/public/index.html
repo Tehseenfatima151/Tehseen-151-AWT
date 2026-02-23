@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SQLite CRUD App</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 40px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input {
+      padding: 8px;
+    }
+
+    button {
+      padding: 8px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .save-btn { background: #0072ff; color: white; }
+    .edit-btn { background: orange; color: white; }
+    .delete-btn { background: red; color: white; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th {
+      background: #0072ff;
+      color: white;
+      padding: 8px;
+    }
+
+    td {
+      padding: 8px;
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h2>🚀 SQLite CRUD Application</h2>
+
+  <form id="userForm">
+    <input type="hidden" id="id">
+    <input type="text" id="name" placeholder="Enter Name" required>
+    <input type="text" id="phone" placeholder="Enter Phone" required>
+    <button type="submit" class="save-btn">Save</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="userTable"></tbody>
+  </table>
+
+</div>
+
+<script>
+
+function loadUsers() {
+  fetch('/users')
+    .then(res => res.json())
+    .then(data => {
+      const table = document.getElementById('userTable');
+      table.innerHTML = '';
+
+      data.forEach(user => {
+        table.innerHTML += `
+          <tr>
+            <td>${user.id}</td>
+            <td>${user.name}</td>
+            <td>${user.phone}</td>
+            <td>
+              <button class="edit-btn" onclick="editUser(${user.id}, '${user.name}', '${user.phone}')">Edit</button>
+              <button class="delete-btn" onclick="deleteUser(${user.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+      });
+    });
+}
+
+document.getElementById('userForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const id = document.getElementById('id').value;
+  const name = document.getElementById('name').value;
+  const phone = document.getElementById('phone').value;
+
+  if (id) {
+    fetch(`/update/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone })
+    })
+    .then(() => {
+      loadUsers();
+      document.getElementById('userForm').reset();
+      document.getElementById('id').value = '';
+    });
+  } else {
+    fetch('/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, phone })
+    })
+    .then(() => {
+      loadUsers();
+      document.getElementById('userForm').reset();
+    });
+  }
+});
+
+function editUser(id, name, phone) {
+  document.getElementById('id').value = id;
+  document.getElementById('name').value = name;
+  document.getElementById('phone').value = phone;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function deleteUser(id) {
+  if (confirm("Are you sure?")) {
+    fetch(`/delete/${id}`, { method: 'DELETE' })
+      .then(() => loadUsers());
+  }
+}
+
+loadUsers();
+
+</script>
+
+</body>
+</html>
