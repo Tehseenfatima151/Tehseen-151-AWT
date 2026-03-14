@@ -1,4 +1,4 @@
-# Library Management System
+# Biblionex - Library Management System
 
 A modern React.js web application for managing a university library—built for a Web Development lab project.
 
@@ -27,4 +27,4 @@ npm start
 Runs on [http://localhost:3000](http://localhost:3000).
 
 ## Screenshoots
-
+library-managemnet/screenshots/dashboard.PNG
