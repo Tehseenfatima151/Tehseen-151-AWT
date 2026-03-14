@@ -26,24 +26,5 @@ npm start
 
 Runs on [http://localhost:3000](http://localhost:3000).
 
-## Backend (Optional)
+## Screenshoots
 
-By default the app uses **dummy data** from `src/data/dummyData.js`. To use a real API, set:
-
-```
-REACT_APP_API_URL=http://localhost:3001/api
-```
-
-and implement the REST endpoints described in `src/services/api.js`.
-
-## Project Structure
-
-```
-src/
-  components/   # Navbar, Sidebar, BookCard, BookForm, MemberForm, SearchBar, DashboardStats
-  pages/        # Dashboard, BooksPage, MembersPage, BorrowedBooksPage
-  services/     # api.js (Axios + dummy mode)
-  data/         # dummyData.js
-  App.js
-  index.js
-```
