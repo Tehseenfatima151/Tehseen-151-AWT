@@ -33,12 +33,12 @@ Runs on [http://localhost:3000](http://localhost:3000).
 ### Books Management
 ![Books](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/books.PNG?raw=true)
 ### Add Book
-![Members](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/addbook.PNG?raw=true)
+![add](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/addbook.PNG?raw=true)
 
 ### Borrow Book
-![Members](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20book.PNG?raw=true)
+![borrow](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20book.PNG?raw=true)
 ### Borrow Book Record
-![Members](ss/members.png)
+![record](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20record.PNG?raw=true)
 ### Members Management
 ![Members](ss/members.png)
 
