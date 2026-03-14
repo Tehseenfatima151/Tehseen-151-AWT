@@ -30,3 +30,15 @@ Runs on [http://localhost:3000](http://localhost:3000).
 ### Dashboard
 ![Dashboard](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/dashboard.PNG?raw=true
 )
+### Books Management
+![Books](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/books.PNG?raw=true)
+### Add Book
+![Members](ss/members.png)
+
+### Borrow Book
+![Members](ss/members.png)
+### Borrow Book Record
+![Members](ss/members.png)
+### Members Management
+![Members](ss/members.png)
+
