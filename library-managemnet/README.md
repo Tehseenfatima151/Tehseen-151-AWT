@@ -40,5 +40,5 @@ Runs on [http://localhost:3000](http://localhost:3000).
 ### Borrow Book Record
 ![record](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20record.PNG?raw=true)
 ### Members Management
-![Members](ss/members.png)
+![Members](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/members.PNG?raw=true)
 
