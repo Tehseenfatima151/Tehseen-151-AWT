@@ -27,4 +27,4 @@ npm start
 Runs on [http://localhost:3000](http://localhost:3000).
 
 ## Screenshoots
-library-managemnet/screenshots/dashboard.PNG
+
