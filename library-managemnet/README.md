@@ -27,4 +27,6 @@ npm start
 Runs on [http://localhost:3000](http://localhost:3000).
 
 ## Screenshoots
-https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/dashboard.PNG?raw=true
+### Dashboard
+![Dashboard](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/dashboard.PNG?raw=true
+)
