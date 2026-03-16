@@ -1,8 +1,8 @@
 # Biblionex – Smart Library Management System  
 ## Project Documentation
 
-**Course:** Web Development (Lab Project)  
-**Project Type:** Front-end React.js Application  
+**Course:**    Advance web Technology (Lab Project)  
+**Project Type:** Full-stack Web Application (React + Node.js + SQLite)  
 **Version:** 1.0  
 
 ---
@@ -11,24 +11,35 @@
 
 **Biblionex** is a modern, responsive web application for managing a university or small library. It allows librarians to maintain a catalog of books, register members, and track book borrowings and returns with due dates and overdue status.
 
-The application is built with **React.js** using functional components and hooks, with **Bootstrap 5** for layout and styling. It follows a clean, modular structure with a dedicated API service layer, so it can work with dummy data (no backend) or be connected to a REST API later.
+The application uses a **full-stack** architecture: **React.js** for the frontend, **Node.js (Express)** for the backend REST API, and **SQLite** as the database. The frontend is built with functional components and hooks, **Bootstrap 5** for layout and styling, and **Axios** for API calls. All data is stored in SQLite and accessed through the Node.js backend.
 
 ---
 
 ## 2. Tech Stack
 
+### 2.1 Frontend
 | Technology        | Purpose                          |
 |-------------------|----------------------------------|
 | React.js 18       | UI library, component-based     |
 | Create React App  | Build tool and dev server         |
 | React Router DOM  | Client-side routing              |
 | Bootstrap 5       | Layout, components, responsive   |
-| Axios             | HTTP requests (API layer)        |
+| Axios             | HTTP requests to backend API     |
 | Plus Jakarta Sans | Typography (Google Fonts)        |
 
-- **Components:** Functional components only  
-- **State:** `useState`, `useEffect`  
-- **Architecture:** Pages, reusable components, service layer, dummy data  
+### 2.2 Backend
+| Technology   | Purpose                          |
+|--------------|----------------------------------|
+| Node.js      | Runtime for server               |
+| Express.js   | REST API framework               |
+| SQLite       | Database (file-based)            |
+| better-sqlite3 / sqlite3 | SQLite driver for Node.js |
+
+### 2.3 Architecture Summary
+- **Frontend:** React (functional components, `useState`, `useEffect`)  
+- **Backend:** Node.js + Express (REST API)  
+- **Database:** SQLite (persistent storage)  
+- **Communication:** Frontend → Axios → Backend API → SQLite  
 
 ---
 
@@ -100,68 +111,174 @@ The application is built with **React.js** using functional components and hooks
 
 ---
 
-## 5. Project Structure
+## 5. Backend (Node.js + Express)
+
+The backend is built with **Node.js** and **Express.js**. It provides a REST API that the React frontend calls using Axios. All business logic (add book, borrow, return, etc.) runs on the server, and data is stored in **SQLite**.
+
+### 5.1 Why Node.js and Express?
+- **Node.js:** JavaScript runtime; same language as frontend, easy to maintain.
+- **Express:** Lightweight, widely used framework for REST APIs (GET, POST, PUT, DELETE).
+- **REST:** Clear endpoints (e.g. `GET /api/books`, `POST /api/books`) for the frontend to use.
+
+### 5.2 Backend Responsibilities
+- Serve REST API endpoints for books, members, and borrow records.
+- Connect to SQLite database (read/write).
+- Validate input and enforce rules (e.g. cannot borrow if no copies available).
+- Compute due dates (e.g. 14 days after borrow) and overdue status.
+
+### 5.3 API Endpoints (Backend)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET    | `/api/books` | Get all books |
+| GET    | `/api/books/:id` | Get one book by id |
+| POST   | `/api/books` | Add new book |
+| PUT    | `/api/books/:id` | Update book |
+| DELETE | `/api/books/:id` | Delete book |
+| GET    | `/api/members` | Get all members |
+| GET    | `/api/members/:id` | Get one member |
+| POST   | `/api/members` | Register new member |
+| PUT    | `/api/members/:id` | Update member |
+| DELETE | `/api/members/:id` | Delete member |
+| GET    | `/api/borrow-records` | Get all borrow records (with member name, book title) |
+| POST   | `/api/borrow` | Create borrow (body: memberId, bookId) – sets due date 14 days later |
+| PUT    | `/api/borrow-records/:id/return` | Mark record as returned, update return date and book copies |
+
+The React app’s `api.js` calls these endpoints when `REACT_APP_API_URL` is set to the backend base URL (e.g. `http://localhost:3001`).
+
+---
+
+## 6. Database (SQLite)
+
+**SQLite** is used as the database. It is file-based (no separate database server), which is suitable for a small to medium library and for development/submission.
+
+### 6.1 Why SQLite?
+- No separate server; single file (e.g. `library.db`).
+- Easy to set up and run with Node.js.
+- Good for learning and for projects that need a real database without heavy setup.
+
+### 6.2 Database Schema (Tables)
+
+**Table: books**
+| Column           | Type    | Description                |
+|------------------|---------|----------------------------|
+| id               | INTEGER | Primary key, auto-increment |
+| title            | TEXT    | Book title                 |
+| author           | TEXT    | Author name                |
+| isbn             | TEXT    | ISBN                       |
+| category         | TEXT    | Category                   |
+| total_copies     | INTEGER | Total copies               |
+| available_copies | INTEGER | Copies currently available |
+
+**Table: members**
+| Column           | Type    | Description                |
+|------------------|---------|----------------------------|
+| id               | INTEGER | Primary key, auto-increment |
+| name             | TEXT    | Full name                  |
+| email            | TEXT    | Email address              |
+| membership_date  | TEXT    | Date (YYYY-MM-DD)          |
+
+**Table: borrow_records**
+| Column      | Type    | Description                          |
+|-------------|---------|--------------------------------------|
+| id          | INTEGER | Primary key, auto-increment          |
+| member_id   | INTEGER | Foreign key → members.id             |
+| book_id     | INTEGER | Foreign key → books.id               |
+| borrow_date | TEXT    | Date borrowed (YYYY-MM-DD)           |
+| due_date    | TEXT    | Due date (14 days after borrow)      |
+| return_date | TEXT    | Date returned (NULL if not returned)  |
+
+- **Status** (Borrowed / Returned / Overdue) is computed in the backend or frontend from `return_date` and `due_date`, not stored as a column.
+- On **borrow:** insert row in `borrow_records`, decrement `books.available_copies`.
+- On **return:** set `borrow_records.return_date`, increment `books.available_copies`.
+
+### 6.3 Connection from Node.js
+The backend uses a Node.js SQLite driver (e.g. **better-sqlite3** or **sqlite3**) to open the database file and run SQL queries (SELECT, INSERT, UPDATE, DELETE) for books, members, and borrow records.
+
+---
+
+## 7. Project Structure
 
 ```
 library-managemnet/
-├── public/
+├── public/                     # Frontend static assets
 │   ├── index.html
 │   └── (comsats logo, favicon, etc.)
-├── src/
+├── src/                        # React frontend
 │   ├── components/
-│   │   ├── Navbar.js          # Top navigation + logo + links
-│   │   ├── Sidebar.js         # Left sidebar (desktop)
-│   │   ├── BookCard.js        # Single book card (title, author, copies, Edit/Delete)
-│   │   ├── BookForm.js        # Add/Edit book form
-│   │   ├── MemberForm.js      # Add/Edit member form
-│   │   ├── SearchBar.js       # Search input for books
-│   │   └── DashboardStats.js  # Stat cards for dashboard
+│   │   ├── Navbar.js           # Top navigation + logo + links
+│   │   ├── Sidebar.js          # Left sidebar (desktop)
+│   │   ├── BookCard.js         # Single book card
+│   │   ├── BookForm.js         # Add/Edit book form
+│   │   ├── MemberForm.js       # Add/Edit member form
+│   │   ├── SearchBar.js        # Search input for books
+│   │   └── DashboardStats.js   # Stat cards for dashboard
 │   ├── pages/
-│   │   ├── Dashboard.js       # Overview with 5 stat cards
-│   │   ├── BooksPage.js       # Book list, search, filter, CRUD
-│   │   ├── MembersPage.js     # Member table, CRUD
+│   │   ├── Dashboard.js        # Overview with 5 stat cards
+│   │   ├── BooksPage.js        # Book list, search, filter, CRUD
+│   │   ├── MembersPage.js      # Member table, CRUD
 │   │   └── BorrowedBooksPage.js  # Borrow form + borrow records table
 │   ├── services/
-│   │   └── api.js             # All API functions (books, members, borrow/return)
+│   │   └── api.js              # Axios calls to Node.js backend API
 │   ├── data/
-│   │   └── dummyData.js       # Sample books, members, borrow records
-│   ├── App.js                 # Router + layout (Navbar, Sidebar, main content)
-│   ├── App.css                # Custom styles (theme, cards, buttons)
-│   ├── index.js               # React root
-│   └── index.css              # Global base styles
-├── screenshots/                # Output screenshots for README
+│   │   └── Data.js             # data (fallback / seeding)
+│   ├── App.js                  # Router + layout
+│   ├── App.css                 # Custom styles
+│   ├── index.js                # React root
+│   └── index.css               # Global base styles
+├── server/                     # Node.js backend (Express + SQLite)
+│   ├── index.js                # Express app, routes, server start
+│   ├── db.js                   # SQLite connection and init
+│   ├── routes/
+│   │   ├── books.js            # /api/books endpoints
+│   │   ├── members.js          # /api/members endpoints
+│   │   └── borrow.js           # /api/borrow-records, /api/borrow endpoints
+│   └── library.db              # SQLite database file (created on first run)
+├── screenshots/
 ├── README.md
 ├── DOCUMENTATION.md            # This file
-├── package.json
+├── package.json                # Frontend dependencies + scripts
 └── .gitignore
 ```
 
 ---
 
-## 6. Setup and Installation
+## 8. Setup and Installation
 
 ### Prerequisites
 - **Node.js** (v16 or higher)  
 - **npm** (comes with Node.js)  
 
 ### Steps
-1. Clone or download the repository.  
-2. Open a terminal in the project folder (`library-managemnet`).  
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Start the development server:
-   ```bash
-   npm start
-   ```
-5. Open [http://localhost:3000](http://localhost:3000) in the browser.  
 
-The app runs with **dummy data** by default; no backend is required.
+**1. Clone or download the repository.**
+
+**2. Install frontend dependencies and start React (frontend):**
+```bash
+npm install
+npm start
+```
+- Frontend runs at [http://localhost:3000](http://localhost:3000).
+
+**3. Install backend dependencies and start Node.js server:**
+```bash
+cd server
+npm install
+node index.js
+```
+- Backend API runs at [http://localhost:3001](http://localhost:3001) (or port set in server).
+- On first run, SQLite creates `library.db` and tables (books, members, borrow_records) if they do not exist.
+
+**4. Connect frontend to backend:**  
+In the React project root, create a `.env` file with:
+```
+REACT_APP_API_URL=http://localhost:3001/api
+```
+Then restart the React app (`npm start`). The app will then use the Node.js API and SQLite database instead of dummy data.
 
 ---
 
-## 7. How to Use the Application
+## 9. How to Use the Application
 
 ### Dashboard
 - View total books, members, borrowed count, available copies, and overdue books.  
@@ -185,26 +302,19 @@ The app runs with **dummy data** by default; no backend is required.
 
 ---
 
-## 8. API Service Layer
+## 10. API Service Layer (Frontend)
 
-All server communication is in **`src/services/api.js`**:
+All communication with the backend is in **`src/services/api.js`** using **Axios**:
 
 - **Books:** `getBooks`, `getBookById`, `createBook`, `updateBook`, `deleteBook`  
 - **Members:** `getMembers`, `getMemberById`, `createMember`, `updateMember`, `deleteMember`  
 - **Borrow:** `getBorrowRecords`, `borrowBook`, `returnBorrowRecord`, `getOverdueCount`  
 
-If **`REACT_APP_API_URL`** is not set, the app uses in-memory dummy data (same structure as above).  
-To use a real backend, set in `.env`:
-
-```
-REACT_APP_API_URL=http://localhost:3001/api
-```
-
-Then implement the same endpoints on the server (see comments in `api.js` for expected request/response shape).
+When **`REACT_APP_API_URL`** is set (e.g. `http://localhost:3001/api`), these functions call the **Node.js backend**; the backend reads/writes **SQLite**. When not set, the frontend can fall back to in-memory dummy data for demo.
 
 ---
 
-## 9. Routing
+## 11. Routing
 
 | Route             | Page             | Description              |
 |-------------------|------------------|--------------------------|
@@ -217,7 +327,7 @@ Implemented with **React Router DOM** in `App.js`.
 
 ---
 
-## 10. Styling and UI
+## 12. Styling and UI
 
 - **Theme:** Dark navbar and sidebar; light content area; indigo accent.  
 - **Bootstrap 5:** Grid, cards, tables, forms, buttons, badges.  
@@ -226,21 +336,18 @@ Implemented with **React Router DOM** in `App.js`.
 
 ---
 
-
-
-## 12. Future Enhancements (Optional)
+## 13. Future Enhancements (Optional)
 
 - User authentication (login/logout)  
-- Backend API (Node/Express, etc.) with database  
 - Reports (e.g. most borrowed books, overdue list export)  
 - Notifications or reminders for due dates  
 - Fine calculation for overdue returns  
 
 ---
 
-## 13. Conclusion
+## 14. Conclusion
 
-Biblionex is a complete front-end library management system with dashboard, book and member CRUD, and a full borrow/return workflow including due dates and overdue status. It is suitable as a Web Development lab project and can be extended with a backend and extra features as needed.
+Biblionex is a **full-stack** library management system: **React.js** frontend, **Node.js (Express)** backend, and **SQLite** database. It includes a dashboard, book and member CRUD, and a full borrow/return workflow with due dates and overdue status. The use of Node.js and SQLite provides a real backend and persistent storage, making it suitable as a Web Development lab project.
 
 ---
 
