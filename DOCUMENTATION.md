@@ -1,8 +1,8 @@
 # Biblionex – Smart Library Management System  
 ## Project Documentation
 
-**Course:** Web Development (Lab Project)  
-**Project Type:** Front-end React.js Application  
+**Course:** Advance Web Technology (Lab Project)  
+**Project Type:**  React.js Application  
 **Version:** 1.0  
 
 ---
@@ -157,7 +157,6 @@ library-managemnet/
    ```
 5. Open [http://localhost:3000](http://localhost:3000) in the browser.  
 
-The app runs with **dummy data** by default; no backend is required.
 
 ---
 
@@ -230,8 +229,7 @@ Implemented with **React Router DOM** in `App.js`.
 
 ## 12. Future Enhancements (Optional)
 
-- User authentication (login/logout)  
-- Backend API (Node/Express, etc.) with database  
+- User authentication (login/logout)    
 - Reports (e.g. most borrowed books, overdue list export)  
 - Notifications or reminders for due dates  
 - Fine calculation for overdue returns  
