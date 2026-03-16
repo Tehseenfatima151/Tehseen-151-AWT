@@ -1,4 +1,4 @@
-# Library Management System
+# Biblionex - Library Management System
 
 A modern React.js web application for managing a university library—built for a Web Development lab project.
 
@@ -27,4 +27,18 @@ npm start
 Runs on [http://localhost:3000](http://localhost:3000).
 
 ## Screenshoots
+### Dashboard
+![Dashboard](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/dashboard.PNG?raw=true
+)
+### Books Management
+![Books](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/books.PNG?raw=true)
+### Add Book
+![add](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/addbook.PNG?raw=true)
+
+### Borrow Book
+![borrow](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20book.PNG?raw=true)
+### Borrow Book Record
+![record](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/borrow%20record.PNG?raw=true)
+### Members Management
+![Members](https://github.com/Tehseenfatima151/Tehseen-151-AWT/blob/main/library-managemnet/screenshots/members.PNG?raw=true)
 
