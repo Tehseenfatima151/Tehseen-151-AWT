@@ -336,15 +336,7 @@ Implemented with **React Router DOM** in `App.js`.
 
 ---
 
-
-
-## 13. Dummy Data (Fallback)
-
-The file **`src/data/dummyData.js`** contains sample books, members, and borrow records. It is used when the frontend runs without a backend (e.g. for quick demo or when `REACT_APP_API_URL` is not set). When the Node.js backend and SQLite are used, the backend can optionally seed the database from similar data on first run.
-
----
-
-## 14. Future Enhancements (Optional)
+## 13. Future Enhancements (Optional)
 
 - User authentication (login/logout)  
 - Reports (e.g. most borrowed books, overdue list export)  
@@ -353,7 +345,7 @@ The file **`src/data/dummyData.js`** contains sample books, members, and borrow 
 
 ---
 
-## 15. Conclusion
+## 14. Conclusion
 
 Biblionex is a **full-stack** library management system: **React.js** frontend, **Node.js (Express)** backend, and **SQLite** database. It includes a dashboard, book and member CRUD, and a full borrow/return workflow with due dates and overdue status. The use of Node.js and SQLite provides a real backend and persistent storage, making it suitable as a Web Development lab project.
 
