@@ -8,6 +8,8 @@ A modern React.js web application for managing a university library—built for 
 - **Bootstrap 5**
 - **React Router DOM**
 - **Axios**
+- **Node.js + Express (REST API)**
+- **SQLite (persistent storage)**
 - Functional components with Hooks
 
 ## Features
