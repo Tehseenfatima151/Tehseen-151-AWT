@@ -1,0 +1,45 @@
+import { supabase } from '../lib/supabase'
+
+export async function getStudentStats(userId) {
+  const [skills, projects, certificates, rating] = await Promise.all([
+    supabase.from('skills').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('projects').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('certificates').select('*', { count: 'exact', head: true }).eq('user_id', userId),
+    supabase.from('ratings').select('rating').eq('user_id', userId).maybeSingle(),
+  ])
+
+  return {
+    totalSkills: skills.count ?? 0,
+    totalProjects: projects.count ?? 0,
+    totalCertificates: certificates.count ?? 0,
+    rating: rating.data?.rating ?? null,
+  }
+}
+
+export async function updateProfile(userId, payload) {
+  return supabase.from('users').update(payload).eq('id', userId).select().single()
+}
+
+export async function listByUser(table, userId) {
+  return supabase.from(table).select('*').eq('user_id', userId).order('created_at', { ascending: false })
+}
+
+export async function createItem(table, payload) {
+  return supabase.from(table).insert(payload).select().single()
+}
+
+export async function updateItem(table, id, payload) {
+  return supabase.from(table).update(payload).eq('id', id).select().single()
+}
+
+export async function deleteItem(table, id) {
+  return supabase.from(table).delete().eq('id', id)
+}
+
+export async function listFeedbackForStudent(userId) {
+  return supabase
+    .from('feedback')
+    .select('id,message,created_at,admin_id,users!feedback_admin_id_fkey(name,email)')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+}
