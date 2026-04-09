@@ -27,6 +27,7 @@ export default function StudentCertificatesPage() {
 
   const submit = async (e) => {
     e.preventDefault()
+    if (!profile?.id) return toast.error('Please wait, profile is still loading')
     if (!file) return toast.error('Please upload file')
     setLoading(true)
     try {

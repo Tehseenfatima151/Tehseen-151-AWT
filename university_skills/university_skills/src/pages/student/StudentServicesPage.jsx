@@ -15,38 +15,58 @@ const emptyForm = {
 }
 
 export default function StudentServicesPage() {
-  const { profile } = useAuth()
-  const profileId = profile?.id
+  const { profile, session } = useAuth()
+  const userId = profile?.id ?? session?.user?.id
   const [items, setItems] = useState([])
   const [form, setForm] = useState(emptyForm)
   const [editId, setEditId] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
-    const { data } = await listByUser('services', profileId)
+    if (!userId) return
+    const { data } = await listByUser('services', userId)
     setItems(data ?? [])
-  }, [profileId])
+  }, [userId])
 
   useEffect(() => {
-    if (profileId) load()
-  }, [profileId, load])
+    if (userId) load()
+  }, [userId, load])
 
   const submit = async (e) => {
     e.preventDefault()
+    if (!userId) return toast.error('Please wait, account is still loading')
     const payload = {
       title: form.title.trim(),
       description: form.description.trim() || null,
       offering_tags: form.offering_tags.trim() || null,
       availability: form.availability.trim() || null,
-      user_id: profileId,
+      user_id: userId,
     }
     if (!payload.title) return toast.error('Title is required')
-    const res = editId ? await updateItem('services', editId, payload) : await createItem('services', payload)
-    if (res.error) return toast.error(res.error.message)
-    setForm(emptyForm)
-    setEditId(null)
-    await load()
-    toast.success(editId ? 'Service updated' : 'Service added')
+    setSaving(true)
+    try {
+      const res = editId ? await updateItem('services', editId, payload) : await createItem('services', payload)
+      if (res.error) return toast.error(res.error.message)
+
+      const savedItem = res.data
+      if (savedItem) {
+        setItems((prev) => {
+          if (editId) {
+            return prev.map((item) => (item.id === editId ? savedItem : item))
+          }
+          return [savedItem, ...prev]
+        })
+      } else {
+        await load()
+      }
+
+      setForm(emptyForm)
+      setEditId(null)
+      toast.success(editId ? 'Service updated' : 'Service added')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -108,8 +128,12 @@ export default function StudentServicesPage() {
           <p className="mt-1 text-xs text-slate-500">How and when you can take on work (online, timezone, part-time, etc.).</p>
         </div>
         <div className="md:col-span-2 flex flex-wrap gap-2">
-          <button type="submit" className="rounded-lg bg-sky-600 px-4 py-2 text-white">
-            {editId ? 'Update service' : 'Add service'}
+          <button
+            type="submit"
+            disabled={saving || !userId}
+            className="rounded-lg bg-sky-600 px-4 py-2 text-white disabled:opacity-60"
+          >
+            {saving ? 'Saving…' : editId ? 'Update service' : 'Add service'}
           </button>
           {editId ? (
             <button

@@ -13,6 +13,7 @@ export default function StudentSkillsPage() {
   const [form, setForm] = useState({ skill_name: '', skill_level: 'Beginner' })
   const [editId, setEditId] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
     const { data } = await listByUser('skills', profileId)
@@ -24,18 +25,37 @@ export default function StudentSkillsPage() {
 
   const submit = async (e) => {
     e.preventDefault()
+    if (!profileId) return toast.error('Please wait, profile is still loading')
     if (!form.skill_name.trim()) return toast.error('Skill name is required')
+    const skillName = form.skill_name.trim()
     const payload = {
-      skill_name: form.skill_name.trim(),
+      skill_name: skillName,
       skill_level: form.skill_level,
       user_id: profileId,
     }
-    const res = editId ? await updateItem('skills', editId, payload) : await createItem('skills', payload)
-    if (res.error) return toast.error(res.error.message)
-    setForm({ skill_name: '', skill_level: 'Beginner' })
-    setEditId(null)
-    await load()
-    toast.success(editId ? 'Skill updated' : 'Skill added')
+    setSaving(true)
+    try {
+      const res = editId ? await updateItem('skills', editId, payload) : await createItem('skills', payload)
+      if (res.error) return toast.error(res.error.message)
+
+      const savedItem = res.data
+      if (savedItem) {
+        setItems((prev) => {
+          if (editId) {
+            return prev.map((item) => (item.id === editId ? savedItem : item))
+          }
+          return [savedItem, ...prev]
+        })
+      } else {
+        await load()
+      }
+
+      setForm({ skill_name: '', skill_level: 'Beginner' })
+      setEditId(null)
+      toast.success(editId ? 'Skill updated' : 'Skill added')
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -72,8 +92,8 @@ export default function StudentSkillsPage() {
           <p className="mt-1 text-xs text-slate-500">Controls how full the bar looks on your portfolio (Beginner → Expert).</p>
         </div>
         <div className="flex flex-wrap gap-2 md:col-span-2">
-          <button type="submit" className="rounded-lg bg-sky-600 px-4 py-2 text-white">
-            {editId ? 'Update skill' : 'Add skill'}
+          <button type="submit" disabled={saving || !profileId} className="rounded-lg bg-sky-600 px-4 py-2 text-white disabled:opacity-60">
+            {saving ? 'Saving…' : editId ? 'Update skill' : 'Add skill'}
           </button>
           {editId ? (
             <button
