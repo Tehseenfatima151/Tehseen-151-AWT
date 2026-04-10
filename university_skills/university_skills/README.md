@@ -5,6 +5,13 @@ University skill portfolio platform for **COMSATS University Islamabad** — bui
 ## Live demo
 
 **Production (Vercel):** [https://uni-skillsphere.vercel.app/](https://uni-skillsphere.vercel.app/)
+**Credentials**
+**Student login**
+aliza123@gmail.com
+12345678
+**Admin login**
+tehseen151@gmail.com
+12345678
 
 ## Features
 
