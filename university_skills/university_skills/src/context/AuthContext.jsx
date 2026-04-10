@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '../lib/supabase'
 
 const AuthContext = createContext(null)
@@ -7,6 +7,8 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  /** Avoids re-fetching `users` on every token refresh (same user) — reduces lag across the app. */
+  const profileLoadedForUserIdRef = useRef(null)
 
   const isTransientLockError = (error) => {
     const msg = String(error?.message ?? error ?? '')
@@ -20,7 +22,7 @@ export function AuthProvider({ children }) {
       const { data, error } = await supabase.from('users').select('*').eq('id', userId).maybeSingle()
       if (!error) {
         setProfile(data ?? null)
-        return
+        return true
       }
 
       if (isTransientLockError(error) && attempt < 2) {
@@ -30,8 +32,9 @@ export function AuthProvider({ children }) {
 
       console.error('users profile fetch failed', error)
       setProfile(null)
-      return
+      return false
     }
+    return false
   }, [])
 
   const refreshFromSession = useCallback(async () => {
@@ -41,8 +44,11 @@ export function AuthProvider({ children }) {
       } = await supabase.auth.getSession()
       setSession(nextSession ?? null)
       if (nextSession?.user?.id) {
-        await fetchProfile(nextSession.user.id)
+        const ok = await fetchProfile(nextSession.user.id)
+        if (ok) profileLoadedForUserIdRef.current = nextSession.user.id
+        else profileLoadedForUserIdRef.current = null
       } else {
+        profileLoadedForUserIdRef.current = null
         setProfile(null)
       }
     } catch (error) {
@@ -63,8 +69,10 @@ export function AuthProvider({ children }) {
         if (!alive) return
         setSession(initialSession ?? null)
         if (initialSession?.user?.id) {
-          await fetchProfile(initialSession.user.id)
+          const ok = await fetchProfile(initialSession.user.id)
+          profileLoadedForUserIdRef.current = ok ? initialSession.user.id : null
         } else {
+          profileLoadedForUserIdRef.current = null
           setProfile(null)
         }
       } catch (error) {
@@ -81,11 +89,20 @@ export function AuthProvider({ children }) {
 
       try {
         setSession(nextSession ?? null)
-        if (nextSession?.user?.id) {
-          await fetchProfile(nextSession.user.id)
-        } else {
+        const uid = nextSession?.user?.id ?? null
+
+        if (!uid) {
+          profileLoadedForUserIdRef.current = null
           setProfile(null)
+          return
         }
+
+        if (event === 'TOKEN_REFRESHED' && profileLoadedForUserIdRef.current === uid) {
+          return
+        }
+
+        const ok = await fetchProfile(uid)
+        profileLoadedForUserIdRef.current = ok ? uid : null
       } catch (error) {
         console.error('auth state change handling failed', error)
       }
@@ -108,7 +125,10 @@ export function AuthProvider({ children }) {
           setProfile((prev) => (prev ? { ...prev, ...updatedRow } : updatedRow))
           return
         }
-        if (session?.user?.id) await fetchProfile(session.user.id)
+        if (session?.user?.id) {
+          const ok = await fetchProfile(session.user.id)
+          profileLoadedForUserIdRef.current = ok ? session.user.id : null
+        }
       },
       signOut: () => supabase.auth.signOut(),
     }),

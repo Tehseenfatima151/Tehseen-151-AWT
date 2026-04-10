@@ -137,7 +137,6 @@ export default function StudentProfilePage() {
   return (
     <div className="space-y-4">
       <SectionCard title="Profile Management">
-        <p className="mb-3 text-sm text-slate-600">Personal details and professional title. Education and work history are added below in their own sections.</p>
         <form className="grid gap-3 md:grid-cols-2" onSubmit={saveProfile}>
           <div>
             <label htmlFor="profile-name" className="mb-1 block text-sm font-medium text-slate-700">

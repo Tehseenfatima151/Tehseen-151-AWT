@@ -2,13 +2,14 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowRight, ExternalLink, ShieldCheck, Sparkles, UserCircle2 } from 'lucide-react'
 import SiteBackground from '../components/layout/SiteBackground'
+import CuiSkillSphereTitle from '../components/landing/CuiSkillSphereTitle'
 
 const team = [
   {
     id: 'super-admin',
     name: 'Muhammad Abdullah',
     role: 'Academic lead & program mentor',
-    bio: 'Portfolios & mentorship at COMSATS.',
+    bio: 'Innovation & Mentorship at COMSATS',
     image: '/team/sir.jpeg',
     externalUrl: 'https://muhammadabdullahwali.vercel.app/',
   },
@@ -16,9 +17,9 @@ const team = [
     id: 'lead-dev',
     name: 'Tehseen Fatima',
     role: 'Lead developer',
-    bio: 'Engineering & UX for SkillSphere.',
+    bio: 'Design & Development for SkillSphere.',
     image: '/team/tehseen.jpeg',
-    externalUrl: null,
+    externalUrl: 'https://sites.google.com/view/tehseens-portfolio/home',
   },
 ]
 
@@ -43,20 +44,26 @@ export default function LandingPage() {
             <Sparkles className="h-3.5 w-3.5 text-sky-300" aria-hidden />
             COMSATS University Islamabad
           </span>
-          <h1 className="mt-8 max-w-4xl text-4xl font-extrabold leading-[1.08] tracking-tight md:text-6xl md:leading-[1.05]">
-            <span className="text-white">CUI </span>
-            <span className="bg-gradient-to-r from-sky-300 via-white to-sky-200 bg-clip-text text-transparent">
-              SkillSphere
-            </span>
-          </h1>
-          <p className="mx-auto mt-5 max-w-xl text-sm text-slate-400 md:text-base md:whitespace-nowrap md:text-slate-300">
-            Build, manage &amp; showcase your portfolio — one hub for COMSATS students.
-          </p>
+          <div className="mt-8">
+            <CuiSkillSphereTitle />
+          </div>
+          <div className="mx-auto mt-6 w-full max-w-3xl md:mt-7">
+            <p className="rounded-2xl border border-sky-400/15 bg-gradient-to-b from-sky-500/[0.07] to-white/[0.02] px-4 py-3.5 text-center text-base leading-relaxed text-pretty shadow-[0_0_40px_-12px_rgba(56,189,248,0.25)] ring-1 ring-white/[0.04] backdrop-blur-sm sm:px-6 sm:py-3.5 md:px-8 md:py-4 md:text-lg">
+              <span className="font-medium text-slate-100">
+                Build, manage &amp; showcase your portfolio
+              </span>
+              <span className="text-slate-500"> — </span>
+              <span className="text-slate-300">
+                one hub for{' '}
+                <span className="font-semibold text-sky-100">COMSATS</span> students.
+              </span>
+            </p>
+          </div>
           <div className="mt-8">
             <img
               src="/team/comsats-logo.jpeg"
               alt="COMSATS logo"
-              className="h-[5.25rem] w-[5.25rem] rounded-full object-cover shadow-lg shadow-sky-900/35 ring-2 ring-white/25 md:h-28 md:w-28"
+              className="h-[6.5rem] w-[6.5rem] rounded-full object-cover shadow-lg shadow-sky-900/35 ring-2 ring-white/25 md:h-32 md:w-32 lg:h-36 lg:w-36"
               onError={(e) => {
                 e.currentTarget.src =
                   'https://ui-avatars.com/api/?name=CUI&size=220&background=0f172a&color=fff&bold=true'
@@ -74,9 +81,6 @@ export default function LandingPage() {
         >
           <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight md:text-3xl">Choose your portal</h2>
-            <p className="mx-auto mt-3 max-w-3xl text-center text-sm text-slate-400 md:text-base md:whitespace-nowrap">
-              Secure sign-in — pick the portal that matches your role, student or administrator.
-            </p>
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-8 md:flex-row md:gap-10">
@@ -125,11 +129,8 @@ export default function LandingPage() {
         >
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-extrabold tracking-tight md:text-4xl">
-              Meet the team
+              Our Expert Team
             </h2>
-            <p className="mt-4 text-sm font-medium text-slate-400 md:text-base md:whitespace-nowrap">
-              <span className="text-sky-300">SkillSphere</span> team — academic direction to product engineering.
-            </p>
           </div>
 
           <div className="mx-auto mt-10 grid w-full max-w-3xl grid-cols-1 gap-6 min-[520px]:grid-cols-2 min-[520px]:gap-6 md:gap-10">

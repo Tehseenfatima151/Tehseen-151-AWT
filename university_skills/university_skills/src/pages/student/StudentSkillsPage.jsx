@@ -60,7 +60,6 @@ export default function StudentSkillsPage() {
 
   return (
     <SectionCard title="Skills">
-      <p className="mb-4 text-sm text-slate-600">Add skills with a proficiency level. They show as progress bars on your portfolio.</p>
       <form className="mb-6 grid gap-3 md:grid-cols-2" onSubmit={submit}>
         <div>
           <label htmlFor="skill-name" className="mb-1 block text-sm font-medium text-slate-700">

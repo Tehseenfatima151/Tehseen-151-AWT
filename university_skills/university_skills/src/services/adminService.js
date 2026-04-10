@@ -1,13 +1,14 @@
 import { supabase, supabaseAdmin } from '../lib/supabase'
 
 export async function getAdminStats() {
-  const [students, skills, projects, certificates, feedback, ratings, education, experience] = await Promise.all([
+  const [students, skills, projects, certificates, feedback, ratings, services, education, experience] = await Promise.all([
     supabase.from('users').select('*', { count: 'exact', head: true }).eq('role', 'student'),
     supabase.from('skills').select('*', { count: 'exact', head: true }),
     supabase.from('projects').select('*', { count: 'exact', head: true }),
     supabase.from('certificates').select('*', { count: 'exact', head: true }),
     supabase.from('feedback').select('*', { count: 'exact', head: true }),
     supabase.from('ratings').select('*', { count: 'exact', head: true }),
+    supabase.from('services').select('*', { count: 'exact', head: true }),
     supabase.from('education').select('*', { count: 'exact', head: true }),
     supabase.from('experience').select('*', { count: 'exact', head: true }),
   ])
@@ -18,6 +19,7 @@ export async function getAdminStats() {
     certificates: certificates.count ?? 0,
     feedback: feedback.count ?? 0,
     ratings: ratings.count ?? 0,
+    services: services.count ?? 0,
     education: education.count ?? 0,
     experience: experience.count ?? 0,
   }

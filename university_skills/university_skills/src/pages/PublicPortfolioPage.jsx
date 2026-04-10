@@ -18,11 +18,11 @@ const teamPortfolios = {
     github_url: 'https://github.com/abdullah',
     linkedin_url: 'https://www.linkedin.com/in/abdullah',
     skills: [
-      { id: 'sa-s1', skill_name: 'JavaScript', skill_level: 'Expert' },
-      { id: 'sa-s2', skill_name: 'React.js', skill_level: 'Expert' },
-      { id: 'sa-s3', skill_name: 'Node.js', skill_level: 'Expert' },
-      { id: 'sa-s4', skill_name: 'Database Design', skill_level: 'Expert' },
-      { id: 'sa-s5', skill_name: 'System Design', skill_level: 'Advanced' },
+      { id: 'sa-s1', skill_name: 'Web Development', skill_level: 'Expert' },
+      { id: 'sa-s2', skill_name: 'Blogger', skill_level: 'Advanced' },
+      { id: 'sa-s3', skill_name: 'Mobile App Development', skill_level: 'Advanced' },
+      { id: 'sa-s4', skill_name: 'WordPress Development', skill_level: 'Expert' },
+      { id: 'sa-s5', skill_name: 'Desktop React Development', skill_level: 'Advanced' },
     ],
     services: [
       {
@@ -61,19 +61,19 @@ const teamPortfolios = {
     projects: [
       {
         id: 'sa-p1',
-        title: 'Scalable Web Applications',
-        description: 'Developed high-performance and scalable web applications for real-world use cases.',
-        tech_used: 'JavaScript, React, Node.js',
-        cover_image:
-          'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80',
+        title: 'Jaand Airies — Modern WordPress Business Website (Designed, Developed & Deployed)',
+        description:
+          'A fully responsive business website built in WordPress with custom design, optimized structure, and fast loading — developed for a real client and deployed with complete branding.',
+        tech_used: 'WordPress Development',
+        cover_image: '/project-images/desighee.PNG',
       },
       {
         id: 'sa-p2',
-        title: 'Student Management Systems',
-        description: 'Designed and implemented university-level management systems.',
-        tech_used: 'Full stack, database design, system integration',
-        cover_image:
-          'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
+        title: 'CUI Vehari Online Portal Website',
+        description:
+          'A modern and responsive university portal website developed to provide students with easy access to academic information, announcements, and campus resources online.',
+        tech_used: 'HTML, CSS, JavaScript, PHP, Bootstrap, MySQL',
+        cover_image: '/project-images/fyp-portal.PNG',
       },
     ],
     certificates: [
@@ -133,7 +133,7 @@ const teamPortfolios = {
       { id: 'sk2', skill_name: 'CSS', skill_level: 'Expert' },
       { id: 'sk3', skill_name: 'JavaScript', skill_level: 'Intermediate' },
       { id: 'sk4', skill_name: 'React.js', skill_level: 'Intermediate' },
-      { id: 'sk5', skill_name: 'Node.js', skill_level: 'Beginner' },
+      { id: 'sk5', skill_name: 'Node.js', skill_level: 'Intermediate' },
       { id: 'sk6', skill_name: 'C++', skill_level: 'Intermediate' },
       { id: 'sk7', skill_name: 'Python', skill_level: 'Intermediate' },
       { id: 'sk8', skill_name: 'SQL', skill_level: 'Intermediate' },
@@ -188,15 +188,15 @@ const teamPortfolios = {
           'A full-stack web application that allows university students to create, manage, and showcase their professional portfolios with admin feedback and ranking system.',
         tech_used: 'React.js, Supabase, Tailwind CSS',
         cover_image:
-          'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80',
+          '/project-images/cui_skillsphere.PNG',
       },
       {
         id: 'p2',
         title: 'Foodify (Food Ordering Web App)',
         description: 'A responsive food ordering platform with dynamic menus and interactive UI.',
         tech_used: 'React.js, Node.js',
-        cover_image:
-          'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=80',
+        cover_image: '/project-images/foodify.PNG',
+        cover_position: 'left center',
       },
       {
         id: 'p3',

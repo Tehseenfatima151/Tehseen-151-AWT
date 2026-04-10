@@ -53,7 +53,6 @@ export default function StudentCertificatesPage() {
 
   return (
     <SectionCard title="Certificates">
-      <p className="mb-4 text-sm text-slate-600">Upload PDF or image proof. These appear on your public portfolio with a preview link.</p>
       <form className="mb-6 grid gap-3 md:grid-cols-2" onSubmit={submit}>
         <div>
           <label htmlFor="cert-name" className="mb-1 block text-sm font-medium text-slate-700">
@@ -96,7 +95,6 @@ export default function StudentCertificatesPage() {
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             required
           />
-          <p className="mt-1 text-xs text-slate-500">Max practical size depends on your network; prefer PDF or compressed images.</p>
         </div>
         <div className="md:col-span-2">
           <button type="submit" disabled={loading} className="rounded-lg bg-sky-600 px-4 py-2 text-white disabled:opacity-60">

@@ -71,9 +71,6 @@ export default function StudentServicesPage() {
 
   return (
     <SectionCard title="Services">
-      <p className="mb-4 text-sm text-slate-600">
-        Offerings you share with clients or collaborators — title, detail, what you deliver, and when you&apos;re available. These appear on your public portfolio.
-      </p>
       <form className="mb-6 grid gap-3 md:grid-cols-2" onSubmit={submit}>
         <div className="md:col-span-2">
           <label htmlFor="svc-title" className="mb-1 block text-sm font-medium text-slate-700">
@@ -112,7 +109,6 @@ export default function StudentServicesPage() {
             value={form.offering_tags}
             onChange={(e) => setForm({ ...form, offering_tags: e.target.value })}
           />
-          <p className="mt-1 text-xs text-slate-500">Comma-separated keywords so visitors scan your strengths quickly.</p>
         </div>
         <div>
           <label htmlFor="svc-avail" className="mb-1 block text-sm font-medium text-slate-700">
@@ -125,7 +121,6 @@ export default function StudentServicesPage() {
             value={form.availability}
             onChange={(e) => setForm({ ...form, availability: e.target.value })}
           />
-          <p className="mt-1 text-xs text-slate-500">How and when you can take on work (online, timezone, part-time, etc.).</p>
         </div>
         <div className="md:col-span-2 flex flex-wrap gap-2">
           <button

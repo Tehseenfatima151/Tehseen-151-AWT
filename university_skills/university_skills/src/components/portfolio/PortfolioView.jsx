@@ -204,7 +204,12 @@ export default function PortfolioView({ data }) {
               >
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
                   {item.cover_image ? (
-                    <img src={item.cover_image} alt="" className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                    <img
+                      src={item.cover_image}
+                      alt=""
+                      className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                      style={{ objectPosition: item.cover_position || 'center center' }}
+                    />
                   ) : (
                     <div className="flex h-full min-h-[140px] items-center justify-center text-sm text-slate-400">No cover image</div>
                   )}

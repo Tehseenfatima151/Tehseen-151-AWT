@@ -36,41 +36,46 @@ export default function StudentDashboardPage() {
     document.getElementById('student-admin-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const statBtn =
+    'flex h-full min-h-0 w-full min-w-0 rounded-xl text-left outline-none ring-sky-400 transition focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950'
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">Dashboard</h1>
+          <h1 className="text-xl font-extrabold tracking-tight text-white md:text-2xl lg:text-3xl">Dashboard</h1>
           <p className="mt-1 text-sm text-slate-400">Your progress snapshot and portfolio distribution.</p>
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 [grid-auto-rows:1fr] md:grid-cols-4 md:gap-4">
         {loading ? (
           <>
-            <Skeleton className="h-[110px] rounded-3xl" />
-            <Skeleton className="h-[110px] rounded-3xl" />
-            <Skeleton className="h-[110px] rounded-3xl" />
-            <Skeleton className="h-[110px] rounded-3xl" />
+            <Skeleton className="min-h-[118px] rounded-xl sm:min-h-[124px]" />
+            <Skeleton className="min-h-[118px] rounded-xl sm:min-h-[124px]" />
+            <Skeleton className="min-h-[118px] rounded-xl sm:min-h-[124px]" />
+            <Skeleton className="min-h-[118px] rounded-xl sm:min-h-[124px]" />
           </>
         ) : (
           <>
-            <button type="button" onClick={() => navigate('/student/skills')} className="text-left">
-              <StatCard label="Skills" value={stats.totalSkills} icon={TrendingUp} accent="sky" />
+            <button type="button" onClick={() => navigate('/student/skills')} className={statBtn}>
+              <StatCard compact uniformCompact label="Skills" value={stats.totalSkills} icon={TrendingUp} accent="sky" />
             </button>
-            <button type="button" onClick={() => navigate('/student/projects')} className="text-left">
-              <StatCard label="Projects" value={stats.totalProjects} icon={FolderKanban} accent="emerald" />
+            <button type="button" onClick={() => navigate('/student/projects')} className={statBtn}>
+              <StatCard compact uniformCompact label="Projects" value={stats.totalProjects} icon={FolderKanban} accent="emerald" />
             </button>
-            <button type="button" onClick={() => navigate('/student/certificates')} className="text-left">
-              <StatCard label="Certificates" value={stats.totalCertificates} icon={Award} accent="amber" />
+            <button type="button" onClick={() => navigate('/student/certificates')} className={statBtn}>
+              <StatCard compact uniformCompact label="Certificates" value={stats.totalCertificates} icon={Award} accent="amber" />
             </button>
             <button
               type="button"
               onClick={scrollToAdminFeedback}
-              className="w-full text-left"
+              className={statBtn}
               title="Admin-assigned score after portfolio review — jump to feedback"
             >
               <StatCard
+                compact
+                uniformCompact
                 label="Admin rating"
                 value={stats.rating != null ? `${stats.rating} / 5` : '—'}
                 icon={Star}
@@ -82,11 +87,11 @@ export default function StudentDashboardPage() {
         )}
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <div className="rounded-3xl border border-white/10 bg-white p-5 shadow-xl shadow-sky-900/10">
-          <h2 className="text-base font-semibold text-slate-900">Distribution (Bar)</h2>
-          <p className="mt-1 text-sm text-slate-600">Skills vs Projects vs Certificates</p>
-          <div className="mt-4 h-64">
+      <div className="grid gap-3 md:gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-white/10 bg-white p-4 shadow-lg shadow-sky-900/5 md:rounded-3xl md:p-5 md:shadow-xl">
+          <h2 className="text-sm font-semibold text-slate-900 md:text-base">Distribution (Bar)</h2>
+          <p className="mt-0.5 text-xs text-slate-600 md:mt-1 md:text-sm">Skills vs Projects vs Certificates</p>
+          <div className="mt-3 h-56 md:mt-4 md:h-64">
             {loading ? (
               <Skeleton className="h-full w-full rounded-2xl" />
             ) : (
@@ -103,10 +108,10 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-3xl border border-white/10 bg-white p-5 shadow-xl shadow-sky-900/10">
-          <h2 className="text-base font-semibold text-slate-900">Distribution (Pie)</h2>
-          <p className="mt-1 text-sm text-slate-600">A quick visual of your portfolio content</p>
-          <div className="mt-4 h-64">
+        <div className="rounded-2xl border border-white/10 bg-white p-4 shadow-lg shadow-sky-900/5 md:rounded-3xl md:p-5 md:shadow-xl">
+          <h2 className="text-sm font-semibold text-slate-900 md:text-base">Distribution (Pie)</h2>
+          <p className="mt-0.5 text-xs text-slate-600 md:mt-1 md:text-sm">A quick visual of your portfolio content</p>
+          <div className="mt-3 h-56 md:mt-4 md:h-64">
             {loading ? (
               <Skeleton className="h-full w-full rounded-2xl" />
             ) : (
@@ -121,9 +126,12 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      <div id="student-admin-feedback" className="scroll-mt-6 rounded-3xl border border-white/10 bg-white p-5 shadow-xl shadow-sky-900/10">
-        <h2 className="text-base font-semibold text-slate-900">Admin feedback & rating</h2>
-        <p className="mt-1 text-sm text-slate-600">
+      <div
+        id="student-admin-feedback"
+        className="scroll-mt-6 rounded-2xl border border-white/10 bg-white p-4 shadow-lg shadow-sky-900/5 md:rounded-3xl md:p-5 md:shadow-xl"
+      >
+        <h2 className="text-sm font-semibold text-slate-900 md:text-base">Admin feedback & rating</h2>
+        <p className="mt-1 text-xs text-slate-600 md:text-sm">
           Admins review your portfolio and can leave messages here. Your <span className="font-medium text-slate-800">star rating (1–5)</span> on the card
           above is saved when they submit a rating from the admin portal.
         </p>

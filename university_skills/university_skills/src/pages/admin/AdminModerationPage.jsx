@@ -7,7 +7,7 @@ import { deleteItem } from '../../services/studentService'
 import EmptyState from '../../components/common/EmptyState'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
 
-const MOD_TABLES = ['skills', 'projects', 'certificates']
+const MOD_TABLES = ['skills', 'projects', 'certificates', 'services']
 
 export default function AdminModerationPage() {
   const location = useLocation()
