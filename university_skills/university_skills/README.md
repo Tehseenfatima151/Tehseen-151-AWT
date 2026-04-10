@@ -1,6 +1,10 @@
-# University Skill Portfolio Management System
+# CUI SkillSphere (Uni SkillSphere)
 
-Full-stack web app for COMSATS University built with React + Supabase.
+University skill portfolio platform for **COMSATS University Islamabad** — build, manage, and showcase student portfolios in one place. React + Supabase stack.
+
+## Live demo
+
+**Production (Vercel):** [https://uni-skillsphere.vercel.app/](https://uni-skillsphere.vercel.app/)
 
 ## Features
 
@@ -85,8 +89,14 @@ supabase/
 
 ## Deployment (Vercel)
 
-1. Push repository to GitHub.
-2. Import project in Vercel.
+The app is deployed as **Uni SkillSphere** on Vercel:
+
+- **URL:** [https://uni-skillsphere.vercel.app/](https://uni-skillsphere.vercel.app/)
+
+To deploy your own fork or update the project:
+
+1. Push the repository to GitHub.
+2. Import the project in Vercel.
 3. Add environment variables from `.env.example`.
 4. Deploy.
 
