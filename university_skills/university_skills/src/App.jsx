@@ -22,6 +22,10 @@ const AdminModerationPage = lazy(() => import('./pages/admin/AdminModerationPage
 const AdminStudentPortfolioPage = lazy(() => import('./pages/admin/AdminStudentPortfolioPage'))
 const AdminLeaderboardPage = lazy(() => import('./pages/admin/AdminLeaderboardPage'))
 const AdminFeedbackPage = lazy(() => import('./pages/admin/AdminFeedbackPage'))
+const AdminOpportunitiesPage = lazy(() => import('./pages/admin/AdminOpportunitiesPage'))
+const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage'))
+const StudentOpportunitiesPage = lazy(() => import('./pages/student/StudentOpportunitiesPage'))
+const StudentApplicationsPage = lazy(() => import('./pages/student/StudentApplicationsPage'))
 const PublicPortfolioPage = lazy(() => import('./pages/PublicPortfolioPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
 
@@ -94,6 +98,8 @@ function App() {
             <Route path="services" element={withTransition(<StudentServicesPage />)} />
             <Route path="certificates" element={withTransition(<StudentCertificatesPage />)} />
             <Route path="portfolio" element={withTransition(<StudentPortfolioPage />)} />
+            <Route path="opportunities" element={withTransition(<StudentOpportunitiesPage />)} />
+            <Route path="applications" element={withTransition(<StudentApplicationsPage />)} />
           </Route>
 
           <Route
@@ -110,6 +116,8 @@ function App() {
             <Route path="feedback" element={withTransition(<AdminFeedbackPage />)} />
             <Route path="leaderboard" element={withTransition(<AdminLeaderboardPage />)} />
             <Route path="moderation" element={withTransition(<AdminModerationPage />)} />
+            <Route path="opportunities" element={withTransition(<AdminOpportunitiesPage />)} />
+            <Route path="applications" element={withTransition(<AdminApplicationsPage />)} />
           </Route>
 
           <Route path="*" element={withTransition(<NotFoundPage />)} />

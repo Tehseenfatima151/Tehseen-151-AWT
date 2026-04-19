@@ -1,5 +1,9 @@
 import { supabase, supabaseAdmin } from '../lib/supabase'
 
+// Use supabaseAdmin if available (bypasses RLS for admin operations)
+// Falls back to regular supabase client if service key not set
+const adminDb = supabaseAdmin ?? supabase
+
 export async function getAdminStats() {
   const [students, skills, projects, certificates, feedback, ratings, services, education, experience] = await Promise.all([
     supabase.from('users').select('*', { count: 'exact', head: true }).eq('role', 'student'),
@@ -26,7 +30,7 @@ export async function getAdminStats() {
 }
 
 export async function listStudents() {
-  return supabase.from('users').select('*').eq('role', 'student').order('created_at', { ascending: false })
+  return supabase.from('users').select('*, skills(skill_name, skill_level)').eq('role', 'student').order('created_at', { ascending: false })
 }
 
 export async function createStudentAccount({ email, password, name, department, semester }) {
@@ -114,4 +118,37 @@ export async function listAllFeedback() {
       'id,message,created_at,user_id,admin_id,student:users!feedback_user_id_fkey(name,email),admin_user:users!feedback_admin_id_fkey(name,email)',
     )
     .order('created_at', { ascending: false })
+}
+
+// Opportunity Management — uses adminDb to bypass RLS deadlocks
+export async function listOpportunities() {
+  return adminDb.from('opportunities').select('*, users!opportunities_created_by_fkey(name)').order('created_at', { ascending: false })
+}
+
+export async function createOpportunity(payload) {
+  return adminDb.from('opportunities').insert([payload]).select()
+}
+
+export async function updateOpportunity(id, payload) {
+  return adminDb.from('opportunities').update(payload).eq('id', id).select()
+}
+
+export async function deleteOpportunity(id) {
+  return adminDb.from('opportunities').delete().eq('id', id)
+}
+
+// Application Management — uses adminDb to bypass RLS deadlocks
+export async function listApplications() {
+  return adminDb
+    .from('applications')
+    .select('*, opportunities(title), user:users!applications_student_id_fkey(name, email)')
+    .order('created_at', { ascending: false })
+}
+
+export async function updateApplicationStatus(id, status) {
+  return adminDb.from('applications').update({ status }).eq('id', id).select()
+}
+
+export async function updateStudentAdminFields(userId, payload) {
+  return supabase.from('users').update(payload).eq('id', userId).select().single()
 }

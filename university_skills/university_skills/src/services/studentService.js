@@ -43,3 +43,23 @@ export async function listFeedbackForStudent(userId) {
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
 }
+
+export async function listActiveOpportunities() {
+  return supabase.from('opportunities').select('*').order('created_at', { ascending: false })
+}
+
+export async function listMyApplications(userId) {
+  return supabase
+    .from('applications')
+    .select('*, opportunities(title, description)')
+    .eq('student_id', userId)
+    .order('created_at', { ascending: false })
+}
+
+export async function applyToOpportunity(opportunityId, userId) {
+  return supabase.from('applications').insert({
+    opportunity_id: opportunityId,
+    student_id: userId,
+    status: 'pending'
+  }).select().single()
+}

@@ -1,5 +1,7 @@
-import { motion } from 'framer-motion'
-import { Briefcase, ExternalLink, Globe, Link2 } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Briefcase, ExternalLink, Globe, Link2, ShieldCheck, Star, Mail, X, Send } from 'lucide-react'
+import toast from 'react-hot-toast'
 import EmptyState from '../common/EmptyState'
 
 const levelMap = { Beginner: 35, Intermediate: 65, Advanced: 80, Expert: 90 }
@@ -12,6 +14,40 @@ export default function PortfolioView({ data }) {
   const certificates = data?.certificates ?? []
   const education = data?.education ?? []
   const experience = data?.experience ?? []
+
+  const [contactOpen, setContactOpen] = useState(false)
+  const [contactName, setContactName] = useState('')
+  const [contactEmail, setContactEmail] = useState('')
+  const [contactMsg, setContactMsg] = useState('')
+
+  const handleHireMe = () => {
+    const email = user.contact_email || user.email
+    console.log('Hire Me clicked for student:', user)
+    if (!email) {
+      toast.error('Contact information not available')
+      return
+    }
+    setContactOpen(true)
+  }
+
+  const handleModalSubmit = (e) => {
+    e.preventDefault()
+    const email = user.contact_email || user.email
+    if (!email) {
+      toast.error('Contact information not available')
+      return
+    }
+    const subject = encodeURIComponent('Opportunity from SkillSphere')
+    const body = encodeURIComponent(
+      `Hi ${user.name || ''},\n\nMy name is ${contactName}.\nEmail: ${contactEmail}\n\n${contactMsg}\n\nBest regards,\n${contactName}`
+    )
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`
+    toast.success('Opening your email client...')
+    setContactOpen(false)
+    setContactName('')
+    setContactEmail('')
+    setContactMsg('')
+  }
 
   return (
     <div className="space-y-5 text-slate-900">
@@ -66,6 +102,51 @@ export default function PortfolioView({ data }) {
                 {[user.department, user.semester && user.semester !== '-' && `Semester ${user.semester}`].filter(Boolean).join(' · ')}
               </p>
             )}
+            
+            {(user.is_verified_developer || user.is_top_performer) && (
+              <div className="flex flex-wrap items-center gap-2 mt-4">
+                {user.is_verified_developer && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-500/20 px-3 py-1 text-xs font-semibold text-sky-300 border border-sky-400/30">
+                    <ShieldCheck className="h-4 w-4" /> Verified Developer
+                  </span>
+                )}
+                {user.is_top_performer && (
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-300 border border-amber-400/30">
+                    <Star className="h-4 w-4" /> Top Performer
+                  </span>
+                )}
+              </div>
+            )}
+            
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+               {(user.contact_email || user.email) && (
+                 <motion.button
+                   onClick={handleHireMe}
+                   whileHover={{ scale: 1.05 }}
+                   whileTap={{ scale: 0.95 }}
+                   className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-sky-500/30 transition-shadow hover:shadow-sky-500/50 hover:bg-sky-400"
+                 >
+                   <Mail className="h-4 w-4" /> Hire Me
+                 </motion.button>
+               )}
+               {(user.linkedin_url || data?.socials?.linkedin_url) && (
+                  <motion.a
+                    href={user.linkedin_url || data?.socials?.linkedin_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-2.5 text-sm font-bold text-white backdrop-blur-md border border-white/10 shadow-lg hover:bg-white/20"
+                  >
+                    <ExternalLink className="h-4 w-4" /> LinkedIn
+                  </motion.a>
+               )}
+               {!(user.contact_email || user.email) && (
+                 <span className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-5 py-2.5 text-sm font-medium text-slate-500 border border-white/5 cursor-not-allowed">
+                   <Mail className="h-4 w-4" /> No contact info
+                 </span>
+               )}
+            </div>
           </div>
         </div>
       </section>
@@ -309,6 +390,95 @@ export default function PortfolioView({ data }) {
           ) : null}
         </div>
       </section>
+
+      {/* Hire Me Contact Modal */}
+      <AnimatePresence>
+        {contactOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            onClick={(e) => { if (e.target === e.currentTarget) setContactOpen(false) }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+              className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/95 shadow-2xl overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-white/10 p-5 bg-white/5">
+                <div>
+                  <h2 className="font-bold text-white text-lg">Contact {user.name}</h2>
+                  <p className="text-xs text-slate-400 mt-0.5">Send a message via your email client</p>
+                </div>
+                <button onClick={() => setContactOpen(false)} className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Form */}
+              <form onSubmit={handleModalSubmit} className="p-5 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Your Name</label>
+                  <input
+                    required
+                    type="text"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    placeholder="John Smith"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Your Email</label>
+                  <input
+                    required
+                    type="email"
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="john@example.com"
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-600"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-400 mb-1.5 uppercase tracking-wide">Message</label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={contactMsg}
+                    onChange={(e) => setContactMsg(e.target.value)}
+                    placeholder="Hi, I reviewed your portfolio and I'd like to discuss an opportunity..."
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-slate-600 resize-none"
+                  />
+                </div>
+                <p className="text-xs text-slate-500">
+                  Sending to: <span className="text-sky-400 font-medium">{user.contact_email || user.email}</span>
+                </p>
+                <div className="flex gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setContactOpen(false)}
+                    className="w-full rounded-xl px-4 py-2.5 text-sm font-medium text-slate-300 hover:bg-white/5 border border-white/5 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <motion.button
+                    type="submit"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-2.5 text-sm font-bold text-white hover:bg-sky-400 transition-colors shadow-lg shadow-sky-500/25"
+                  >
+                    <Send className="h-4 w-4" /> Send Message
+                  </motion.button>
+                </div>
+              </form>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   )
 }

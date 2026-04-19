@@ -9,6 +9,10 @@ create table if not exists public.users (
   department text,
   semester text,
   profile_picture text,
+  is_verified_developer boolean default false,
+  is_top_performer boolean default false,
+  contact_email text,
+  linkedin_url text,
   created_at timestamptz default now()
 );
 
@@ -56,6 +60,27 @@ alter table public.projects enable row level security;
 alter table public.certificates enable row level security;
 alter table public.services enable row level security;
 
+create table if not exists public.opportunities (
+  id uuid primary key default uuid_generate_v4(),
+  title text not null,
+  description text not null,
+  required_skills jsonb not null default '[]'::jsonb,
+  deadline date not null,
+  created_by uuid not null references public.users(id) on delete cascade,
+  created_at timestamptz default now()
+);
+
+create table if not exists public.applications (
+  id uuid primary key default uuid_generate_v4(),
+  opportunity_id uuid not null references public.opportunities(id) on delete cascade,
+  student_id uuid not null references public.users(id) on delete cascade,
+  status text not null check (status in ('pending', 'accepted', 'rejected')) default 'pending',
+  created_at timestamptz default now()
+);
+
+alter table public.opportunities enable row level security;
+alter table public.applications enable row level security;
+
 -- SECURITY DEFINER: avoids RLS recursion when policies need an "is admin?" check.
 create or replace function public.is_admin()
 returns boolean
@@ -74,44 +99,77 @@ revoke all on function public.is_admin() from public;
 grant execute on function public.is_admin() to authenticated;
 grant execute on function public.is_admin() to service_role;
 
-drop policy if exists "Users can view own profile or admin can view all" on public.users;
 drop policy if exists "users_select_own_or_admin" on public.users;
 create policy "users_select_own_or_admin"
 on public.users for select
-using (id = auth.uid() or public.is_admin());
+using (auth.role() = 'authenticated');
 
-drop policy if exists "Users can update own profile or admin" on public.users;
 drop policy if exists "users_update_own_or_admin" on public.users;
 create policy "users_update_own_or_admin"
 on public.users for update
-using (id = auth.uid() or public.is_admin());
+using (id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin');
 
-drop policy if exists "Skills owner/admin access" on public.skills;
 drop policy if exists "skills_owner_or_admin" on public.skills;
 create policy "skills_owner_or_admin"
 on public.skills for all
-using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+using (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin')
+with check (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin');
 
-drop policy if exists "Projects owner/admin access" on public.projects;
 drop policy if exists "projects_owner_or_admin" on public.projects;
 create policy "projects_owner_or_admin"
 on public.projects for all
-using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+using (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin')
+with check (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin');
 
-drop policy if exists "Certificates owner/admin access" on public.certificates;
 drop policy if exists "certificates_owner_or_admin" on public.certificates;
 create policy "certificates_owner_or_admin"
 on public.certificates for all
-using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+using (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin')
+with check (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin');
 
 drop policy if exists "services_owner_or_admin" on public.services;
 create policy "services_owner_or_admin"
 on public.services for all
-using (user_id = auth.uid() or public.is_admin())
-with check (user_id = auth.uid() or public.is_admin());
+using (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin')
+with check (user_id = auth.uid() or (select role from public.users where id = auth.uid()) = 'admin');
+
+drop policy if exists "opportunities_admin_all" on public.opportunities;
+create policy "opportunities_admin_all"
+on public.opportunities for all
+using (
+  exists (
+    select 1 from public.users
+    where id = auth.uid() and role = 'admin'
+  )
+)
+with check (
+  exists (
+    select 1 from public.users
+    where id = auth.uid() and role = 'admin'
+  )
+);
+
+drop policy if exists "opportunities_student_select" on public.opportunities;
+drop policy if exists "opportunities_auth_select" on public.opportunities;
+create policy "opportunities_auth_select"
+on public.opportunities for select
+using (auth.role() = 'authenticated');
+
+drop policy if exists "applications_admin_all" on public.applications;
+create policy "applications_admin_all"
+on public.applications for all
+using ((select role from public.users where id = auth.uid()) = 'admin')
+with check ((select role from public.users where id = auth.uid()) = 'admin');
+
+drop policy if exists "applications_student_select" on public.applications;
+create policy "applications_student_select"
+on public.applications for select
+using (student_id = auth.uid());
+
+drop policy if exists "applications_student_insert" on public.applications;
+create policy "applications_student_insert"
+on public.applications for insert
+with check (student_id = auth.uid());
 
 drop function if exists public.current_role();
 
