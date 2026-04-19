@@ -1,10 +1,20 @@
-# CUI SkillSphere (Uni SkillSphere)
+# CUI SkillSphere
 
 University skill portfolio platform for **COMSATS University Islamabad** — build, manage, and showcase student portfolios in one place. React + Supabase stack.
 
 ## Live demo
 
 **Production (Vercel):** [https://uni-skillsphere.vercel.app/](https://uni-skillsphere.vercel.app/)
+
+**Login Credentials**
+
+**Student login**
+aliza123@gmail.com
+12345678
+
+**Admin login**
+tehseen151@gmail.com
+12345678
 
 ## Features
 
