@@ -22,7 +22,7 @@ const team = [
     role: 'Lead developer',
     bio: 'Design & Development for SkillSphere.',
     image: '/team/tehseen.jpeg',
-    externalUrl: 'https://sites.google.com/view/tehseens-portfolio/home',
+    externalUrl: 'https://tehseencv.vercel.app/',
   },
 ]
 
