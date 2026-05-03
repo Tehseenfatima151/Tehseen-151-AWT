@@ -59,9 +59,9 @@ const About = () => {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="w-full lg:w-1/2"
+            className="w-full lg:w-1/2 flex flex-col gap-6"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <motion.div variants={itemVariants} className="glass-card p-6 rounded-xl hover:-translate-y-2 transition-transform duration-300 group flex flex-col h-full">
                 <FiBookOpen className="text-3xl text-[#8a2be2] mb-4 group-hover:text-[#00f0ff] transition-colors" />
                 <h3 className="text-xl font-bold text-white mb-2 font-poppins">Education</h3>
@@ -75,6 +75,16 @@ const About = () => {
                 <p className="text-slate-400 text-sm">
                   To grow as a software developer by building scalable, user-focused applications and continuously improving my technical expertise.
                 </p>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="glass-card p-6 rounded-xl hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center justify-center text-center h-full">
+                <h4 className="text-3xl md:text-4xl font-bold text-[#00f0ff] mb-2 font-poppins">10+</h4>
+                <p className="text-slate-400 font-medium">Completed Projects</p>
+              </motion.div>
+
+              <motion.div variants={itemVariants} className="glass-card p-6 rounded-xl hover:-translate-y-2 transition-transform duration-300 flex flex-col items-center justify-center text-center h-full">
+                <h4 className="text-3xl md:text-4xl font-bold text-[#8a2be2] mb-2 font-poppins">100%</h4>
+                <p className="text-slate-400 font-medium">Passion</p>
               </motion.div>
             </div>
           </motion.div>
