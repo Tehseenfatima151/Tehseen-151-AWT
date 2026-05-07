@@ -136,7 +136,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     className="w-full bg-[#050816]/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff] transition-all"
-                    placeholder="John Doe"
+                    placeholder="e.g. Tehseen Fatima"
                   />
                 </div>
               </div>
@@ -152,7 +152,7 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     className="w-full bg-[#050816]/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#8a2be2] focus:ring-1 focus:ring-[#8a2be2] transition-all"
-                    placeholder="john@example.com"
+                    placeholder="e.g. yourname@gmail.com"
                   />
                 </div>
               </div>
@@ -168,7 +168,7 @@ const Contact = () => {
                     required
                     rows="5"
                     className="w-full bg-[#050816]/50 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff] transition-all resize-none"
-                    placeholder="How can I help you?"
+                    placeholder="Tell me about your project or idea... 🚀"
                   ></textarea>
                 </div>
               </div>
@@ -188,24 +188,42 @@ const Contact = () => {
                 )}
               </AnimatePresence>
 
-              {/* ── Submit Button ── */}
-              <button
+              {/* ── Submit Button — Shimmer Gradient (matches Download CV) ── */}
+              <motion.button
                 type="submit"
                 disabled={status === 'loading'}
-                className="w-full py-4 rounded-xl bg-gradient-to-r from-[#8a2be2] to-[#00f0ff] text-white font-bold flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(138,43,226,0.6)] transition-all transform hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:translate-y-0"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.97 }}
+                className="relative overflow-hidden w-full h-14 rounded-xl p-[1.5px] group disabled:opacity-60 disabled:cursor-not-allowed"
+                style={{
+                  background: 'linear-gradient(90deg, #00f0ff, #8a2be2, #00f0ff)',
+                  backgroundSize: '200% auto',
+                  animation: 'shimmer 3s linear infinite',
+                  boxShadow: '0 0 20px rgba(0,240,255,0.25)',
+                }}
               >
-                {status === 'loading' ? (
-                  <>
-                    <FiLoader className="animate-spin" size={18} />
-                    Sending...
-                  </>
-                ) : (
-                  <>
-                    Send Message
-                    <FiSend size={16} />
-                  </>
-                )}
-              </button>
+                {/* Inner dark fill that clears on hover */}
+                <div className="w-full h-full bg-[#050816]/80 group-hover:bg-transparent rounded-[10px] flex items-center justify-center gap-2 transition-all duration-300">
+                  {status === 'loading' ? (
+                    <>
+                      <FiLoader className="animate-spin text-white" size={18} />
+                      <span className="text-white font-bold tracking-wider uppercase text-sm">Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-white font-bold tracking-wider uppercase text-sm">Send Message</span>
+                      <FiSend className="text-white group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" size={16} />
+                    </>
+                  )}
+                </div>
+
+                <style>{`
+                  @keyframes shimmer {
+                    0%   { background-position: 0%   50%; }
+                    100% { background-position: 200% 50%; }
+                  }
+                `}</style>
+              </motion.button>
             </form>
           </motion.div>
         </div>

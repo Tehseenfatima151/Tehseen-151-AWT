@@ -1,175 +1,367 @@
-import React from 'react';
-import { motion } from 'framer-motion';
-import { FiGithub, FiExternalLink } from 'react-icons/fi';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FiEye, FiExternalLink } from 'react-icons/fi';
+import { SiGithub } from 'react-icons/si';
+import ProjectModal from './ProjectModal';
 
+// ── Category filter definitions ───────────────────────────────────────────────
+const FILTERS = [
+  { key: 'All',       label: 'All',          accent: '#00f0ff' },
+  { key: 'Web',       label: 'Web',          accent: '#61DAFB' },
+  { key: 'React',     label: 'React',        accent: '#61DAFB' },
+  { key: 'Mobile',    label: 'Mobile App',   accent: '#54C5F8' },
+  { key: 'Node',      label: 'Node.js',      accent: '#339933' },
+  { key: 'WordPress', label: 'WordPress',    accent: '#21759B' },
+  { key: 'Desktop',   label: 'Desktop',      accent: '#8a2be2' },
+];
+
+// ── Project data with category tags ──────────────────────────────────────────
+const ALL_PROJECTS = [
+  {
+    title: "TravelLand",
+    type: "Web Application",
+    category: "Web",
+    description: "Online Travel System providing comprehensive booking and trip management features.",
+    image: "/traveland.png",
+    images: ["/traveland.png", "/traveland.png"],
+    tags: ["Laravel", "PHP", "MySQL", "Bootstrap"],
+    features: [
+      "Comprehensive flight and hotel booking system.",
+      "User dashboard for managing trips and reservations.",
+      "Secure checkout process.",
+      "Admin panel for managing packages and users."
+    ],
+    github: "https://github.com/Tehseenfatima151/Tehseen-151-WT",
+  },
+  {
+    title: "Home Service App",
+    type: "Mobile & Web App",
+    category: "Mobile",
+    description: "A dual-platform Web & Mobile App for booking and managing home-based services.",
+    image: "/home service.jpeg",
+    images: ["/home service.jpeg", "/home service.jpeg"],
+    tags: ["Flutter", "Firebase", "Node.js"],
+    features: [
+      "Cross-platform support for Android, iOS, and Web.",
+      "Real-time service booking and tracking.",
+      "Separate provider and customer dashboards.",
+      "In-app chat and push notifications."
+    ],
+    github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-/tree/main/Handyman_service_App/handyman_service_web_v11.14.3",
+  },
+  {
+    title: "Smart Task Manager",
+    type: "Mobile Application",
+    category: "Mobile",
+    description: "Intelligent task management application designed for productivity and organization.",
+    image: "/taskmanager.jpeg",
+    images: ["/taskmanager.jpeg", "/taskmanager.jpeg"],
+    tags: ["Flutter", "Dart", "Local Storage"],
+    features: [
+      "Create, edit, and organize daily tasks.",
+      "Custom categories and priority levels.",
+      "Offline capability with secure local storage.",
+      "Performance analytics and tracking."
+    ],
+    github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-/tree/main/Task%20manager%20app",
+  },
+  {
+    title: "Foodify – Online Food Ordering",
+    type: "Full-Stack Web App",
+    category: "Node",
+    description: "A full-stack online food ordering system where users can browse restaurants, view menus, and place orders.",
+    image: "/foodify.PNG",
+    images: ["/foodify.PNG", "/foodify.PNG"],
+    tags: ["React", "Node.js", "Express", "MongoDB"],
+    features: [
+      "Interactive restaurant menus with filtering.",
+      "Real-time cart and order management.",
+      "Secure user authentication and profiles.",
+      "Responsive, modern UI tailored for fast browsing."
+    ],
+    github: "https://github.com/Tehseenfatima151",
+  },
+  {
+    title: "CuiskillSphere – Learning Platform",
+    type: "EdTech Platform",
+    category: "React",
+    description: "An online learning platform designed to help users explore and learn different skills through structured courses.",
+    image: "/cuiskill.PNG",
+    images: ["/cuiskill.PNG", "/cuiskill.PNG"],
+    tags: ["React", "Node.js", "Supabase", "Tailwind"],
+    features: [
+      "Structured course modules and video integration.",
+      "User progress tracking and skill assessments.",
+      "Modern glassmorphism UI design.",
+      "Real-time database integration via Supabase."
+    ],
+    github: "https://github.com/Tehseenfatima151/Tehseen-151-AWT/tree/main/university_skills",
+    live: "https://cuiskillsphere.vercel.app/"
+  },
+  {
+    title: "Tehseen Portfolio & CV Builder",
+    type: "Web Application",
+    category: "React",
+    description: "A personal portfolio and CV builder project where users can create, customize, and showcase their professional resume.",
+    image: "/tf portfolio.PNG",
+    images: ["/tf portfolio.PNG", "/tf portfolio.PNG"],
+    tags: ["React", "JavaScript", "Tailwind CSS"],
+    features: [
+      "Dynamic resume generation with custom templates.",
+      "Export to PDF functionality.",
+      "Fully responsive, dark-themed premium design.",
+      "Smooth scroll and animated page transitions."
+    ],
+    github: "https://github.com/Tehseenfatima151/Tehseen-151-AWT/tree/main/Tehseen_portfolio",
+    live: "https://tehseencv.vercel.app/"
+  },
+  {
+    title: "POS Management System",
+    type: "Enterprise Software",
+    category: "Mobile",
+    description: "Inventory Management System for retail points of sale with real-time tracking.",
+    image: "/pos app.jpeg",
+    images: ["/pos app.jpeg", "/pos app.jpeg"],
+    tags: ["Flutter", "Firebase", "Firestore"],
+    features: [
+      "Real-time inventory and stock tracking.",
+      "Sales analytics and reporting dashboard.",
+      "Barcode scanning integration.",
+      "Role-based access control for employees."
+    ],
+    github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-/tree/main/POS%20Full%20Inventory%20App",
+  },
+  {
+    title: "Bear Runner",
+    type: "Mobile Game",
+    category: "Mobile",
+    description: "An Endless Adventure mobile game with engaging mechanics and graphics.",
+    image: "/bear runner.jpeg",
+    images: ["/bear runner.jpeg", "/bear runner.jpeg"],
+    tags: ["Flutter", "Flame Engine", "Dart"],
+    features: [
+      "Smooth 2D animations and endless level generation.",
+      "Interactive obstacles and power-ups.",
+      "Global high-score tracking.",
+      "Optimized rendering for 60fps gameplay."
+    ],
+    github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
+  },
+  {
+    title: "Smart CGPA Calculator",
+    type: "Utility App",
+    category: "Mobile",
+    description: "Utility application for students to accurately calculate and predict CGPA.",
+    image: "/cgpa.jpeg",
+    images: ["/cgpa.jpeg", "/cgpa.jpeg"],
+    tags: ["Flutter", "Dart", "Local Storage"],
+    features: [
+      "Semester-wise GPA calculation.",
+      "Overall CGPA prediction based on target grades.",
+      "Dark mode support.",
+      "Save and export academic history."
+    ],
+    github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-/tree/main/CGPA%20Calculator",
+  },
+  // WordPress & Desktop projects will be added here by user
+];
+
+// ── Animated project card ──────────────────────────────────────────────────────
+const ProjectCard = ({ project, index, onOpen }) => (
+  <motion.div
+    layout
+    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+    animate={{ opacity: 1, y: 0,  scale: 1    }}
+    exit={{    opacity: 0, y: 20, scale: 0.95  }}
+    transition={{ duration: 0.4, delay: index * 0.07, type: 'spring', stiffness: 180 }}
+    onClick={() => onOpen(project)}
+    className="glass-card rounded-2xl overflow-hidden group hover:scale-[1.02] cursor-pointer transition-all duration-300 flex flex-col hover:shadow-[0_10px_30px_rgba(138,43,226,0.2)] border border-white/5 hover:border-[#8a2be2]/40 bg-[#151120]"
+  >
+    {/* Image */}
+    <div className="relative h-44 overflow-hidden">
+      <img
+        src={project.image}
+        alt={project.title}
+        className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"
+      />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#151120] to-transparent opacity-50" />
+      {/* Category badge on image */}
+      <div className="absolute top-3 right-3">
+        <span className="text-[9px] font-extrabold uppercase tracking-widest px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-[#00f0ff] border border-[#00f0ff]/30">
+          {project.type}
+        </span>
+      </div>
+    </div>
+
+    {/* Content */}
+    <div className="p-5 flex flex-col flex-grow relative z-10">
+      <div className="flex flex-wrap gap-2 mb-4">
+        {project.tags.slice(0, 3).map((tag, i) => (
+          <span key={i} className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-[#00f0ff] border border-[#00f0ff]/30 shadow-[0_0_10px_rgba(0,240,255,0.1)]">
+            {tag}
+          </span>
+        ))}
+        {project.tags.length > 3 && (
+          <span className="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-black/40 backdrop-blur-md text-slate-400 border border-white/10">
+            +{project.tags.length - 3}
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-xl font-bold text-white mb-2 font-poppins group-hover:text-[#8a2be2] transition-colors">{project.title}</h3>
+      <p className="text-slate-400 text-xs mb-4 flex-grow line-clamp-3">{project.description}</p>
+
+      <div className="flex items-center gap-2 mt-auto pt-4 border-t border-white/5">
+        <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-semibold transition-all group-hover:border-[#8a2be2]/50 group-hover:text-[#00f0ff]">
+          <FiEye size={16} /> View Details
+        </button>
+        {project.github && (
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 hover:border-white/30 text-white text-sm font-semibold transition-all hover:shadow-[0_0_12px_rgba(255,255,255,0.1)]"
+            title="View on GitHub"
+          >
+            <SiGithub size={16} />
+          </a>
+        )}
+        {project.live && (
+          <a
+            href={project.live}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
+            className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-lg bg-[#8a2be2]/20 hover:bg-[#8a2be2]/30 border border-[#8a2be2]/30 text-white text-sm font-semibold transition-all hover:shadow-[0_0_15px_rgba(138,43,226,0.3)]"
+            title="View Live"
+          >
+            <span className="w-2 h-2 rounded-full bg-[#00f0ff] animate-pulse" />
+            <FiExternalLink size={15} className="text-[#00f0ff]" />
+          </a>
+        )}
+      </div>
+    </div>
+  </motion.div>
+);
+
+// ─────────────────────────────────────────────────────────────────────────────
 const Projects = () => {
-  const projects = [
-    {
-      title: "TravelLand",
-      description: "Online Travel System providing comprehensive booking and trip management features.",
-      image: "/traveland.png",
-      tags: ["Laravel", "PHP", "MySQL", "Bootstrap", "JavaScript"],
-      github: "https://github.com/Tehseenfatima151/Tehseen-151-WT",
-      demo: "#"
-    },
-    {
-      title: "Home Service App",
-      description: "A dual-platform Web & Mobile App for booking and managing home-based services.",
-      image: "/home service.jpeg",
-      tags: ["Flutter", "Firebase", "Dart", "Node.js"],
-      github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
-      demo: "#"
-    },
-    {
-      title: "Smart Task Manager",
-      description: "Intelligent task management application designed for productivity and organization.",
-      image: "/taskmanager.jpeg",
-      tags: ["Flutter", "Dart", "Local Storage"],
-      github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
-      demo: "#"
-    },
-    {
-      title: "Foodify – Online Food Ordering System",
-      description: "A full-stack online food ordering system where users can browse restaurants, view menus, add items to cart, and place orders easily with a smooth UI experience.",
-      image: "/foodify.PNG",
-      tags: ["React", "Node.js", "Express.js", "MongoDB", "Tailwind CSS"],
-      github: "https://github.com/Tehseenfatima151",
-      demo: "#"
-    },
-    {
-      title: "CuiskillSphere – Skill Learning Platform",
-      description: "An online learning platform designed to help users explore and learn different skills through structured courses, interactive content, and progress tracking.",
-      image: "/cuiskill.PNG",
-      tags: ["React", "Node.js", "Express.js", "Supabase", "Tailwind CSS"],
-      github: "https://github.com/Tehseenfatima151",
-      demo: "#"
-    },
-    {
-      title: "Tehseen Portfolio & CV Builder",
-      description: "A personal portfolio and CV builder project where users can create, customize, and showcase their professional resume and portfolio online.",
-      image: "/tf portfolio.PNG",
-      tags: ["HTML", "CSS", "JavaScript", "React", "Tailwind CSS"],
-      github: "https://github.com/Tehseenfatima151",
-      demo: "#"
-    },
-    {
-      title: "POS Management System",
-      description: "Inventory Management System for retail points of sale with real-time tracking.",
-      image: "/pos app.jpeg",
-      tags: ["Flutter", "Dart", "Firebase", "Cloud Firestore"],
-      github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
-      demo: "#"
-    },
-    {
-      title: "Bear Runner",
-      description: "An Endless Adventure mobile game with engaging mechanics and graphics.",
-      image: "/bear runner.jpeg",
-      tags: ["Flutter", "Dart", "Game Engine"],
-      github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
-      demo: "#"
-    },
-    {
-      title: "Smart CGPA Calculator",
-      description: "Utility application for students to accurately calculate and predict CGPA.",
-      image: "/cgpa.jpeg",
-      tags: ["Flutter", "Dart", "Local Storage"],
-      github: "https://github.com/Tehseenfatima151/FA23-BSE-151-Tehseen-",
-      demo: "#"
-    }
-  ];
+  const [activeFilter, setActiveFilter] = useState('All');
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const filtered = activeFilter === 'All'
+    ? ALL_PROJECTS
+    : ALL_PROJECTS.filter(p => p.category === activeFilter);
 
   return (
-    <section id="projects" className="py-20 min-h-screen">
+    <section id="projects" className="py-20 min-h-screen relative">
       <div className="w-full">
+
         {/* ── Marquee Heading ── */}
-        <div className="w-full overflow-hidden mb-16 py-4 select-none" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)' }}>
+        <div
+          className="w-full overflow-hidden mb-12 py-4 select-none"
+          style={{ WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)' }}
+        >
           <div className="flex whitespace-nowrap" style={{ animation: 'marqueeScroll 18s linear infinite' }}>
-            {/* Duplicate 4× for seamless loop on all screen sizes */}
             {[...Array(4)].map((_, i) => (
               <span key={i} className="flex items-center shrink-0 pr-16">
                 <span className="text-5xl md:text-7xl font-extrabold font-poppins text-white tracking-tight">Featured</span>
                 <span className="text-5xl md:text-7xl font-extrabold font-poppins neon-text tracking-tight ml-4">
-                  Works<span style={{ display: 'inline-block', verticalAlign: 'middle', fontSize: '0.55em', lineHeight: 1, marginBottom: '0.05em' }}>●</span>
+                  Works<span style={{ display:'inline-block', verticalAlign:'middle', fontSize:'0.55em', lineHeight:1, marginBottom:'0.05em' }}>●</span>
                 </span>
                 <span className="text-5xl md:text-7xl font-extrabold font-poppins text-[#8a2be2] tracking-tight ml-12">
-                  Projects<span style={{ display: 'inline-block', verticalAlign: 'middle', fontSize: '0.55em', lineHeight: 1, marginBottom: '0.05em' }}>●</span>
+                  Projects<span style={{ display:'inline-block', verticalAlign:'middle', fontSize:'0.55em', lineHeight:1, marginBottom:'0.05em' }}>●</span>
                 </span>
-                <span className="text-5xl md:text-7xl font-extrabold font-poppins ml-12" style={{ WebkitTextStroke: '1px rgba(0,240,255,0.6)', color: 'transparent' }}>
-                  Portfolio<span style={{ display: 'inline-block', verticalAlign: 'middle', fontSize: '0.55em', lineHeight: 1, marginBottom: '0.05em', WebkitTextStroke: '1px rgba(0,240,255,0.6)' }}>●</span>
+                <span className="text-5xl md:text-7xl font-extrabold font-poppins ml-12 text-transparent bg-clip-text bg-gradient-to-r from-[#00f0ff] to-[#8a2be2]">
+                  Portfolio<span style={{ display:'inline-block', verticalAlign:'middle', fontSize:'0.55em', lineHeight:1, marginBottom:'0.05em', WebkitTextFillColor:'#00f0ff' }}>●</span>
                 </span>
               </span>
             ))}
           </div>
-
-          <style>{`
-            @keyframes marqueeScroll {
-              0%   { transform: translateX(0); }
-              100% { transform: translateX(-50%); }
-            }
-          `}</style>
+          <style>{`@keyframes marqueeScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }`}</style>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {projects.map((project, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="glass-card rounded-2xl overflow-hidden group hover:-translate-y-2 transition-all duration-300 flex flex-col hover:shadow-[0_0_20px_rgba(138,43,226,0.3)] border border-white/5 hover:border-[#8a2be2]/50"
-            >
-              {/* Project Image Placeholder */}
-              <div className="relative h-48 overflow-hidden">
-                <img 
-                  src={project.image} 
-                  alt={project.title} 
-                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-
-              {/* Project Details */}
-              <div className="p-6 flex flex-col flex-grow">
-                <h3 className="text-xl font-bold text-white mb-2 font-poppins group-hover:text-[#00f0ff] transition-colors">{project.title}</h3>
-                <p className="text-slate-400 text-sm mb-4 flex-grow">{project.description}</p>
-                
-                {/* Tech Stack */}
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {project.tags.map((tag, tagIndex) => (
-                    <span key={tagIndex} className="text-xs font-medium px-2 py-1 bg-white/5 rounded-md text-[#8a2be2] border border-[#8a2be2]/30 hover:bg-[#8a2be2]/20 hover:border-[#8a2be2] hover:-translate-y-1 hover:text-white transition-all cursor-default">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-4 mt-auto">
-                  <a 
-                    href={project.github} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-slate-300 hover:text-[#00f0ff] transition-colors text-sm font-medium"
-                  >
-                    <FiGithub size={18} />
-                    Code
-                  </a>
-                  {project.demo !== "#" && (
-                    <a 
-                      href={project.demo} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-2 text-slate-300 hover:text-[#00f0ff] transition-colors text-sm font-medium ml-auto"
-                    >
-                      Live Demo
-                      <FiExternalLink size={18} />
-                    </a>
+        {/* ── Filter Tabs ── */}
+        <div className="max-w-6xl mx-auto px-6 lg:px-8 mb-10">
+          <div className="flex flex-wrap justify-center gap-3">
+            {FILTERS.map((f) => {
+              const isActive = activeFilter === f.key;
+              return (
+                <motion.button
+                  key={f.key}
+                  onClick={() => setActiveFilter(f.key)}
+                  whileTap={{ scale: 0.94 }}
+                  className="relative px-5 py-2 rounded-full text-sm font-bold tracking-wide transition-all duration-300 overflow-hidden"
+                  style={{
+                    color: isActive ? f.accent : 'rgba(200,210,230,0.85)',
+                    border: isActive ? `1.5px solid ${f.accent}88` : '1.5px solid rgba(255,255,255,0.18)',
+                    background: isActive ? `${f.accent}18` : 'rgba(255,255,255,0.05)',
+                    boxShadow: isActive ? `0 0 20px ${f.accent}44` : '0 0 0px transparent',
+                  }}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="filter-active"
+                      className="absolute inset-0 rounded-full"
+                      style={{ background: `radial-gradient(ellipse at center, ${f.accent}18 0%, transparent 70%)` }}
+                    />
                   )}
-                </div>
-              </div>
+                  <span className="relative z-10 flex items-center gap-1.5">
+                    {f.key === 'All' && (
+                      <span
+                        className="inline-block w-2 h-2 rounded-full"
+                        style={{ background: isActive ? '#00f0ff' : 'rgba(200,210,230,0.5)' }}
+                      />
+                    )}
+                    {f.label}
+                  </span>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* ── Project Cards Grid ── */}
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <AnimatePresence mode="popLayout">
+            <motion.div
+              key={activeFilter}
+              layout
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {filtered.map((project, index) => (
+                <ProjectCard
+                  key={project.title}
+                  project={project}
+                  index={index}
+                  onOpen={setSelectedProject}
+                />
+              ))}
             </motion.div>
-          ))}
+          </AnimatePresence>
+
+          {/* Empty state */}
+          {filtered.length === 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-24 text-slate-500"
+            >
+              <p className="text-lg font-semibold">No projects in this category yet.</p>
+              <p className="text-sm mt-2">Check back soon — more projects are on the way! 🚀</p>
+            </motion.div>
+          )}
         </div>
       </div>
+
+      {/* ── Project Details Modal ── */}
+      {selectedProject && (
+        <ProjectModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+        />
+      )}
     </section>
   );
 };
