@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TrustCircle - Smart Random Selection</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#6dfe9c",
+                    "on-background": "#1b1b1e",
+                    "primary-fixed-dim": "#b6c6f0",
+                    "tertiary-fixed": "#ffddb5",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#8293ba",
+                    "primary-fixed": "#d8e2ff",
+                    "on-error": "#ffffff",
+                    "secondary": "#006d36",
+                    "on-primary-fixed-variant": "#364669",
+                    "secondary-fixed-dim": "#4de082",
+                    "surface": "#fbf8fc",
+                    "on-surface-variant": "#44474e",
+                    "secondary-container": "#6dfe9c",
+                    "primary-container": "#1a2b4c",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#efedf0",
+                    "on-primary-fixed": "#071b3b",
+                    "tertiary-fixed-dim": "#eabf8a",
+                    "tertiary": "#241300",
+                    "surface-dim": "#dbd9dd",
+                    "surface-bright": "#fbf8fc",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#5e4117",
+                    "outline": "#75777f",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#b6c6f0",
+                    "on-tertiary-container": "#b28c5b",
+                    "inverse-on-surface": "#f2f0f3",
+                    "surface-container-high": "#e9e7eb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#00210c",
+                    "inverse-surface": "#303033",
+                    "surface-variant": "#e4e2e5",
+                    "background": "#fbf8fc",
+                    "surface-tint": "#4e5e82",
+                    "tertiary-container": "#3f2600",
+                    "outline-variant": "#c5c6cf",
+                    "on-tertiary-fixed": "#2a1800",
+                    "on-secondary-fixed-variant": "#005227",
+                    "on-surface": "#1b1b1e",
+                    "surface-container-highest": "#e4e2e5",
+                    "primary": "#031636",
+                    "surface-container-low": "#f5f3f6",
+                    "on-secondary-container": "#007439"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "xs": "4px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "container-max": "1440px",
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Public Sans"],
+                    "h2": ["Public Sans"],
+                    "h1": ["Public Sans"],
+                    "h3": ["Public Sans"],
+                    "body-lg": ["Public Sans"],
+                    "body-md": ["Public Sans"],
+                    "display": ["Public Sans"],
+                    "label-sm": ["Public Sans"],
+                    "label-md": ["Public Sans"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 24px;
+        }
+        .selection-gradient {
+            background: radial-gradient(circle at top right, #1a2b4c 0%, #031636 100%);
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- SideNavBar (Execution from JSON) -->
+<aside class="hidden lg:flex flex-col h-full py-6 gap-2 h-screen w-64 border-r fixed left-0 top-0 bg-white border-slate-200 shadow-sm z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#1A2B4C] tracking-tight">TrustCircle</h1>
+<p class="text-xs text-slate-500 font-medium">Financial Oversight</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<!-- Dashboard -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out text-slate-600 hover:text-[#1A2B4C] hover:bg-slate-50 group" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<!-- Committees (Active State Logic: Selecting member is a committee task) -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out bg-slate-50 text-[#1A2B4C] border-l-4 border-emerald-500 group" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md text-label-md">Committees</span>
+</a>
+<!-- Transactions -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out text-slate-600 hover:text-[#1A2B4C] hover:bg-slate-50 group" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<!-- Analytics -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out text-slate-600 hover:text-[#1A2B4C] hover:bg-slate-50 group" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-label-md text-label-md">Analytics</span>
+</a>
+<!-- Disputes -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out text-slate-600 hover:text-[#1A2B4C] hover:bg-slate-50 group" href="#">
+<span class="material-symbols-outlined" data-icon="gpp_maybe">gpp_maybe</span>
+<span class="font-label-md text-label-md">Disputes</span>
+</a>
+<!-- Settings -->
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out text-slate-600 hover:text-[#1A2B4C] hover:bg-slate-50 group" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 bg-primary text-white rounded-xl font-label-md text-label-md shadow-lg active:scale-95 transition-transform">
+                Create Committee
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<div class="lg:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar (Execution from JSON) -->
+<header class="sticky top-0 z-40 flex justify-between items-center px-6 h-16 w-full bg-white/80 backdrop-blur-md border-b border-slate-200 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-slate-50 border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary/10 w-64" placeholder="Search members..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-px bg-slate-200 mx-2"></div>
+<button class="flex items-center gap-2 p-1 pr-3 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<img alt="Admin" class="w-8 h-8 rounded-full object-cover" data-alt="A professional headshot of a senior financial administrator in a corporate setting, looking directly at the camera with a confident and trustworthy expression. The lighting is soft and even, highlighting the clean textures of their professional attire against a blurred office background with deep navy and slate grey tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbf_PET0Zft5WdctzTmBpXDI1rQCK5YFMNDVEs80AjLKwBqmTxQzjdnq_Kke6ZAoE58MGPMdq83my_fg1gW7rQby1AJaqSIAefRGiSTRsa6o3yzqbqLXq-w3z2ifvgSQE2u_JcKML2poM0QSwwf55dws6ZRLEG-Phrpo2qAKMhFb6lq_nC2-CDznWzGgEKQbDQ6WW3ibmFI5OSANr1YtVcR8i9OpobRRoKrmuGBUOLHLEY4Ni0eW-FtmpE-OIgfobegkFSUgU8PR4"/>
+<span class="font-label-md text-label-md text-primary">Admin</span>
+</button>
+</div>
+</header>
+<main class="flex-1 p-md lg:p-lg max-w-container-max mx-auto w-full">
+<div class="mb-lg">
+<h2 class="font-h1 text-h1 text-primary">Random Selection</h2>
+<p class="font-body-md text-on-surface-variant mt-2">Determining this month's payout recipient for the <span class="font-semibold text-primary">Elite Savings Circle</span>.</p>
+</div>
+<!-- Bento Grid Layout -->
+<div class="bento-grid">
+<!-- Main Selector Area (Large Center Card) -->
+<div class="col-span-12 lg:col-span-8 bg-white rounded-[16px] shadow-[0_8px_16px_rgba(26,43,76,0.04)] overflow-hidden flex flex-col">
+<div class="selection-gradient p-xl flex flex-col items-center justify-center text-center relative min-h-[500px]">
+<!-- Decorative background element -->
+<div class="absolute inset-0 opacity-10 pointer-events-none">
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border-[40px] border-white rounded-full"></div>
+<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] border-[1px] border-white rounded-full"></div>
+</div>
+<!-- Current Selection State -->
+<div class="relative z-10 flex flex-col items-center">
+<div class="relative mb-md">
+<div class="absolute -inset-4 bg-secondary-fixed/20 rounded-full blur-xl"></div>
+<div class="relative w-40 h-40 rounded-full border-4 border-secondary-fixed p-1 bg-white/10 backdrop-blur-sm">
+<img alt="Selected Member" class="w-full h-full rounded-full object-cover" data-alt="Close-up portrait of a diverse male professional in his late 30s with a warm and approachable smile. He is set against a clean, minimal architectural background with soft natural lighting that emphasizes his friendly and reliable demeanor. The overall aesthetic is high-end corporate with a focus on trust and accessibility." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCkzmE2I_uqjnASpZOFADaRSOHCZJ3pmSWc9xlTVg8GQwDBMg2eBWJTpDoPD_sMil2TkFwLx9U3_3HSEoTEEs0TjHGcAwXseV-3Qmqul9BZ72tkI80zgw8Q2BJsRiB-aiNcoB49pITIR4Iyv6L6LLeKq8pvOfpPoNtCiFEGsAEsQYtbwYKlJ-yUyjpPfbCXNNhTbo9N-xbr3cafn9Kqea7fOcfTBYEVBhkpS8BCb22CjI6Ri4szhw_zR1fovTQP6tkdQiWj8UkhAoI"/>
+</div>
+<div class="absolute -bottom-2 -right-2 bg-secondary-fixed text-on-secondary-container px-3 py-1 rounded-full text-label-sm shadow-lg border-2 border-white">
+                                    SELECTED
+                                </div>
+</div>
+<h3 class="font-display text-display text-white mb-xs">Marcus Thorne</h3>
+<p class="text-primary-fixed-dim text-body-lg mb-xl">Contribution Tier: Gold • 12 Months Membership</p>
+<div class="flex gap-4">
+<button class="px-8 py-4 bg-secondary-fixed text-on-secondary-fixed font-label-md rounded-xl shadow-lg hover:brightness-110 active:scale-95 transition-all">
+                                    Confirm Selection
+                                </button>
+<button class="px-8 py-4 bg-white/10 border border-white/20 text-white font-label-md rounded-xl hover:bg-white/20 active:scale-95 transition-all backdrop-blur-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="refresh">refresh</span>
+                                    Re-toss
+                                </button>
+</div>
+</div>
+<!-- Animated Status Bar (Simulated) -->
+<div class="absolute bottom-0 left-0 w-full h-2 bg-white/5">
+<div class="h-full bg-secondary-fixed w-full transition-all duration-1000 shadow-[0_0_15px_rgba(109,254,156,0.5)]"></div>
+</div>
+</div>
+<div class="p-md flex items-center justify-between bg-slate-50/50">
+<div class="flex items-center gap-4">
+<div class="flex -space-x-3">
+<img alt="M1" class="w-8 h-8 rounded-full border-2 border-white" data-alt="Portrait of a professional woman in a bright office environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWxLoy8ZVxp704yhH6rDJlAJNKNS-QqnFj6KaFr6LvqxzXYSwplYdSFSwbAMQ07YRBl_lA6FZkIzN2QkyEUoZ1gNmVrffOT_RudrjJDJ3PStnQWoEoCH7MhhMpYZj8YQ-e_WrZ_eokXsiPEmmU0yR8Rht_lWQCZUy3wJVn9P7aFhrB8EsKIoia3rQuVzYHsVS7tZv4BZKrrkHE41wqwDm2OLropFf7LlcqxtqLyiVgeXp-v65z8Kpesw7Wu7zUIaxAE2KvcE1wkQ8"/>
+<img alt="M2" class="w-8 h-8 rounded-full border-2 border-white" data-alt="Portrait of a young male professional in a modern studio." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCb3B4gGlFpyovg9n_N9yBvSxH1ZgRuv_o1_MUldZ_XDa5K318o-9r3y-Zm9h84p2AL5SxuAJhoRJqFPh2c7cHCXIvQkOFDc_jDOYjEBJSE0OtUg19JUZ_VFt8FudNvQqfq9o37ac2th_naKhN1eYLS5EM0lu3f2a35qG3LRMFOtLYExHbB4xVfAjbyRbUHOieKYvvI6rSBlrvRHB2BiZZiL84TawPQ76rIP4wRPVWw-kxZZGvvoLUSlKnrQ1ZuZA0eyyeBjlQ07bw"/>
+<img alt="M3" class="w-8 h-8 rounded-full border-2 border-white" data-alt="Close up of a smiling professional woman." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuW7g06xAd5tvZAHSu_S2rgYDwK20Z06Mv2pkDxpcDGywYHPf6qhGl3C2zjiuBTzDreSMxrHRk01Nj4a5Eth3qWA0FaZc8D3w0bfyMhNtjoBvcZFVZHSpnitw7dMevG4YQ8dJfv4HcZU0xwFo1ZBsc-Xz3Cv44mE6wnePGpJdnys4_EZg25n5IUtWBDY973wF0YrMzcZd4vD1-Pw-btmBehFMbPkVoM4Q1VHL9nGkD8i3pbUOlYRqffpu3qudOLrRiUn83RrqQXOs"/>
+</div>
+<span class="text-body-sm text-slate-500 font-medium">+14 other members verified for this round</span>
+</div>
+<div class="flex items-center gap-2 text-secondary font-label-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified_user">verified_user</span>
+                            Blockchain Verified Result
+                        </div>
+</div>
+</div>
+<!-- Remaining Members Side List -->
+<div class="col-span-12 lg:col-span-4 flex flex-col gap-gutter">
+<!-- Stats Card -->
+<div class="bg-white rounded-[16px] p-md shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-h3 text-primary">Circle Overview</h3>
+<span class="material-symbols-outlined text-slate-400" data-icon="info">info</span>
+</div>
+<div class="space-y-4">
+<div class="p-3 bg-slate-50 rounded-xl flex items-center justify-between">
+<span class="text-body-sm text-slate-600">Total Pool</span>
+<span class="font-bold text-primary">$24,500.00</span>
+</div>
+<div class="p-3 bg-slate-50 rounded-xl flex items-center justify-between">
+<span class="text-body-sm text-slate-600">Round Number</span>
+<span class="font-bold text-primary">08 / 24</span>
+</div>
+</div>
+</div>
+<!-- Waiting List -->
+<div class="bg-white rounded-[16px] shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100 flex-1 flex flex-col overflow-hidden">
+<div class="p-md border-b border-slate-50 flex items-center justify-between">
+<h3 class="font-h3 text-primary">Remaining Pool</h3>
+<span class="text-label-sm text-slate-400">15 WAITING</span>
+</div>
+<div class="flex-1 overflow-y-auto max-h-[400px]">
+<!-- Member Item 1 -->
+<div class="p-4 hover:bg-slate-50 transition-colors flex items-center gap-3 border-b border-slate-50">
+<img alt="Sarah L." class="w-10 h-10 rounded-full grayscale opacity-60" data-alt="Minimalist professional portrait of a woman with short hair, high-key lighting, soft neutral background, corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdjXX3lnJlzMvCJUMcW-F0Pi1salcAdhuo6aZ9hilSCTNZnTinNdYPfnNmE4OrvJNSRd6vK_YMJKpJw1-SgSXavudLVaVS3UqXhm_2S89r3nLzAJWA4O7Xxzl9REGvg6xWQ8lMUhvJhPD5pE3imgNXB5TFxGhMFhzhjUCsj2MdHj7u7d9OImfNnkZoQhdCUOeOve7Fa0G59V1lNzYi68921xAqQDBZvthhlpnRJ9QVuJc-9kzw1BdX2GeLWsY7BZD-hTpNYXdzfvU"/>
+<div class="flex-1">
+<p class="font-label-md text-slate-700">Sarah Lundberg</p>
+<p class="text-[11px] text-slate-400 font-medium">QUEUED • 9 MONTHS</p>
+</div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+<!-- Member Item 2 -->
+<div class="p-4 hover:bg-slate-50 transition-colors flex items-center gap-3 border-b border-slate-50">
+<img alt="David K." class="w-10 h-10 rounded-full grayscale opacity-60" data-alt="Headshot of a man in professional attire, minimalist office background, calm lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMhN4RCd_B52N5dfuNbeETylKODNNGpXNbFXZCaAiNcw7V4YWL-XBXqZhn7APxoMZ_d9S1R5pK2sLCJhrfiP6q26-cPW3ajwdUjk36fuHG2q_ujfqy5sA6wgotwkxsjsP8C1bKJcb7H9ZtJIKA1vaGFYAsmJIoz347UEOeTtX9vKcPkwo44iSfu9GnQg-QvixxSHNHC0CrPs6FDjT39x44d0_sfHem-7Wh_fCJdPyfJGYIXnALN6RyciYt3rIvxSFa2XZd6lD7Sr0"/>
+<div class="flex-1">
+<p class="font-label-md text-slate-700">David Kalu</p>
+<p class="text-[11px] text-slate-400 font-medium">QUEUED • 11 MONTHS</p>
+</div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+<!-- Member Item 3 -->
+<div class="p-4 hover:bg-slate-50 transition-colors flex items-center gap-3 border-b border-slate-50">
+<img alt="Elena V." class="w-10 h-10 rounded-full grayscale opacity-60" data-alt="Clean corporate portrait of a woman looking sideways, soft focus background, professional studio lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQYrJoFJchGvHMkwx52QKRBL1k--YQDFiElhfK6Xk-ERtE7E3SPeoOfrEBUeIOcmzWyr2coieDCeavdMuh_rJPv7DuFBJW1r45gFkSQDMBL4GjrzfyYk0H-wHNHKZqvO-aUPgEZECqUWnsNFCL_O07E-dX85ba714RJQl6M-GLZXW0UHalCsmusr-P48ROtAHzsXtunm1CXkkzq062fQVgHFjAH5MARSvRoQI9PY5eyDJNhwkAjkvpdd30Dlapv3Hj4RERgbJyxkQ"/>
+<div class="flex-1">
+<p class="font-label-md text-slate-700">Elena Volkov</p>
+<p class="text-[11px] text-slate-400 font-medium">QUEUED • 4 MONTHS</p>
+</div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+<!-- Member Item 4 -->
+<div class="p-4 hover:bg-slate-50 transition-colors flex items-center gap-3 border-b border-slate-50">
+<img alt="Jordan S." class="w-10 h-10 rounded-full grayscale opacity-60" data-alt="Modern studio portrait of a woman with a confident expression, neutral tones, corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD8BSRiHiODZ1geTe7yRh3FgG2oxC3AhfMSW-ua3mXYs4WK7jfxEl47oFgBn5mWCeBdeVV-83N_MwQIxNGxaQ_vqvhS17zffqZ0By_mow1PPQMT7V9wDfJwhErda9ddYiC9I4RqWrXT6dZBwnofjDAd9-N9QSCHvFk0CfeKZ15j49s1ffBo27VrLDwSyPyw6ffxlM3_1s4zfMqjkWc3iar2QVR8u_1Lh3BXCH_ES7LEjq5dl5sDkS6ErdxcPSPDkv1kUHX_VQUQgTo"/>
+<div class="flex-1">
+<p class="font-label-md text-slate-700">Jordan Smith</p>
+<p class="text-[11px] text-slate-400 font-medium">QUEUED • 15 MONTHS</p>
+</div>
+<div class="w-2 h-2 rounded-full bg-slate-200"></div>
+</div>
+</div>
+<button class="w-full py-3 text-label-sm text-primary font-bold hover:bg-slate-50 transition-colors">
+                            VIEW ALL MEMBERS
+                        </button>
+</div>
+</div>
+<!-- Secondary Info Row -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low rounded-[16px] p-md border border-slate-100">
+<div class="flex items-center gap-3 mb-3">
+<div class="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+</div>
+<h4 class="font-h3 text-primary">Trust Factor</h4>
+</div>
+<p class="text-body-sm text-slate-600 leading-relaxed">The smart selection algorithm prioritizes members based on timely contributions, tenure, and previous rotation history to ensure total fairness.</p>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-white rounded-[16px] p-md shadow-[0_4px_12px_rgba(0,0,0,0.02)] border border-slate-100">
+<div class="flex items-center justify-between mb-4">
+<span class="text-label-sm text-slate-500 uppercase tracking-widest">Next Rotation</span>
+<span class="text-label-sm text-secondary font-bold">14 DAYS LEFT</span>
+</div>
+<div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%]"></div>
+</div>
+<p class="text-[12px] text-slate-400 mt-3 italic text-center">Scheduled for Oct 24th, 2023</p>
+</div>
+<div class="col-span-12 lg:col-span-4 bg-primary text-white rounded-[16px] p-md flex flex-col justify-between shadow-xl">
+<div>
+<h4 class="font-label-md text-primary-fixed-dim">Need assistance?</h4>
+<p class="text-body-sm text-white/80 mt-1">Our support team is available 24/7 for disputes or administrative queries.</p>
+</div>
+<button class="mt-4 py-2 px-4 bg-white/10 hover:bg-white/20 rounded-lg text-label-sm font-semibold transition-colors border border-white/20 self-start">
+                        Contact Support
+                    </button>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button (Supressed as per logic for this screen type) -->
+<!-- The user is in a focused "selection" task, nav and FAB should be minimal/focused -->
+</body></html>

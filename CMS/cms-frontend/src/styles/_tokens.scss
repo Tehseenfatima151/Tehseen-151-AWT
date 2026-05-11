@@ -1,0 +1,58 @@
+:root {
+  /* Light Theme (Default) */
+  --color-primary: #031636;
+  --color-primary-container: #1a2b4c;
+  --color-secondary: #006d36;
+  --color-secondary-container: #6dfe9c;
+  --color-surface: #fbf8fc;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-high: #e9e7eb;
+  --color-on-surface: #1b1b1e;
+  --color-on-surface-variant: #44474e;
+  --color-outline: #75777f;
+  --color-outline-variant: #c5c6cf;
+  --color-error: #ba1a1a;
+  --color-warning: #f59e0b; /* Amber 500 */
+  --color-success: #10b981; /* Emerald 500 */
+  
+  /* Shared values */
+  --font-family: 'Public Sans', sans-serif;
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-base: 16px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+  
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+  
+  --shadow-level-1: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-level-2: 0 8px 16px rgba(26, 43, 76, 0.04);
+  --shadow-level-3: 0 24px 48px rgba(26, 43, 76, 0.06);
+}
+
+:root[data-theme="dark"] {
+  /* Dark Theme Overrides */
+  --color-primary: #8293ba;
+  --color-primary-container: #364669;
+  --color-secondary: #4de082;
+  --color-secondary-container: #005227;
+  --color-surface: #111827; /* Darker slate */
+  --color-surface-container-lowest: #1f2937; /* Slate 800 */
+  --color-surface-container-high: #374151; /* Slate 700 */
+  --color-on-surface: #f9fafb; /* Slate 50 */
+  --color-on-surface-variant: #9ca3af; /* Slate 400 */
+  --color-outline: #6b7280;
+  --color-outline-variant: #4b5563;
+  --color-error: #ffb4ab;
+  --color-warning: #fbbf24;
+  --color-success: #34d399;
+  
+  --shadow-level-1: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  --shadow-level-2: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-level-3: 0 24px 48px rgba(0, 0, 0, 0.4);
+}

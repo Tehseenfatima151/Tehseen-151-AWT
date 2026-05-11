@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transactions | TrustCircle</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-fixed": "#6dfe9c",
+                    "on-background": "#1b1b1e",
+                    "primary-fixed-dim": "#b6c6f0",
+                    "tertiary-fixed": "#ffddb5",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#8293ba",
+                    "primary-fixed": "#d8e2ff",
+                    "on-error": "#ffffff",
+                    "secondary": "#006d36",
+                    "on-primary-fixed-variant": "#364669",
+                    "secondary-fixed-dim": "#4de082",
+                    "surface": "#fbf8fc",
+                    "on-surface-variant": "#44474e",
+                    "secondary-container": "#6dfe9c",
+                    "primary-container": "#1a2b4c",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#efedf0",
+                    "on-primary-fixed": "#071b3b",
+                    "tertiary-fixed-dim": "#eabf8a",
+                    "tertiary": "#241300",
+                    "surface-dim": "#dbd9dd",
+                    "surface-bright": "#fbf8fc",
+                    "error": "#ba1a1a",
+                    "on-tertiary-fixed-variant": "#5e4117",
+                    "outline": "#75777f",
+                    "on-primary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "inverse-primary": "#b6c6f0",
+                    "on-tertiary-container": "#b28c5b",
+                    "inverse-on-surface": "#f2f0f3",
+                    "surface-container-high": "#e9e7eb",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary-fixed": "#00210c",
+                    "inverse-surface": "#303033",
+                    "surface-variant": "#e4e2e5",
+                    "background": "#fbf8fc",
+                    "surface-tint": "#4e5e82",
+                    "tertiary-container": "#3f2600",
+                    "outline-variant": "#c5c6cf",
+                    "on-tertiary-fixed": "#2a1800",
+                    "on-secondary-fixed-variant": "#005227",
+                    "on-surface": "#1b1b1e",
+                    "surface-container-highest": "#e4e2e5",
+                    "primary": "#031636",
+                    "surface-container-low": "#f5f3f6",
+                    "on-secondary-container": "#007439"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "xs": "4px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "container-max": "1440px",
+                    "lg": "40px",
+                    "gutter": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-sm": ["Public Sans"],
+                    "h2": ["Public Sans"],
+                    "h1": ["Public Sans"],
+                    "h3": ["Public Sans"],
+                    "body-lg": ["Public Sans"],
+                    "body-md": ["Public Sans"],
+                    "display": ["Public Sans"],
+                    "label-sm": ["Public Sans"],
+                    "label-md": ["Public Sans"]
+            },
+            "fontSize": {
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                    "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                    "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen">
+<!-- Sidebar Navigation -->
+<aside class="hidden lg:flex flex-col h-screen w-64 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 fixed left-0 top-0 py-6 gap-2 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#1A2B4C] dark:text-white font-display">TrustCircle</h1>
+<p class="text-xs font-label-sm text-slate-500 uppercase tracking-widest mt-1">Financial Oversight</p>
+</div>
+<nav class="flex-1 px-3 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined">groups</span>
+                Committees
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 bg-slate-50 dark:bg-slate-900 text-[#1A2B4C] dark:text-white border-l-4 border-emerald-500 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+                Transactions
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined">analytics</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined">gpp_maybe</span>
+                Disputes
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-6 mt-auto">
+<button class="w-full bg-[#1A2B4C] text-white py-3 rounded-lg font-label-md flex items-center justify-center gap-2 hover:bg-[#031636] transition-colors shadow-lg shadow-blue-900/10 active:scale-95 duration-150">
+<span class="material-symbols-outlined text-sm">add</span>
+                Create Committee
+            </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="lg:ml-64 min-h-screen">
+<!-- Top App Bar -->
+<header class="sticky top-0 z-40 flex justify-between items-center px-6 md:px-10 h-16 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex items-center gap-4">
+<h2 class="text-xl font-bold text-[#1A2B4C] dark:text-white tracking-tight font-display">Transactions</h2>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden md:flex relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-full text-sm focus:ring-2 focus:ring-[#1A2B4C] w-64 transition-all" placeholder="Search transactions..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="p-2 text-[#1A2B4C] hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<div class="p-6 md:p-10 max-w-7xl mx-auto">
+<!-- Header Grid: Quick Stats -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-lg">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-md shadow-[0_8px_16px_rgb(26,43,76,0.04)] border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-slate-500 uppercase tracking-wider">Total Volume</span>
+<span class="material-symbols-outlined text-emerald-500">payments</span>
+</div>
+<p class="text-h2 text-primary">$124,500.00</p>
+<p class="text-body-sm text-emerald-600 flex items-center gap-1 mt-2">
+<span class="material-symbols-outlined text-xs">trending_up</span>
+                        +12.5% vs last month
+                    </p>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl p-md shadow-[0_8px_16px_rgb(26,43,76,0.04)] border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-slate-500 uppercase tracking-wider">Pending Tasks</span>
+<span class="material-symbols-outlined text-amber-500">pending_actions</span>
+</div>
+<p class="text-h2 text-primary">08</p>
+<p class="text-body-sm text-slate-500 flex items-center gap-1 mt-2">
+                        Requires committee approval
+                    </p>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl p-md shadow-[0_8px_16px_rgb(26,43,76,0.04)] border border-slate-100 dark:border-slate-800">
+<div class="flex items-center justify-between mb-2">
+<span class="text-label-sm text-slate-500 uppercase tracking-wider">Late Payments</span>
+<span class="material-symbols-outlined text-error">priority_high</span>
+</div>
+<p class="text-h2 text-error">03</p>
+<p class="text-body-sm text-error/80 flex items-center gap-1 mt-2">
+                        Action required immediately
+                    </p>
+</div>
+</div>
+<!-- Main Layout: Form + Table -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Left Column: Add Transaction Form -->
+<div class="lg:col-span-4 space-y-gutter">
+<div class="bg-white dark:bg-slate-900 rounded-xl p-md shadow-[0_8px_16px_rgb(26,43,76,0.04)] border border-slate-100 dark:border-slate-800">
+<h3 class="text-h3 text-primary mb-6">Record Transaction</h3>
+<form class="space-y-4">
+<div>
+<label class="block text-label-sm text-slate-600 mb-2 font-semibold">COMMITTEE MEMBER</label>
+<select class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-[#1A2B4C] focus:border-transparent outline-none">
+<option>Select member...</option>
+<option>Alexander Pierce</option>
+<option>Sarah Jenkins</option>
+<option>Michael Chen</option>
+</select>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-label-sm text-slate-600 mb-2 font-semibold">AMOUNT (USD)</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-[#1A2B4C] focus:border-transparent outline-none" placeholder="0.00" type="number"/>
+</div>
+<div>
+<label class="block text-label-sm text-slate-600 mb-2 font-semibold">DATE</label>
+<input class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 text-body-sm focus:ring-2 focus:ring-[#1A2B4C] focus:border-transparent outline-none" type="date"/>
+</div>
+</div>
+<div>
+<label class="block text-label-sm text-slate-600 mb-2 font-semibold">PROOF OF PAYMENT</label>
+<div class="border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl p-8 text-center bg-slate-50/50 dark:bg-slate-800/50 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer group">
+<span class="material-symbols-outlined text-4xl text-slate-400 group-hover:text-[#1A2B4C] transition-colors mb-2">cloud_upload</span>
+<p class="text-body-sm text-slate-600 dark:text-slate-400">Drag and drop receipt here</p>
+<p class="text-[10px] text-slate-400 uppercase mt-1">PDF, JPG, PNG (MAX 5MB)</p>
+</div>
+</div>
+<button class="w-full bg-[#1A2B4C] text-white py-4 rounded-xl font-label-md shadow-lg shadow-blue-900/20 hover:translate-y-[-1px] transition-all active:scale-[0.98]" type="submit">
+                                Submit Payment Record
+                            </button>
+</form>
+</div>
+<div class="bg-primary-container text-white rounded-xl p-md overflow-hidden relative min-h-[200px]">
+<div class="relative z-10">
+<h4 class="font-h3 mb-2">Funding Goal</h4>
+<p class="text-body-sm text-white/70 mb-6">Phase 1: Operational Liquidity</p>
+<div class="space-y-2">
+<div class="flex justify-between text-label-sm">
+<span>Progress</span>
+<span>72%</span>
+</div>
+<div class="w-full bg-white/10 rounded-full h-3">
+<div class="bg-secondary-fixed h-full rounded-full w-[72%] transition-all duration-1000"></div>
+</div>
+</div>
+</div>
+<div class="absolute -right-10 -bottom-10 opacity-10">
+<span class="material-symbols-outlined text-[160px]">shield_with_heart</span>
+</div>
+</div>
+</div>
+<!-- Right Column: Transaction History -->
+<div class="lg:col-span-8">
+<div class="bg-white dark:bg-slate-900 rounded-xl shadow-[0_8px_16px_rgb(26,43,76,0.04)] border border-slate-100 dark:border-slate-800 overflow-hidden">
+<div class="p-md border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+<h3 class="text-h3 text-primary">Transaction History</h3>
+<div class="flex gap-2">
+<button class="p-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+<button class="p-2 border border-slate-200 dark:border-slate-700 rounded-lg text-slate-600 hover:bg-slate-50 transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50 dark:bg-slate-800/50">
+<tr>
+<th class="px-6 py-4 text-label-sm text-slate-500 font-semibold tracking-wider uppercase">Member</th>
+<th class="px-6 py-4 text-label-sm text-slate-500 font-semibold tracking-wider uppercase">Date</th>
+<th class="px-6 py-4 text-label-sm text-slate-500 font-semibold tracking-wider uppercase">Amount</th>
+<th class="px-6 py-4 text-label-sm text-slate-500 font-semibold tracking-wider uppercase">Status</th>
+<th class="px-6 py-4 text-label-sm text-slate-500 font-semibold tracking-wider uppercase">Proof</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A professional headshot of a smiling business professional in a light grey suit against a soft, clean studio background. The lighting is bright and high-key, reflecting a modern fintech brand's premium and approachable aesthetic. The image exudes institutional trust and confidence with a minimalist and sophisticated atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARm-CykTTeW1hOWRKaL3GoFpDQeq-xUnEyPuPryFQ4KuuCUCHOgBne5Eor08qhfe7HT1o0HVrxoVLQXxaOWPqSBz3m-ubuQkYQvnGtJZFfHGIBY7mIzW5wVTs_HGIlcgg0dWDYuaRLdxnxoYx3LSmTtw3Zpi_Is1CtPq-BIQOv7ZY0OdGE4-aUl4e2xjYWvbZA67-K-xpZUxKudvB8vAWIoUuD-gibjIOL5t-ZzAlYdiXVFrSEf5FZOO83AvjMPFJXo1-h7NTZse4"/>
+<div>
+<p class="text-body-sm font-semibold text-primary">Alexander Pierce</p>
+<p class="text-[11px] text-slate-400">ID: TR-9021</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-body-sm text-slate-600">Oct 24, 2023</td>
+<td class="px-6 py-5 text-body-sm font-bold text-primary">$1,200.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary-container/10 text-on-secondary-container">
+                                                Paid
+                                            </span>
+</td>
+<td class="px-6 py-5">
+<button class="text-slate-400 hover:text-[#1A2B4C] transition-colors">
+<span class="material-symbols-outlined text-lg">description</span>
+</button>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-slate-300 hover:text-slate-600 transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A high-quality portrait of a female financial administrator with a friendly and reliable expression, set in a bright contemporary office environment. The scene is illuminated with natural daylight, emphasizing a professional, clean, and modern aesthetic. The color palette is composed of neutrals and soft blue tones to evoke a sense of security and professional calm." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5XC5RUf5EdnDnp1PfED7q-FOkH2p25PtaYIS5tcdifZT-0ykQWr4F5bgdmzVF_L4wXR7tzjPybpJ7ZSsm0E0tRhKhnNACwgmQYpewmqKUutHaLjQ7tHRQWuZ1ol4Z2VFt4w-yvkWJf76KXoaDpXLJDCiNekXjsPnibNisiTCioFOO0sk8VOt_uUf4UgUo-xu2MhcbgXwXI4c9TtI_dh1vm5Ov_6f2xGnRD3SPG2BQzKmvoAdyRT43DZmwnQTx87oJeoaqD2hedfU"/>
+<div>
+<p class="text-body-sm font-semibold text-primary">Sarah Jenkins</p>
+<p class="text-[11px] text-slate-400">ID: TR-9022</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-body-sm text-slate-600">Oct 25, 2023</td>
+<td class="px-6 py-5 text-body-sm font-bold text-primary">$1,200.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-700">
+                                                Pending
+                                            </span>
+</td>
+<td class="px-6 py-5">
+<button class="text-slate-400 hover:text-[#1A2B4C] transition-colors">
+<span class="material-symbols-outlined text-lg">description</span>
+</button>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-slate-300 hover:text-slate-600 transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A focused portrait of a diverse male team lead in a corporate setting. The lighting is soft and even, highlighting a serious but trustworthy professional demeanor. The background is a blurred high-end architectural space with clean lines and a premium corporate modern feel. The overall visual tone is grounded, intentional, and conveys institutional oversight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGZt1OoGZvPNapcBd_aKhjn5re62k8h8ARnrE_L_kM8F1etWUOR3hJuGKVJHpHZCL15ifD6Z2QbGqOrrA3Mzha1khq4qZdEbKkavUos9Bh91UdUUWnMhsZ7SnXFTbODxxUyzfc578qIEaWzxbHxgrhpNnCus41oqXMbY16b2-AabHKISBy5GOTUUZQelHKOB-n8dIkwHZEni8F03h0EDLR5f4df8rEz-d73B7m5v6_J7y3tx12K-2cs7SZ4bxnPnMX-JHbLCr3dE4"/>
+<div>
+<p class="text-body-sm font-semibold text-primary">Michael Chen</p>
+<p class="text-[11px] text-slate-400">ID: TR-9023</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-body-sm text-slate-600">Oct 20, 2023</td>
+<td class="px-6 py-5 text-body-sm font-bold text-primary">$1,200.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-error/10 text-error">
+                                                Late
+                                            </span>
+</td>
+<td class="px-6 py-5">
+<span class="text-[10px] text-slate-400 font-bold uppercase">No Proof</span>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-slate-300 hover:text-slate-600 transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors group">
+<td class="px-6 py-5">
+<div class="flex items-center gap-3">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="Close-up professional portrait of a woman in business attire, looking confident and composed. The image uses a shallow depth of field with a clean office background and high-key white lighting. This reflects a minimal and corporate modern aesthetic focused on clarity and professionalism, part of a reliable financial oversight platform design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXr3bzH_T_kiB2y0_xKI4Y54zOQLx2tR-BVg6yjga03aWn522_nAW1OHJhwuZfBdXPGQvypzHhRlZI4hjfcdx-lNCRt_6hGKvqgzkYBzHKUhSt4HzaQSqV8vh5It11n1nRTCHZAxSKyndgWIVlWC4iP7KnKERd1T2vDy3xqYcab0ho0g5vHTIYZfVNq5HGODm62kiDBliHFZ4Ec8wOdnMdt3eIhK-xpWWXZNaoHOtBZEWiHfJvrDTYVHJYzG9HfgjOf_k4BJZgBNk"/>
+<div>
+<p class="text-body-sm font-semibold text-primary">Leila Vance</p>
+<p class="text-[11px] text-slate-400">ID: TR-9024</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-5 text-body-sm text-slate-600">Oct 24, 2023</td>
+<td class="px-6 py-5 text-body-sm font-bold text-primary">$1,200.00</td>
+<td class="px-6 py-5">
+<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-secondary-container/10 text-on-secondary-container">
+                                                Paid
+                                            </span>
+</td>
+<td class="px-6 py-5">
+<button class="text-slate-400 hover:text-[#1A2B4C] transition-colors">
+<span class="material-symbols-outlined text-lg">description</span>
+</button>
+</td>
+<td class="px-6 py-5 text-right">
+<button class="material-symbols-outlined text-slate-300 hover:text-slate-600 transition-colors">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-label-sm text-slate-500">
+<p>Showing 4 of 24 transactions</p>
+<div class="flex gap-2">
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-md hover:bg-slate-50">Previous</button>
+<button class="px-3 py-1 bg-[#1A2B4C] text-white rounded-md">1</button>
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-md hover:bg-slate-50">2</button>
+<button class="px-3 py-1 border border-slate-200 dark:border-slate-700 rounded-md hover:bg-slate-50">Next</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation for Mobile -->
+<nav class="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 flex justify-around items-center h-16 z-50">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">dashboard</span>
+<span class="text-[10px] font-semibold uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">groups</span>
+<span class="text-[10px] font-semibold uppercase">Committees</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-[#1A2B4C]" href="#">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<span class="text-[10px] font-semibold uppercase">Finance</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<span class="text-[10px] font-semibold uppercase">Settings</span>
+</a>
+</nav>
+</body></html>

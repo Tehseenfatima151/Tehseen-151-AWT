@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#6dfe9c",
+                        "on-background": "#1b1b1e",
+                        "primary-fixed-dim": "#b6c6f0",
+                        "tertiary-fixed": "#ffddb5",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#8293ba",
+                        "primary-fixed": "#d8e2ff",
+                        "on-error": "#ffffff",
+                        "secondary": "#006d36",
+                        "on-primary-fixed-variant": "#364669",
+                        "secondary-fixed-dim": "#4de082",
+                        "surface": "#fbf8fc",
+                        "on-surface-variant": "#44474e",
+                        "secondary-container": "#6dfe9c",
+                        "primary-container": "#1a2b4c",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#efedf0",
+                        "on-primary-fixed": "#071b3b",
+                        "tertiary-fixed-dim": "#eabf8a",
+                        "tertiary": "#241300",
+                        "surface-dim": "#dbd9dd",
+                        "surface-bright": "#fbf8fc",
+                        "error": "#ba1a1a",
+                        "on-tertiary-fixed-variant": "#5e4117",
+                        "outline": "#75777f",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#b6c6f0",
+                        "on-tertiary-container": "#b28c5b",
+                        "inverse-on-surface": "#f2f0f3",
+                        "surface-container-high": "#e9e7eb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#00210c",
+                        "inverse-surface": "#303033",
+                        "surface-variant": "#e4e2e5",
+                        "background": "#fbf8fc",
+                        "surface-tint": "#4e5e82",
+                        "tertiary-container": "#3f2600",
+                        "outline-variant": "#c5c6cf",
+                        "on-tertiary-fixed": "#2a1800",
+                        "on-secondary-fixed-variant": "#005227",
+                        "on-surface": "#1b1b1e",
+                        "surface-container-highest": "#e4e2e5",
+                        "primary": "#031636",
+                        "surface-container-low": "#f5f3f6",
+                        "on-secondary-container": "#007439"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Public Sans"],
+                        "h2": ["Public Sans"],
+                        "h1": ["Public Sans"],
+                        "h3": ["Public Sans"],
+                        "body-lg": ["Public Sans"],
+                        "body-md": ["Public Sans"],
+                        "display": ["Public Sans"],
+                        "label-sm": ["Public Sans"],
+                        "label-md": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Public Sans', sans-serif; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .shadow-level-1 { box-shadow: 0 8px 16px -4px rgba(26, 43, 76, 0.04); }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-on-background min-h-screen">
+<aside class="h-screen w-64 border-r fixed left-0 top-0 bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-sm hidden lg:flex flex-col h-full py-6 gap-2 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-[#1A2B4C] dark:text-white font-display">TrustCircle</h1>
+<p class="text-label-sm text-slate-500 uppercase tracking-widest mt-1">Financial Oversight</p>
+</div>
+<nav class="flex-1 px-4 space-y-1">
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#1A2B4C] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#1A2B4C] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+                Committees
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#1A2B4C] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+                Transactions
+            </a>
+<a class="bg-slate-50 dark:bg-slate-900 text-[#1A2B4C] dark:text-white border-l-4 border-emerald-500 flex items-center gap-3 px-4 py-3 font-label-md transition-all duration-200 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+                Analytics
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#1A2B4C] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="gpp_maybe">gpp_maybe</span>
+                Disputes
+            </a>
+<a class="flex items-center gap-3 px-4 py-3 text-slate-600 dark:text-slate-400 hover:text-[#1A2B4C] dark:hover:text-white hover:bg-slate-50 dark:hover:bg-slate-900 transition-all duration-200 ease-in-out font-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+<div class="px-4 mt-auto">
+<button class="w-full py-3 px-4 bg-primary text-white rounded-xl font-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[20px]" data-icon="add">add</span>
+                Create Committee
+            </button>
+</div>
+</aside>
+<div class="lg:ml-64 flex-1">
+<header class="sticky top-0 z-40 flex justify-between items-center px-6 h-16 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm font-public-sans">
+<div class="flex items-center gap-4">
+<div class="relative">
+<span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+<span class="material-symbols-outlined text-[20px]" data-icon="search">search</span>
+</span>
+<input class="pl-10 pr-4 py-2 bg-slate-100 dark:bg-slate-800 border-none rounded-lg text-body-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search analytics..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-slate-200">
+<img alt="User profile" data-alt="A professional corporate headshot of a financial administrator with a neutral, confident expression. The lighting is soft and high-key, shot against a minimalist grey background to maintain a professional and clean aesthetic, aligning with the institutional trust of TrustCircle." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvbGVRPcbdvxnrFPAP3WyKIby_31-Qmr0hfNTqEwDgf5QutCzmSHGD4sqxvlwhBmiOzrXEQxhfsA7ZR7R7tYmZKb-qwgY7Rt1ywBg4KfCM4Y9StHZM8MmwyST3u9QVSsaY-I_4IVSIxAQUkw7uNxni3VnP9jbT6kRUxMGIQWUCeRO7aTyRPH9lSWw-5hwixsT4T9VkhnX-RR2Onr8oMkIYNuZI1vV8kttGHEZi9h4ujVYhC_q6NaAb6dSdubyIoGtgaWyWhS6kjLA"/>
+</div>
+</div>
+</header>
+<main class="p-md lg:p-lg space-y-gutter">
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
+<div>
+<h2 class="font-h1 text-primary">Performance Analytics</h2>
+<p class="font-body-md text-slate-500">Real-time oversight of financial health and committee trust scores.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-slate-200 rounded-lg font-label-md text-slate-600 hover:bg-white transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="calendar_today">calendar_today</span>
+                        Last 30 Days
+                    </button>
+<button class="px-4 py-2 bg-primary text-white rounded-lg font-label-md flex items-center gap-2 hover:opacity-90 shadow-sm transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="download">download</span>
+                        Export Report
+                    </button>
+</div>
+</section>
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<div class="bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100 flex flex-col justify-between group hover:border-emerald-200 transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<span class="text-label-sm text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="trending_up">trending_up</span>
+                            12%
+                        </span>
+</div>
+<div class="mt-4">
+<p class="font-label-sm text-slate-500 uppercase">Total Capital</p>
+<h3 class="font-h2 text-primary mt-1">$452,890.00</h3>
+</div>
+</div>
+<div class="bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100 flex flex-col justify-between hover:border-blue-200 transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-blue-50 rounded-lg text-blue-600">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+</div>
+<span class="text-label-sm text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Trust Rank A+</span>
+</div>
+<div class="mt-4">
+<p class="font-label-sm text-slate-500 uppercase">Avg. Trust Score</p>
+<h3 class="font-h2 text-primary mt-1">94.8</h3>
+</div>
+</div>
+<div class="bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100 flex flex-col justify-between hover:border-amber-200 transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-amber-50 rounded-lg text-amber-600">
+<span class="material-symbols-outlined" data-icon="schedule">schedule</span>
+</div>
+<span class="text-label-sm text-red-600 bg-red-50 px-2 py-1 rounded-full">-2.4%</span>
+</div>
+<div class="mt-4">
+<p class="font-label-sm text-slate-500 uppercase">Pending Payments</p>
+<h3 class="font-h2 text-primary mt-1">18</h3>
+</div>
+</div>
+<div class="bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100 flex flex-col justify-between hover:border-emerald-200 transition-colors">
+<div class="flex justify-between items-start">
+<div class="p-2 bg-emerald-50 rounded-lg text-emerald-600">
+<span class="material-symbols-outlined" data-icon="group_add">group_add</span>
+</div>
+<span class="text-label-sm text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+4</span>
+</div>
+<div class="mt-4">
+<p class="font-label-sm text-slate-500 uppercase">New Members</p>
+<h3 class="font-h2 text-primary mt-1">124</h3>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-8 bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100">
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="font-h3 text-primary">Payment History</h3>
+<p class="font-body-sm text-slate-500">Monthly aggregate of successfully processed payments.</p>
+</div>
+<div class="flex gap-2">
+<span class="flex items-center gap-1.5 font-label-sm text-slate-600">
+<span class="w-2.5 h-2.5 rounded-full bg-primary"></span> Successful
+                            </span>
+<span class="flex items-center gap-1.5 font-label-sm text-slate-600">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-fixed"></span> Projected
+                            </span>
+</div>
+</div>
+<div class="h-64 w-full relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 800 240">
+<defs>
+<lineargradient id="lineGrad" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#1A2B4C" stop-opacity="0.1"></stop>
+<stop offset="100%" stop-color="#1A2B4C" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,200 Q100,180 200,190 T400,100 T600,120 T800,40" fill="none" stroke="#1A2B4C" stroke-width="3"></path>
+<path d="M0,200 Q100,180 200,190 T400,100 T600,120 T800,40 L800,240 L0,240 Z" fill="url(#lineGrad)"></path>
+<circle cx="200" cy="190" fill="white" r="4" stroke="#1A2B4C" stroke-width="2"></circle>
+<circle cx="400" cy="100" fill="white" r="4" stroke="#1A2B4C" stroke-width="2"></circle>
+<circle cx="600" cy="120" fill="white" r="4" stroke="#1A2B4C" stroke-width="2"></circle>
+<circle cx="800" cy="40" fill="white" r="4" stroke="#1A2B4C" stroke-width="2"></circle>
+</svg>
+<div class="absolute bottom-0 left-0 right-0 flex justify-between font-label-sm text-slate-400 pt-4">
+<span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span><span>JUN</span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-4 bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100 flex flex-col">
+<h3 class="font-h3 text-primary mb-2">On-time vs Late</h3>
+<p class="font-body-sm text-slate-500 mb-8">Comparison of member payment punctuality.</p>
+<div class="flex-1 flex items-center justify-center relative">
+<svg class="w-48 h-48 -rotate-90">
+<circle cx="96" cy="96" fill="transparent" r="70" stroke="#E2E8F0" stroke-width="20"></circle>
+<circle cx="96" cy="96" fill="transparent" r="70" stroke="#006d36" stroke-dasharray="440" stroke-dashoffset="88" stroke-width="20"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="font-h2 text-primary">82%</span>
+<span class="font-label-sm text-slate-500">On-time</span>
+</div>
+</div>
+<div class="mt-8 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="font-body-sm text-slate-600">On-time</span>
+</div>
+<span class="font-label-md text-primary">412 payments</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-red-400"></span>
+<span class="font-body-sm text-slate-600">Late</span>
+</div>
+<span class="font-label-md text-primary">64 payments</span>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-slate-200"></span>
+<span class="font-body-sm text-slate-600">Grace Period</span>
+</div>
+<span class="font-label-md text-primary">28 payments</span>
+</div>
+</div>
+</div>
+</section>
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<div class="lg:col-span-4 bg-white p-md rounded-[16px] shadow-level-1 border border-slate-100">
+<h3 class="font-h3 text-primary mb-4">Trust Score Trend</h3>
+<div class="space-y-6">
+<div class="p-4 bg-slate-50 rounded-xl border border-slate-100">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-md text-primary">Global Average</span>
+<span class="font-label-sm text-emerald-600">+0.8 this week</span>
+</div>
+<div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[94%]" style="transition: width 1s ease-in-out;"></div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield">shield</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between font-label-md text-primary">
+<span>Transparency</span>
+<span>98%</span>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full mt-1">
+<div class="bg-indigo-500 h-full w-[98%]"></div>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600">
+<span class="material-symbols-outlined text-[20px]" data-icon="event_available">event_available</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between font-label-md text-primary">
+<span>Consistency</span>
+<span>91%</span>
+</div>
+<div class="w-full bg-slate-100 h-1.5 rounded-full mt-1">
+<div class="bg-emerald-500 h-full w-[91%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="lg:col-span-8 bg-white rounded-[16px] shadow-level-1 border border-slate-100 overflow-hidden">
+<div class="p-md border-b border-slate-100 flex items-center justify-between">
+<h3 class="font-h3 text-primary">Top Performing Committees</h3>
+<button class="text-primary font-label-md flex items-center gap-1 hover:underline">
+                            View All <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50/50 border-b border-slate-100">
+<tr>
+<th class="px-6 py-4 font-label-sm text-slate-500 uppercase">Committee Name</th>
+<th class="px-6 py-4 font-label-sm text-slate-500 uppercase">Members</th>
+<th class="px-6 py-4 font-label-sm text-slate-500 uppercase">Capital</th>
+<th class="px-6 py-4 font-label-sm text-slate-500 uppercase">Efficiency</th>
+<th class="px-6 py-4 font-label-sm text-slate-500 uppercase">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-50">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[18px]" data-icon="diversity_3">diversity_3</span>
+</div>
+<span class="font-body-md font-semibold text-primary">Vanguard Circle</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-slate-600">24 Members</td>
+<td class="px-6 py-4 text-body-sm font-medium text-primary">$124,000</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-emerald-600 font-label-sm">99.2%</span>
+<div class="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[99%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-label-sm">Active</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="hub">hub</span>
+</div>
+<span class="font-body-md font-semibold text-primary">Equity Hub Alpha</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-slate-600">12 Members</td>
+<td class="px-6 py-4 text-body-sm font-medium text-primary">$58,500</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-blue-600 font-label-sm">94.5%</span>
+<div class="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-blue-500 h-full w-[94%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-label-sm">Active</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600">
+<span class="material-symbols-outlined text-[18px]" data-icon="auto_awesome">auto_awesome</span>
+</div>
+<span class="font-body-md font-semibold text-primary">Prime Trust Collective</span>
+</div>
+</td>
+<td class="px-6 py-4 text-body-sm text-slate-600">45 Members</td>
+<td class="px-6 py-4 text-body-sm font-medium text-primary">$210,300</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-emerald-600 font-label-sm">97.8%</span>
+<div class="w-16 bg-slate-100 h-1.5 rounded-full overflow-hidden">
+<div class="bg-emerald-500 h-full w-[97%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-label-sm">In Review</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</main>
+</div>
+</body></html>

@@ -1,0 +1,61 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function userDoc(target) {
+      return get(/databases/$(database)/documents/users/$(target)).data;
+    }
+
+    function isAdmin() {
+      return signedIn() && userDoc(uid()).role == 'admin';
+    }
+
+    match /users/{userId} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && (uid() == userId || isAdmin());
+    }
+
+    match /committees/{committeeId} {
+      allow read: if signedIn();
+      allow write: if signedIn();
+    }
+
+    match /transactions/{txId} {
+      allow read: if signedIn();
+      allow create: if signedIn();
+      allow update: if signedIn();
+    }
+
+    match /payouts/{payoutId} {
+      allow read: if signedIn();
+      allow create, update: if signedIn();
+    }
+
+    match /notifications/{notifId} {
+      allow read, update: if signedIn() && resource.data.userId == uid();
+      allow create: if signedIn();
+    }
+
+    match /fraudReports/{reportId} {
+      allow read: if signedIn();
+      allow write: if signedIn();
+    }
+
+    match /disputes/{disputeId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.resource.data.createdBy == uid();
+      allow update: if signedIn() && (resource.data.createdBy == uid() || isAdmin());
+    }
+
+    match /kycSubmissions/{docId} {
+      allow read, write: if signedIn();
+    }
+  }
+}

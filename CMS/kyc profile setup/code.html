@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#fbf8fc",
+                        "surface-container-high": "#e9e7eb",
+                        "surface-tint": "#4e5e82",
+                        "surface-container-highest": "#e4e2e5",
+                        "inverse-primary": "#b6c6f0",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777f",
+                        "secondary-container": "#6dfe9c",
+                        "inverse-surface": "#303033",
+                        "on-primary-container": "#8293ba",
+                        "tertiary-container": "#3f2600",
+                        "background": "#fbf8fc",
+                        "primary-container": "#1a2b4c",
+                        "surface": "#fbf8fc",
+                        "surface-dim": "#dbd9dd",
+                        "primary-fixed-dim": "#b6c6f0",
+                        "tertiary": "#241300",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#eabf8a",
+                        "on-secondary-fixed": "#00210c",
+                        "on-tertiary-container": "#b28c5b",
+                        "outline-variant": "#c5c6cf",
+                        "surface-container": "#efedf0",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffddb5",
+                        "secondary": "#006d36",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#364669",
+                        "on-background": "#1b1b1e",
+                        "secondary-fixed-dim": "#4de082",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#005227",
+                        "inverse-on-surface": "#f2f0f3",
+                        "on-surface": "#1b1b1e",
+                        "secondary-fixed": "#6dfe9c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#071b3b",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed": "#2a1800",
+                        "on-secondary-container": "#007439",
+                        "on-surface-variant": "#44474e",
+                        "on-tertiary-fixed-variant": "#5e4117",
+                        "primary": "#031636",
+                        "surface-variant": "#e4e2e5",
+                        "surface-container-low": "#f5f3f6",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "xl": "64px",
+                        "lg": "40px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Public Sans"],
+                        "label-sm": ["Public Sans"],
+                        "display": ["Public Sans"],
+                        "body-md": ["Public Sans"],
+                        "label-md": ["Public Sans"],
+                        "body-lg": ["Public Sans"],
+                        "h1": ["Public Sans"],
+                        "h2": ["Public Sans"],
+                        "h3": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                        "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        .step-active { border-color: #031636; color: #031636; }
+        .step-inactive { border-color: #e2e8f0; color: #94a3b8; }
+        .custom-shadow { box-shadow: 0 8px 16px -4px rgba(26, 43, 76, 0.04); }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- TopNavBar Section -->
+<nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-sm flex justify-between items-center h-16 px-8 w-full z-40 sticky top-0">
+<div class="flex items-center gap-8">
+<span class="text-xl font-bold text-[#1A2B4C] dark:text-slate-50 font-['Public_Sans']">TrustCircle</span>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer active:scale-95 transition-transform hover:bg-slate-50 p-2 rounded-full" data-icon="help_outline">help_outline</span>
+<span class="material-symbols-outlined text-slate-500 cursor-pointer active:scale-95 transition-transform hover:bg-slate-50 p-2 rounded-full" data-icon="settings">settings</span>
+</div>
+<div class="h-8 w-8 rounded-full overflow-hidden border border-slate-200">
+<img alt="Administrator Profile" data-alt="A professional headshot of a corporate administrator in a clean, high-key office setting. The lighting is soft and natural, emphasizing clarity and trust. The overall aesthetic is minimalist and modern, aligned with a premium fintech brand's professional color palette of muted blues and whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRWFwlidQ6KoVF3KBovQt-Rxszsrlz4GXc66kMKQd-IqYGn726IFqkn8TmpXTzbX_KbaN_2IqGzSr-YXb0pov_Z88MnAub00fjn1pNrwT7sy57lrLOjBk8ZCHIj0TeNn4eqmRnIDlZclBCLVHDfLIFwcr-FxFUaagTpWLYO9cEp40jRMuZxsFK1i1xosTIjoXTX69eJNndI6pYYlSp3PCYXeZHCuXqKXWa-8j7z9Qsb1QBQjlUWqO_D6KdqGSoy2Cv5rezIXyl2W0"/>
+</div>
+</div>
+</nav>
+<main class="max-w-[800px] mx-auto py-12 px-6">
+<!-- Header -->
+<header class="mb-12 text-center">
+<h1 class="font-h1 text-h1 text-primary mb-2">KYC Verification</h1>
+<p class="font-body-md text-on-surface-variant">Complete your profile setup to start managing committees and financial transactions.</p>
+</header>
+<!-- Stepper Component -->
+<div class="mb-12 relative">
+<div class="flex justify-between relative z-10">
+<!-- Step 1 -->
+<div class="flex flex-col items-center gap-3 bg-background px-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center border-2 bg-primary text-white border-primary">
+<span class="font-label-md text-label-md">1</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary">Personal</span>
+</div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center gap-3 bg-background px-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-slate-200 text-slate-400 bg-white">
+<span class="font-label-md text-label-md">2</span>
+</div>
+<span class="font-label-sm text-label-sm text-slate-400">Financial</span>
+</div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center gap-3 bg-background px-4">
+<div class="w-10 h-10 rounded-full flex items-center justify-center border-2 border-slate-200 text-slate-400 bg-white">
+<span class="font-label-md text-label-md">3</span>
+</div>
+<span class="font-label-sm text-label-sm text-slate-400">Identity</span>
+</div>
+</div>
+<!-- Progress Line Background -->
+<div class="absolute top-5 left-0 w-full h-[2px] bg-slate-200 -z-0"></div>
+</div>
+<!-- Form Card -->
+<section class="bg-white rounded-xl custom-shadow border border-outline-variant p-10">
+<!-- Instructions -->
+<div class="mb-8 p-4 bg-surface-container-low rounded-lg border-l-4 border-primary">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-primary" data-icon="info">info</span>
+<div>
+<h4 class="font-label-md text-label-md text-primary">Verify your legal identity</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Please ensure the information provided matches your official government documents exactly to avoid processing delays.</p>
+</div>
+</div>
+</div>
+<!-- Form Steps Container (Simulated Step 1) -->
+<form class="space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Legal First Name</label>
+<input class="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-0 transition-all font-body-md text-body-md" placeholder="e.g. Alexander" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Legal Last Name</label>
+<input class="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-0 transition-all font-body-md text-body-md" placeholder="e.g. Thompson" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Phone Number</label>
+<div class="flex">
+<span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-outline-variant bg-surface-container text-on-surface-variant font-label-md text-label-md">+1</span>
+<input class="w-full h-12 px-4 rounded-r-lg border border-outline-variant focus:border-primary focus:ring-0 transition-all font-body-md text-body-md" placeholder="(555) 000-0000" type="tel"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant block">Date of Birth</label>
+<input class="w-full h-12 px-4 rounded-lg border border-outline-variant focus:border-primary focus:ring-0 transition-all font-body-md text-body-md" type="date"/>
+</div>
+</div>
+<div class="pt-8 border-t border-outline-variant flex justify-between items-center">
+<button class="px-6 py-3 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors flex items-center gap-2" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+                        Cancel
+                    </button>
+<button class="bg-primary text-white px-10 py-3 rounded-lg font-label-md text-label-md hover:bg-slate-800 transition-all active:scale-95 shadow-md flex items-center gap-2" type="submit">
+                        Continue to Financial Info
+                        <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</form>
+</section>
+<!-- Secondary Info Section -->
+<aside class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="p-6 bg-surface-container rounded-xl">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<h5 class="font-label-md text-label-md text-primary mb-1">Encrypted Data</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Your sensitive information is secured with AES-256 encryption.</p>
+</div>
+<div class="p-6 bg-surface-container rounded-xl">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<h5 class="font-label-md text-label-md text-primary mb-1">Instant Checks</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Step 1 and 2 are processed in real-time by our automation engine.</p>
+</div>
+<div class="p-6 bg-surface-container rounded-xl">
+<span class="material-symbols-outlined text-secondary mb-3" data-icon="support_agent" data-weight="fill" style="font-variation-settings: 'FILL' 1;">support_agent</span>
+<h5 class="font-label-md text-label-md text-primary mb-1">Live Support</h5>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Need help? Our compliance team is available 24/7 via chat.</p>
+</div>
+</aside>
+</main>
+<!-- Footer Security Banner -->
+<footer class="mt-auto py-8 border-t border-outline-variant bg-white">
+<div class="max-w-container-max mx-auto px-8 flex justify-between items-center">
+<div class="flex items-center gap-4">
+<img alt="Compliance Logo" class="h-8 rounded opacity-50 grayscale" data-alt="A stylized digital representation of a secure financial server room. The image features rows of hardware with small blinking blue lights, signifying high-level data processing and security. The lighting is low and cinematic, with a focus on technological reliability and high-end infrastructure in a corporate fintech environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBER4WLwFwTR4ADbZkF2sEq8ya6xLkfVsCcuJvVKQPyGYGpe8bR4kzXdxPgjZPiQMR6__1PLPd1gpWl0ILBffJ2l868jxVAuq3h-2tFNu8ydMiCxZuoGosOe-rxcq8-z_hQVqsErd4vCTjejO3-6P1xpfprD6GdzhlNCiT0dYY3Sx7qN4AwQ4ctditvV6ItTJAYBhXY8bCTNFhN8YvwAaI1lHHg54bgELFHqHRQqk_5EncDBO9Z_FnRGPqoiUOezD-WY2iJZKb1GVw"/>
+<span class="text-label-sm font-label-sm text-slate-400">GDPR &amp; AML Compliant Service Provider</span>
+</div>
+<div class="flex gap-6">
+<a class="text-label-sm font-label-sm text-slate-400 hover:text-primary" href="#">Privacy Policy</a>
+<a class="text-label-sm font-label-sm text-slate-400 hover:text-primary" href="#">Terms of Service</a>
+</div>
+</div>
+</footer>
+</body></html>

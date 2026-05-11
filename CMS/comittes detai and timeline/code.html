@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Committee Details - ROSCA Trust</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#fbf8fc",
+                        "secondary-fixed-dim": "#4de082",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-container": "#b28c5b",
+                        "surface-container": "#efedf0",
+                        "on-surface-variant": "#44474e",
+                        "on-tertiary": "#ffffff",
+                        "outline-variant": "#c5c6cf",
+                        "error-container": "#ffdad6",
+                        "secondary-fixed": "#6dfe9c",
+                        "error": "#ba1a1a",
+                        "surface-bright": "#fbf8fc",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8293ba",
+                        "inverse-primary": "#b6c6f0",
+                        "on-secondary-container": "#007439",
+                        "on-secondary-fixed-variant": "#005227",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#071b3b",
+                        "tertiary": "#241300",
+                        "on-surface": "#1b1b1e",
+                        "background": "#fbf8fc",
+                        "outline": "#75777f",
+                        "surface-container-highest": "#e4e2e5",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b1e",
+                        "primary": "#031636",
+                        "primary-container": "#1a2b4c",
+                        "inverse-on-surface": "#f2f0f3",
+                        "tertiary-fixed": "#ffddb5",
+                        "tertiary-fixed-dim": "#eabf8a",
+                        "on-primary-fixed-variant": "#364669",
+                        "on-secondary-fixed": "#00210c",
+                        "inverse-surface": "#303033",
+                        "primary-fixed-dim": "#b6c6f0",
+                        "surface-dim": "#dbd9dd",
+                        "surface-variant": "#e4e2e5",
+                        "secondary-container": "#6dfe9c",
+                        "surface-container-high": "#e9e7eb",
+                        "tertiary-container": "#3f2600",
+                        "surface-container-low": "#f5f3f6",
+                        "secondary": "#006d36",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#5e4117",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#2a1800",
+                        "surface-tint": "#4e5e82"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "sm": "12px",
+                        "container-max": "1440px",
+                        "md": "24px",
+                        "xs": "4px",
+                        "lg": "40px",
+                        "gutter": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Public Sans"],
+                        "body-lg": ["Public Sans"],
+                        "h2": ["Public Sans"],
+                        "h3": ["Public Sans"],
+                        "label-md": ["Public Sans"],
+                        "display": ["Public Sans"],
+                        "label-sm": ["Public Sans"],
+                        "body-sm": ["Public Sans"],
+                        "h1": ["Public Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "h2": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                        "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["14px", {"lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                        "display": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-surface font-body-md text-on-surface antialiased">
+<!-- SideNavBar Component -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-white border-r border-slate-200 flex flex-col py-6 z-50">
+<div class="px-6 mb-8">
+<h1 class="text-lg font-black text-slate-900">ROSCA Trust</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Financial Admin</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-all group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 bg-slate-50 text-secondary border-l-4 border-secondary transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md text-label-md">Committees</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-all group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-all group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900" data-icon="verified">verified</span>
+<span class="font-label-md text-label-md">Trust Score</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-all group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900" data-icon="badge">badge</span>
+<span class="font-label-md text-label-md">KYC</span>
+</a>
+<a class="flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition-all group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-slate-900" data-icon="security">security</span>
+<span class="font-label-md text-label-md">Fraud Monitoring</span>
+</a>
+</nav>
+<div class="px-6 mt-auto">
+<div class="flex items-center gap-3 p-3 rounded-xl bg-surface-container">
+<img alt="Org Logo" class="w-8 h-8 rounded-lg bg-white shadow-sm" data-alt="A minimalist professional logo for a high-end financial institution, featuring clean geometric lines and a deep navy blue background. The aesthetic is modern and corporate, emphasizing stability, institutional trust, and digital-first banking reliability. Soft studio lighting highlights the subtle textures of the logo's surface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP4yQ8QrLP035nY2R03KDNMFp8DaqKyg02Dj9dm0vhoYBKW2_4KXWeN9nobgRJ2OoDMT42mQU7R0TcVKtcbPBOmkmIEWAjZXaeTQRGEthmK0QjG2ZBDYXnM5GH7kS4BgNCyXoObPc3qw6bpNuugCYNYn7OVUZrr_0gZThG6snXchqh4c3BU6ovVfFE82RbEWW9Z-akFpRq-uFlgR6TjThOESz5o3CALvmc1XitV4nsqIn5_-jg8ScGffmpZAFt--MXxH6K2sfF8cs"/>
+<div>
+<p class="text-label-sm font-bold text-primary">Admin Panel</p>
+<p class="text-[10px] text-on-surface-variant">Committee Oversight</p>
+</div>
+</div>
+</div>
+</aside>
+<div class="ml-64 flex flex-col min-h-screen">
+<!-- TopNavBar Component -->
+<header class="h-16 px-8 bg-white border-b border-slate-200 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+<input class="w-full bg-slate-50 border-none rounded-full py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary/20" placeholder="Search committees or members..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+<img alt="User Profile" class="w-8 h-8 rounded-full border border-slate-200" data-alt="A professional headshot of a financial administrator in a modern office setting. The lighting is soft and natural, coming from a large window. The background is slightly blurred to maintain focus on the subject. The overall mood is sophisticated, reliable, and corporate." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCA-BTDI4uRbe_j9s_bu0QfKodtiL6u4LtJaK2jBdYYYD-DsLHTx6r_uDqS3SD1fyJcYeDO6qGLbNPsbXBfVMCHY3sn8HzNTyYVdT56mpSB9aHG9-Ud1LktnL3Jg3DAMXs43YVStRIma71MnTqGA4Sf3EFffUOsQnhIPK5qrqGAMkWJ5orgLglUGkeA5DSmVV4Py1KtWpOycmx2sg8ER__y6fQ5TYeLxlM0qxTk-eBAbb3VpgouctQJ868E-jWQNuzGirkwIWjBoqk"/>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 p-8 space-y-8">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="px-2 py-1 bg-secondary/10 text-secondary text-[10px] font-bold uppercase tracking-wider rounded">Active</span>
+<span class="text-on-surface-variant text-label-sm font-medium">Month 4 of 12</span>
+</div>
+<h2 class="text-h1 font-h1 text-primary">Global Savings Circle #42</h2>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-slate-200 text-primary font-label-md text-label-md rounded-lg hover:bg-slate-50 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">download</span> Export Report
+                    </button>
+<button class="px-6 py-2 bg-primary text-white font-label-md text-label-md rounded-lg hover:opacity-90 transition-opacity">
+                        Manage Committee
+                    </button>
+</div>
+</section>
+<!-- Key Stats Row -->
+<section class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="bg-white p-6 rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100">
+<p class="text-on-surface-variant text-label-sm mb-1">Total Pot</p>
+<h3 class="text-h2 font-h2 text-primary">$12,000</h3>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100">
+<p class="text-on-surface-variant text-label-sm mb-1">Monthly Contribution</p>
+<h3 class="text-h2 font-h2 text-primary">$1,000</h3>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100">
+<p class="text-on-surface-variant text-label-sm mb-1">Next Payout</p>
+<h3 class="text-h2 font-h2 text-primary">Nov 15</h3>
+</div>
+<div class="bg-white p-6 rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.02)] border border-slate-100">
+<p class="text-on-surface-variant text-label-sm mb-1">My Position</p>
+<h3 class="text-h2 font-h2 text-primary">8th</h3>
+</div>
+</section>
+<!-- Layout Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Left Column: Timeline & Member List -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- Visual Payout Timeline -->
+<section class="bg-white p-8 rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.04)]">
+<div class="flex items-center justify-between mb-8">
+<h4 class="text-h3 font-h3 text-primary">Payout Schedule</h4>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-secondary"></span><span class="text-label-sm text-slate-500">Paid</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-primary"></span><span class="text-label-sm text-slate-500">Current</span></div>
+<div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-slate-200"></span><span class="text-label-sm text-slate-500">Upcoming</span></div>
+</div>
+</div>
+<div class="flex overflow-x-auto pb-4 gap-4 hide-scrollbar snap-x">
+<!-- Month 1: Paid -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border-4 border-secondary flex items-center justify-center bg-white mb-3">
+<img alt="Alex M." class="w-8 h-8 rounded-full" data-alt="A portrait of a cheerful diverse team member in a clean, brightly lit modern coworking space. The image is crisp with soft directional lighting, emphasizing a friendly and professional personality. High-key aesthetic with soft white and gray tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBEEtXqUh90_YFORfiYKkoGPHVpQHoH55I696Bexr9JIF8NerpZ7OFVX3XYRjTtkup5RQ13dBKbDNXQ0nbAowiM0vn2azYv6xtiCMZoKRxIBu4jgfnldKcIPc-Jsi4LYe7mJYTKH7qwYU3Xz1H2h-xtWtggp8ij2Ffe4k1RN5OQE5Z3LnX20IV8Z1TkTZr4K1q-2VIJJ0i7ShfF1_k1asnnBBMsY4k7-tKL0Y9_OCWK4Hobg49RIWiJcOxrqzr5Xfg48AFRmmJcV3Q"/>
+</div>
+<p class="text-label-sm font-bold text-primary">Aug</p>
+<p class="text-[10px] text-slate-500">Alex M.</p>
+<div class="absolute top-6 left-full w-full h-1 bg-secondary -z-10"></div>
+</div>
+</div>
+<!-- Month 2: Paid -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border-4 border-secondary flex items-center justify-center bg-white mb-3">
+<img alt="Sarah P." class="w-8 h-8 rounded-full" data-alt="A professional headshot of a business woman with a bright and welcoming smile. The setting is a minimalist office with subtle indoor greenery. Soft, warm lighting creates a high-quality corporate feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBq7GgQs45bN8JHiGMtuGO5t4uxtLRQEpg3KQrT8BbkeMD3S2wKqRaZeTkHeeYlWHf4wPbWTkCgLJ8hja2DyiZf3zA_KEi44hI4NuKlJ79mNZs8q6vkrKIs1qRGVbcUlltbBzWdEYP26VMytgsMmssppdi3PpQvQSkH8_8Ek4-gIqZecMTimVJebgDwpq1Dt1Jp-9DMIbmy6o3BoIgZfqryzha2SNrpwzzX_Yb7OrO_HHXK-rQQqRDPks8Lih6-j21shYT3IwRz37c"/>
+</div>
+<p class="text-label-sm font-bold text-primary">Sep</p>
+<p class="text-[10px] text-slate-500">Sarah P.</p>
+<div class="absolute top-6 left-full w-full h-1 bg-secondary -z-10"></div>
+</div>
+</div>
+<!-- Month 3: Paid -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border-4 border-secondary flex items-center justify-center bg-white mb-3">
+<img alt="Ray J." class="w-8 h-8 rounded-full" data-alt="Close up portrait of a male professional in a modern urban office environment. The lighting is bright and even, highlighting a confident expression. The palette is dominated by soft grays and blues." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmpFc766hT7fDUvr3V81YWvaWIwNqrReFxeIg_nyEDDQQJ7iZpPnastTp_nL1KcjTRq0HlE6-YzQmNnEJdvgpT3DAWCvKfxt_je0bhBdAzYDg6hRg-9pxs8yl3_vsU-2m0KmoYEJCLHsamqH3uDGNrB1VQeiFNxOMzEzqWjeFD12bhfrnJbD_oxFrUu25Jvm7W-1WKvJ77URcL-VMzhAlTTkrmprkn_TBkUw7fbtrfbkzGiZFFJ4l8V87CzLuHPxICZEjMdCftkXA"/>
+</div>
+<p class="text-label-sm font-bold text-primary">Oct</p>
+<p class="text-[10px] text-slate-500">Ray J.</p>
+<div class="absolute top-6 left-full w-full h-1 bg-secondary -z-10"></div>
+</div>
+</div>
+<!-- Month 4: Current -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center">
+<div class="w-12 h-12 rounded-full border-4 border-primary flex items-center justify-center bg-white mb-3 ring-4 ring-primary/10">
+<img alt="Marcus D." class="w-8 h-8 rounded-full" data-alt="Modern professional portrait of a tech entrepreneur with a thoughtful expression. The office background is blurred, showing soft highlights and architectural lines. Minimalist and high-end aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBS-hnemrkfgF_wBCZl8asl1asI5cLErRVN_9ySPfq1Tw1qYDX28iydf1E0O3RZW6P9Y8LbYAuD-ENDQU1meWQK_V7DVxK-mVQENd4WuO144OUsCbxo6EcgEQ9bqDyTcM5WSh9VRngRF8T1jk4PVBz9lUFlE2OkLR4ayJluXJjJ8phJaGIQqeZ3wJ214-Z2KjMgysKSGw6An3eYBqrbfhv6b07Yt0EbL8kQtUt09sHxF5-ggNWsMWzORdEQFi5hgmlcXmiuFh9qfG4"/>
+</div>
+<p class="text-label-sm font-bold text-primary underline decoration-primary underline-offset-4">Nov</p>
+<p class="text-[10px] text-primary font-bold">Marcus D.</p>
+<div class="absolute top-6 left-full w-full h-1 bg-slate-200 -z-10"></div>
+</div>
+</div>
+<!-- Month 5: Upcoming -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center opacity-40">
+<div class="w-12 h-12 rounded-full border-4 border-slate-200 flex items-center justify-center bg-white mb-3">
+<img alt="Lisa K." class="w-8 h-8 rounded-full" data-alt="Portrait of a young professional woman in a bright, modern studio. The mood is calm and focused. Clean, minimalist lighting and a high-key background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD7WtySuTBZl_edoBU6BWJSjbTbUcDSHtLf8yV55aimrhA7gg1DcG7XUzELiyEXSv38JQQxe0YjrzcWLkudUj-SQFODz5fmDHM7sNFY8K6uiIhCs4sk6HwELWISk5225xH9xpwvLMjytjrIe6ynsrEKem_Sp1z-u8zbHKvnIJ5zK-0jG-skpJfPD1hTayZev1TMqnXkrd2SJqoHYQQlmhgm-byQi4-u5EB74O5Q4SDMfsTaFknb4VI88QVyHMWxKwkEgowkec1V-ic"/>
+</div>
+<p class="text-label-sm font-bold text-slate-400">Dec</p>
+<p class="text-[10px] text-slate-400">Lisa K.</p>
+<div class="absolute top-6 left-full w-full h-1 bg-slate-200 -z-10"></div>
+</div>
+</div>
+<!-- Placeholder months... -->
+<div class="flex-none w-32 snap-start">
+<div class="relative flex flex-col items-center opacity-40">
+<div class="w-12 h-12 rounded-full border-4 border-slate-100 flex items-center justify-center bg-slate-50 mb-3">
+<span class="material-symbols-outlined text-slate-300">person</span>
+</div>
+<p class="text-label-sm font-bold text-slate-400">Jan</p>
+<p class="text-[10px] text-slate-400">Janice R.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Member Status List -->
+<section class="bg-white rounded-xl shadow-[0_8px_16px_rgba(26,43,76,0.04)] overflow-hidden border border-slate-100">
+<div class="p-6 border-b border-slate-100 flex justify-between items-center">
+<h4 class="text-h3 font-h3 text-primary">Circle Members</h4>
+<span class="text-label-sm text-slate-500">12 Total Members</span>
+</div>
+<table class="w-full text-left">
+<thead class="bg-slate-50 text-slate-500 text-[11px] uppercase tracking-wider font-bold">
+<tr>
+<th class="px-6 py-4">Member</th>
+<th class="px-6 py-4">Trust Score</th>
+<th class="px-6 py-4">Status</th>
+<th class="px-6 py-4">Payout Month</th>
+<th class="px-6 py-4"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 flex items-center gap-3">
+<img alt="Marcus D." class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEEyCnhRDVUK1lqGHD8tKb1t86gAlEYI88Bnn3yX1mP6UUqlGijamY98Y5NVO7HjwYQS2fqQd51RmKrDAbx2d4_YP4GFoeBEaj3Qdc9IJP3wiMolFrJmWv9nQQMPb6A-4ZFYfcBcX76aqS4T32kfObnGMvV-F8FiRGIVDhvIg38DuVWn0JM-nVIL2sx_YSnMZyftNre1LMWkV5kKN8MucIxoPIsWDhUumU_yof46WG_b5p3_XXONoZDWEboocqHAbsmZLZI6c37D4"/>
+<div>
+<p class="text-label-md font-bold text-primary">Marcus Dev</p>
+<p class="text-[10px] text-slate-400">@marcusd</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-bold text-secondary">98</span>
+<div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[98%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary/10 text-secondary text-[10px] font-bold rounded">PAID</span>
+</td>
+<td class="px-6 py-4 text-label-sm text-slate-600">Month 4 (Nov)</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-slate-400">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 flex items-center gap-3">
+<img alt="Lisa K." class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6pAfAKFbHMOx0sst9_o40Bw4thfCBvbL5tqEXDyGvZTC36NZfh2lxH_FPkigFzpca6Ibr2vpM6vvmTLhUm90LdVqbQFZZ84ZgRqZSJ5wnLkOOvmToJm8jaceJlbV642q81H0mfxQNFPtOFmOMmITw7SMn7to9g4Ia-KKg6loBGMUuYpQzHEm_DSUOgF0UN_7lJIv67Ip99nVNzktecsMdUShbtKuA_NL1biGOnEVByhzzYi6Ze-0DYf_wE706hgzpIN8i99_frxg"/>
+<div>
+<p class="text-label-md font-bold text-primary">Lisa Koh</p>
+<p class="text-[10px] text-slate-400">@lisak</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-bold text-secondary">92</span>
+<div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[92%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-tertiary-fixed-dim/20 text-on-tertiary-container text-[10px] font-bold rounded">PENDING</span>
+</td>
+<td class="px-6 py-4 text-label-sm text-slate-600">Month 5 (Dec)</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-slate-400">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-6 py-4 flex items-center gap-3">
+<img alt="John D." class="w-8 h-8 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxVU5CK8r5awqZgPo9RVQub7sMi6HpBMKwSqwPzl_7W-IX8IAlI3dWi0GQL3625phSjrm1hbeyn__SfVakYaEpC0iU6UPei-e4lQWXL7tpJuvm7lzSucKZf72NFLECfsEU9Q9GqZVunagsJCEXcsl-QHFCj5a6sbQx7nGAlbFqOWDjUbKwit-4ohQaYugJ7uei8qBGwDcf2UpCgHUdDgktfwJAQOTnNQ0K42yFcXKiuBt42OTaThFJRw8NcpkjpfEkLBikwOIkWEQ"/>
+<div>
+<p class="text-label-md font-bold text-primary">John Doe (You)</p>
+<p class="text-[10px] text-slate-400">@jdoe</p>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<span class="text-label-sm font-bold text-secondary">88</span>
+<div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[88%]"></div>
+</div>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-error/10 text-error text-[10px] font-bold rounded">LATE</span>
+</td>
+<td class="px-6 py-4 text-label-sm text-slate-600">Month 8 (Mar)</td>
+<td class="px-6 py-4 text-right">
+<button class="material-symbols-outlined text-slate-400">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</section>
+</div>
+<!-- Right Sidebar: Current Month Actions -->
+<div class="col-span-12 lg:col-span-4 space-y-gutter">
+<section class="bg-white p-8 rounded-xl shadow-[0_8px_24px_rgba(26,43,76,0.06)] border border-slate-100 sticky top-24">
+<div class="mb-6">
+<h4 class="text-h3 font-h3 text-primary mb-1">Current Actions</h4>
+<p class="text-label-sm text-slate-500">Month 4 Period: Nov 1 - Nov 30</p>
+</div>
+<div class="p-4 bg-slate-50 rounded-lg mb-8">
+<p class="text-label-sm text-slate-500 mb-2">Recipient this month:</p>
+<div class="flex items-center gap-3">
+<img alt="Recipient" class="w-10 h-10 rounded-full border-2 border-white shadow-sm" data-alt="A professional portrait of Marcus Dev, an administrative leader with a calm and confident expression. He is wearing a minimalist dark navy blazer. The setting is a brightly lit, clean office background with soft bokeh." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_wKWon1Bidy9HQvxkqQACnaTNb8L3tfSrdsCIPSI3e2v3usWMSFmnOcxwXBm8DwLvFPtnYctTZee_ooxlha5GPj8iqm9OL09Zhac6KrS8jmzCxyn8gSJbXcjAAYTf4Kqsv7fbV_ND4EyQ8pbeErNeYW3JAyMwTZk0q32PtET5Txc1AdWfUg7tOywYwm0fEsk67_20-bZAeoNVcAlxjTGYQ3PXYHKB_Ls3ny-38zzVF_Vyb1jdUs0qUxMO2PZF5SRl9g4FS3W7h2U"/>
+<div>
+<p class="text-label-md font-bold text-primary">Marcus Dev</p>
+<p class="text-[11px] text-secondary font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]">verified</span> Verified Member
+                                    </p>
+</div>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex justify-between items-end">
+<p class="text-label-sm font-bold text-primary">Total Collected</p>
+<p class="text-label-sm text-secondary font-bold">85%</p>
+</div>
+<div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+<div class="bg-secondary h-full w-[85%] transition-all duration-1000"></div>
+</div>
+<p class="text-[11px] text-slate-400 text-center italic">$10,200 of $12,000 pooled</p>
+</div>
+<div class="space-y-3">
+<button class="w-full py-4 bg-primary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:-translate-y-0.5 transition-all">
+                                Submit Monthly Contribution
+                            </button>
+<button class="w-full py-3 border border-slate-200 text-primary font-label-md rounded-xl hover:bg-slate-50 transition-colors">
+                                View Billing History
+                            </button>
+</div>
+<div class="mt-8 pt-8 border-t border-slate-100">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed-dim/30 flex items-center justify-center text-on-tertiary-container">
+<span class="material-symbols-outlined text-sm">info</span>
+</div>
+<p class="text-[11px] leading-relaxed text-slate-500">
+                                    Your contribution is due by <span class="font-bold">Nov 15th</span> to maintain your Trust Score. Late payments may impact your future payout priority.
+                                </p>
+</div>
+</div>
+</section>
+<!-- Quick Support Card -->
+<section class="bg-primary-container p-6 rounded-xl text-white">
+<h5 class="font-bold text-label-md mb-2">Need Assistance?</h5>
+<p class="text-[12px] opacity-70 mb-4">Contact your Circle Admin or ROSCA Trust support for any payment disputes.</p>
+<a class="text-[12px] font-bold underline underline-offset-4 flex items-center gap-2" href="#">
+                            Open Support Ticket <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</a>
+</section>
+</div>
+</div>
+</main>
+</div>
+</body></html>

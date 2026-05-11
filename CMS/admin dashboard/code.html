@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TrustCircle | Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#fbf8fc",
+                        "surface-container-high": "#e9e7eb",
+                        "surface-tint": "#4e5e82",
+                        "surface-container-highest": "#e4e2e5",
+                        "inverse-primary": "#b6c6f0",
+                        "on-primary": "#ffffff",
+                        "outline": "#75777f",
+                        "secondary-container": "#6dfe9c",
+                        "inverse-surface": "#303033",
+                        "on-primary-container": "#8293ba",
+                        "tertiary-container": "#3f2600",
+                        "background": "#fbf8fc",
+                        "primary-container": "#1a2b4c",
+                        "surface": "#fbf8fc",
+                        "surface-dim": "#dbd9dd",
+                        "primary-fixed-dim": "#b6c6f0",
+                        "tertiary": "#241300",
+                        "error": "#ba1a1a",
+                        "tertiary-fixed-dim": "#eabf8a",
+                        "on-secondary-fixed": "#00210c",
+                        "on-tertiary-container": "#b28c5b",
+                        "outline-variant": "#c5c6cf",
+                        "surface-container": "#efedf0",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#ffddb5",
+                        "secondary": "#006d36",
+                        "on-tertiary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed-variant": "#364669",
+                        "on-background": "#1b1b1e",
+                        "secondary-fixed-dim": "#4de082",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#005227",
+                        "inverse-on-surface": "#f2f0f3",
+                        "on-surface": "#1b1b1e",
+                        "secondary-fixed": "#6dfe9c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#071b3b",
+                        "primary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed": "#2a1800",
+                        "on-secondary-container": "#007439",
+                        "on-surface-variant": "#44474e",
+                        "on-tertiary-fixed-variant": "#5e4117",
+                        "primary": "#031636",
+                        "surface-variant": "#e4e2e5",
+                        "surface-container-low": "#f5f3f6",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "base": "8px",
+                        "md": "24px",
+                        "sm": "12px",
+                        "xl": "64px",
+                        "lg": "40px",
+                        "container-max": "1440px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Public Sans"],
+                        "label-sm": ["Public Sans"],
+                        "display": ["Public Sans"],
+                        "body-md": ["Public Sans"],
+                        "label-md": ["Public Sans"],
+                        "body-lg": ["Public Sans"],
+                        "h1": ["Public Sans"],
+                        "h2": ["Public Sans"],
+                        "h3": ["Public Sans"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shadow-level-1 {
+            box-shadow: 0 8px 16px rgba(26, 43, 76, 0.04);
+        }
+        .shadow-level-2 {
+            box-shadow: 0 24px 48px rgba(26, 43, 76, 0.06);
+        }
+        .heatmap-cell {
+            transition: transform 0.2s ease;
+        }
+        .heatmap-cell:hover {
+            transform: scale(1.1);
+            z-index: 10;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen">
+<!-- SideNavBar Anchor -->
+<aside class="fixed left-0 top-0 h-full flex flex-col pt-4 z-50 bg-white border-r border-slate-200 w-72 shadow-[4px_0_12px_rgba(26,43,76,0.02)]">
+<div class="px-8 mb-10 flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-white" data-icon="shield">shield</span>
+</div>
+<div>
+<h1 class="text-lg font-black tracking-tighter text-[#1A2B4C]">TrustCircle</h1>
+<p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Financial Oversight</p>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<!-- Active State: Dashboard -->
+<a class="flex items-center gap-3 bg-slate-50 text-[#1A2B4C] border-l-4 border-secondary px-6 py-4 font-bold transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-6 py-4 hover:bg-slate-50 hover:text-[#1A2B4C] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="groups">groups</span>
+<span class="font-label-md">Committees</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-6 py-4 hover:bg-slate-50 hover:text-[#1A2B4C] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="receipt_long">receipt_long</span>
+<span class="font-label-md">Transactions</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-6 py-4 hover:bg-slate-50 hover:text-[#1A2B4C] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+<span class="font-label-md">Trust Score</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-6 py-4 hover:bg-slate-50 hover:text-[#1A2B4C] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-label-md">KYC Verification</span>
+</a>
+<a class="flex items-center gap-3 text-slate-500 px-6 py-4 hover:bg-slate-50 hover:text-[#1A2B4C] transition-all duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span class="font-label-md">Fraud Monitoring</span>
+</a>
+</nav>
+<div class="p-6">
+<button class="w-full bg-primary-container text-white py-4 rounded-xl font-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add_circle">add_circle</span>
+                Create Committee
+            </button>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-72 min-h-screen">
+<!-- TopAppBar Anchor -->
+<header class="flex justify-between items-center h-16 px-8 w-full z-40 bg-white border-b border-slate-200 sticky top-0 shadow-sm">
+<div class="flex items-center gap-4 flex-1">
+<div class="relative w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container border-none rounded-full text-body-sm focus:ring-2 focus:ring-primary-container" placeholder="Search accounts, committees, or logs..." type="text"/>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-4">
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+</button>
+<button class="p-2 text-slate-500 hover:bg-slate-50 rounded-full transition-colors active:scale-95">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+<div class="h-8 w-[1px] bg-slate-200"></div>
+<div class="flex items-center gap-3">
+<div class="text-right">
+<p class="font-label-md text-primary">Admin Panel</p>
+<p class="text-[10px] text-slate-500">Super Administrator</p>
+</div>
+<img alt="Administrator Profile" class="w-10 h-10 rounded-full object-cover border-2 border-slate-100" data-alt="A professional headshot of a corporate administrator in a modern office setting. The lighting is bright and clean, typical of a high-end corporate environment. He is wearing a crisp white shirt and a navy blue blazer, projecting an aura of trust and authority. The background is slightly blurred with soft bokeh of glass partitions and office plants, maintaining a minimalist and professional aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4FJDjBxNlk_we_xcDzPVdndV1oI-ZryrXjSi_bICgOPV5Ms-k28moyNLwEbAO84BApsAD4SrrGxVb4tL1NtMqdB3CUydDUUzl9hKqKRmQDzUR4UG-qAQdhr65c-khOkGrmZRemyWZHRhJmuY1RxBmOcVxkKM3lZsCla859ZI2UuoXOQi-vxGoZFVDJDjQytyBgvzUw3ibM0Q5y5XaWgE-Jjw6TQZg47c2xrRkamZAIFdURlwZs7id1xWI3V-MQhqbfzfAGcegDko"/>
+</div>
+</div>
+</header>
+<!-- Content Area -->
+<div class="p-10 max-w-[1600px] mx-auto space-y-8">
+<!-- Welcome Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-h1 text-primary">System Overview</h2>
+<p class="font-body-md text-on-surface-variant">Real-time risk assessment and activity monitoring.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-6 py-2.5 rounded-xl border border-primary text-primary font-label-md hover:bg-slate-50 transition-colors">Export Report</button>
+<button class="px-6 py-2.5 rounded-xl bg-primary text-white font-label-md hover:opacity-90 transition-colors shadow-lg">Refresh Data</button>
+</div>
+</div>
+<!-- Global Stats Bento Grid -->
+<div class="grid grid-cols-12 gap-6">
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-level-1 border border-slate-100">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-primary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="person">person</span>
+</div>
+<span class="text-secondary font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 12%
+                        </span>
+</div>
+<p class="font-label-md text-slate-500 uppercase tracking-wider">Total Users</p>
+<p class="font-display text-primary mt-1">1,240</p>
+<div class="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-primary w-3/4 rounded-full"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-level-1 border border-slate-100">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-secondary/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" data-icon="account_balance">account_balance</span>
+</div>
+<span class="text-secondary font-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="trending_up">trending_up</span> 5%
+                        </span>
+</div>
+<p class="font-label-md text-slate-500 uppercase tracking-wider">Active Committees</p>
+<p class="font-display text-primary mt-1">156</p>
+<div class="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-1/2 rounded-full"></div>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 bg-white p-6 rounded-2xl shadow-level-1 border border-error/10">
+<div class="flex justify-between items-start mb-4">
+<div class="w-12 h-12 rounded-xl bg-error/5 flex items-center justify-center">
+<span class="material-symbols-outlined text-error" data-icon="report">report</span>
+</div>
+<span class="text-error font-label-sm flex items-center gap-1">
+                            High Priority
+                        </span>
+</div>
+<p class="font-label-md text-slate-500 uppercase tracking-wider">Flagged Activities</p>
+<p class="font-display text-error mt-1">4</p>
+<p class="text-label-sm text-error/60 mt-4">Requires immediate review</p>
+</div>
+</div>
+<!-- Main Content Layout -->
+<div class="grid grid-cols-12 gap-8">
+<!-- Left Column: Fraud Detection Hub & Heatmap -->
+<div class="col-span-12 lg:col-span-8 space-y-8">
+<!-- User Risk Heatmap -->
+<section class="bg-white p-8 rounded-2xl shadow-level-1 border border-slate-100">
+<div class="flex justify-between items-center mb-8">
+<div>
+<h3 class="font-h2 text-primary">User Risk Heatmap</h3>
+<p class="text-body-sm text-on-surface-variant">Geographic &amp; behavioral risk clusters</p>
+</div>
+<div class="flex items-center gap-2 text-label-sm">
+<div class="flex items-center gap-1"><div class="w-3 h-3 bg-secondary rounded-sm"></div> Safe</div>
+<div class="flex items-center gap-1"><div class="w-3 h-3 bg-amber-400 rounded-sm"></div> Caution</div>
+<div class="flex items-center gap-1"><div class="w-3 h-3 bg-error rounded-sm"></div> Critical</div>
+</div>
+</div>
+<div class="h-64 flex items-center justify-center bg-slate-50 rounded-xl relative overflow-hidden">
+<!-- Simulated Heatmap Grid -->
+<div class="grid grid-cols-12 grid-rows-6 gap-2 p-4 w-full h-full opacity-60">
+<!-- Generated blocks to simulate heatmap activity -->
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-amber-400 rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-error rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-amber-400 rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<!-- Second row -->
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-amber-400 rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-error rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-amber-400 rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md"></div>
+<!-- Random fill for texture -->
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-amber-100 rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-error rounded-md"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+<div class="heatmap-cell bg-secondary-fixed rounded-md opacity-20"></div>
+</div>
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<p class="bg-white/90 backdrop-blur px-6 py-2 rounded-full font-label-md shadow-lg border border-slate-200">View Detailed Geographic Map</p>
+</div>
+</div>
+</section>
+<!-- High Priority Cases Table -->
+<section class="bg-white rounded-2xl shadow-level-1 border border-slate-100 overflow-hidden">
+<div class="p-8 border-b border-slate-100 flex justify-between items-center">
+<div>
+<h3 class="font-h2 text-primary">High Priority Cases</h3>
+<p class="text-body-sm text-on-surface-variant">Accounts with critical risk scores</p>
+</div>
+<button class="text-primary font-label-md hover:underline">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-slate-50 border-b border-slate-100">
+<tr>
+<th class="px-8 py-4 font-label-md text-slate-500 uppercase tracking-wider">User</th>
+<th class="px-8 py-4 font-label-md text-slate-500 uppercase tracking-wider">Risk Level</th>
+<th class="px-8 py-4 font-label-md text-slate-500 uppercase tracking-wider">Status</th>
+<th class="px-8 py-4 font-label-md text-slate-500 uppercase tracking-wider">Last Dispute</th>
+<th class="px-8 py-4 font-label-md text-slate-500 uppercase tracking-wider"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-100">
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User Avatar" data-alt="A portrait of a middle-aged man with a short beard and a neutral expression, photographed in soft, even studio lighting. He is wearing a simple grey polo shirt. The image is clean and bright, set against a solid off-white background, maintaining the high-trust, minimalist aesthetic of the administrative dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2K7ZLCoi-twzUhANh-wIXQVE5J5aGtBwxiajxQK7tSOIA4FLkTvI6Y3BPxfdP93kgoDwVJAk83Z240lzEoyyH56_QUNXF7njEUCI3sHVW0GKnoiyBZwSSObhaJAl0hx6smo5YqGF1v8CZ5eo9Ov9HG_M6t1TAbgUfC9Cv0MjJmyjm-FeZaNH5vKhe1AeOw53LSpkKNlmq2CMGX2AQUXavcHVn5JZiGFzm82NVEQJfEB87vEo73OZ62Kmz-RECkUcKrCjnWZl_w6E"/>
+</div>
+<div>
+<p class="font-label-md text-primary">@marcus_dev</p>
+<p class="text-[10px] text-slate-400">ID: 99283-TC</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-slate-100 rounded-full w-24">
+<div class="h-full bg-error w-[85%] rounded-full"></div>
+</div>
+<span class="text-error font-bold text-xs">85%</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-error/10 text-error text-[10px] font-bold rounded-full uppercase tracking-widest">Flagged</span>
+</td>
+<td class="px-8 py-5 text-body-sm text-slate-500">2h ago</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-slate-50/50 transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-slate-200 overflow-hidden">
+<img alt="User Avatar" data-alt="A professional headshot of a young woman with a focused expression, wearing glasses and a navy business suit. The lighting is crisp and natural, highlighting her face against a minimalist modern office window background. The overall tone is professional, sophisticated, and clean, aligned with a premium corporate UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB9U9U6FJS1WLwe99y7ViCkp8GvXjzBz1M7TmtPxAF6h3OfePPnSLsPDOhhN-T6tR9rCWHjleoVjSSVyq8COD4r6aXpGqzn5LwbtR1NVKyy70tejPK_Ijbm6TrZ497zAGDLPqZd3QN9sa6HS-ZLJ32ey__5ZPUVXq2j3RFRaNEA-QU8OPEdOL1NGl1QOMOkA-x4GoLfyS4C-PM4CdhiXZRVnOHKiW-QOHRqPtzvjFFZuMVzm29-LSV4r1ZiAs00wTOc2D1omv8M9ug"/>
+</div>
+<div>
+<p class="font-label-md text-primary">@sarah_banks</p>
+<p class="text-[10px] text-slate-400">ID: 88472-TC</p>
+</div>
+</div>
+</td>
+<td class="px-8 py-5">
+<div class="flex items-center gap-2">
+<div class="flex-1 h-1.5 bg-slate-100 rounded-full w-24">
+<div class="h-full bg-amber-400 w-[62%] rounded-full"></div>
+</div>
+<span class="text-amber-600 font-bold text-xs">62%</span>
+</div>
+</td>
+<td class="px-8 py-5">
+<span class="px-3 py-1 bg-amber-100 text-amber-600 text-[10px] font-bold rounded-full uppercase tracking-widest">Under Review</span>
+</td>
+<td class="px-8 py-5 text-body-sm text-slate-500">5h ago</td>
+<td class="px-8 py-5 text-right">
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+<!-- Right Column: Fraud Hub & Quick Actions -->
+<div class="col-span-12 lg:col-span-4 space-y-8">
+<!-- Fraud Detection Hub -->
+<section class="bg-primary-container text-white p-8 rounded-2xl shadow-level-2 h-[500px] flex flex-col">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-h3">Fraud Detection Hub</h3>
+<span class="flex h-2 w-2 relative">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+</div>
+<div class="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
+<!-- Alert Item -->
+<div class="p-4 bg-white/10 rounded-xl border border-white/10 hover:bg-white/15 transition-all">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-1 bg-error text-[9px] font-black uppercase rounded">Critical</span>
+<span class="text-[10px] text-white/50">Just Now</span>
+</div>
+<p class="text-body-sm">User <span class="font-bold text-secondary">@john_doe</span> flagged for late payment in 3 committees simultaneously.</p>
+<div class="mt-4 flex gap-2">
+<button class="px-3 py-1 bg-white text-primary text-[10px] font-bold rounded hover:bg-slate-100">Investigate</button>
+<button class="px-3 py-1 border border-white/20 text-[10px] font-bold rounded hover:bg-white/10">Dismiss</button>
+</div>
+</div>
+<!-- Alert Item -->
+<div class="p-4 bg-white/10 rounded-xl border border-white/10">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-1 bg-amber-400 text-black text-[9px] font-black uppercase rounded">Warning</span>
+<span class="text-[10px] text-white/50">14m ago</span>
+</div>
+<p class="text-body-sm">Multiple login attempts from unverified IP range (Eastern Europe) for account <span class="font-bold text-secondary">@clara_v</span>.</p>
+</div>
+<!-- Alert Item -->
+<div class="p-4 bg-white/10 rounded-xl border border-white/10">
+<div class="flex justify-between items-start mb-2">
+<span class="px-2 py-1 bg-amber-400 text-black text-[9px] font-black uppercase rounded">Warning</span>
+<span class="text-[10px] text-white/50">1h ago</span>
+</div>
+<p class="text-body-sm">Trust Score anomaly detected for <span class="font-bold text-secondary">@apex_invest</span>. Rapid drop from 98 to 45.</p>
+</div>
+</div>
+</section>
+<!-- Quick Links Section -->
+<section class="space-y-4">
+<h3 class="font-label-md text-slate-500 uppercase tracking-widest px-2">Administrative Hub</h3>
+<a class="group flex items-center justify-between p-6 bg-white rounded-2xl shadow-level-1 border border-slate-100 hover:border-primary transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="manage_accounts">manage_accounts</span>
+</div>
+<div>
+<p class="font-label-md text-primary">User Management</p>
+<p class="text-[11px] text-slate-500">Edit roles &amp; permissions</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</a>
+<a class="group flex items-center justify-between p-6 bg-white rounded-2xl shadow-level-1 border border-slate-100 hover:border-primary transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="gavel">gavel</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Dispute Resolution</p>
+<p class="text-[11px] text-slate-500">Arbitrate member conflicts</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</a>
+<a class="group flex items-center justify-between p-6 bg-white rounded-2xl shadow-level-1 border border-slate-100 hover:border-primary transition-all" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="policy">policy</span>
+</div>
+<div>
+<p class="font-label-md text-primary">Compliance Logs</p>
+<p class="text-[11px] text-slate-500">Audit trail &amp; history</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-primary transition-colors" data-icon="arrow_forward_ios">arrow_forward_ios</span>
+</a>
+</section>
+</div>
+</div>
+</div>
+</main>
+</body></html>
