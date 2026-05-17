@@ -221,4 +221,48 @@ export class CommitteesService {
 
     return { payoutId: payoutRef.id, recipient };
   }
+
+  async addMemberByEmail(committeeId: string, email: string, creatorId: string): Promise<string> {
+    if (!isFirebaseConfigured()) {
+      throw new Error('Firebase not configured');
+    }
+    
+    // 1. Find user by email
+    const trimmedEmail = email.trim().toLowerCase();
+    const userSnap = await getDocs(
+      query(collection(getDb(), 'users'), where('email', '==', trimmedEmail), limit(1))
+    );
+    
+    if (userSnap.empty) {
+      throw new Error(`No user found with email ${trimmedEmail}. They must register first.`);
+    }
+    
+    const userId = userSnap.docs[0]!.id;
+    
+    // 2. Verify Committee
+    const ref = doc(getDb(), 'committees', committeeId);
+    const s = await getDoc(ref);
+    if (!s.exists()) {
+      throw new Error('Committee not found');
+    }
+    const c = s.data() as Omit<Committee, 'id'>;
+    
+    if (c.creatorId !== creatorId) {
+      throw new Error('Only the creator can manually add members');
+    }
+    if (c.memberIds?.includes(userId)) {
+      throw new Error('User is already a member of this committee');
+    }
+    if ((c.memberIds?.length ?? 0) >= c.maxMembers) {
+      throw new Error('Committee is full');
+    }
+    
+    // 3. Add to committee
+    await updateDoc(ref, {
+      memberIds: arrayUnion(userId),
+      updatedAt: serverTimestamp(),
+    });
+    
+    return userId;
+  }
 }

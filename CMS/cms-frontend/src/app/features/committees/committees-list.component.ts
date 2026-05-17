@@ -59,7 +59,7 @@ import { UserProfileService } from '../../core/services/user-profile.service';
               <dl class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 text-sm">
                 <div>
                   <dt class="text-slate-400 text-xs uppercase font-bold">Seat cap</dt>
-                  <dd>{{ committee.memberIds?.length ?? 0 }} / {{ committee.maxMembers }}</dd>
+                  <dd>{{ committee.memberIds.length ?? 0 }} / {{ committee.maxMembers }}</dd>
                 </div>
                 <div>
                   <dt class="text-slate-400 text-xs uppercase font-bold">Monthly</dt>
@@ -134,9 +134,15 @@ import { UserProfileService } from '../../core/services/user-profile.service';
                   <dd class="text-emerald-500 font-bold">{{ (committee.contributionAmount * committee.maxMembers) | currency:committee.currency }}</dd>
                 </div>
               </dl>
-              <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 text-sm">
-                 <span class="text-slate-400">Created by: </span>
-                 <span class="font-bold text-primary dark:text-white">{{ committee.creatorName || 'Loading...' }}</span>
+              <div class="mt-4 pt-4 border-t border-slate-50 dark:border-slate-800 flex justify-between items-center text-sm">
+                 <div>
+                   <span class="text-slate-400">Created by: </span>
+                   <span class="font-bold text-primary dark:text-white">{{ committee.creatorName || 'Loading...' }}</span>
+                 </div>
+                 <div class="flex items-center gap-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-md text-xs font-bold" title="Creator Trust Score">
+                   <span class="material-symbols-outlined text-[14px]">local_police</span>
+                   {{ committee.creatorTrustScore || 500 }}
+                 </div>
               </div>
             </article>
 
@@ -181,7 +187,7 @@ export class CommitteesListComponent implements OnDestroy {
   private readonly userProfile = inject(UserProfileService);
 
   myCommittees = signal<(Committee & { id: string; creatorName?: string; isCreator?: boolean })[]>([]);
-  availableCommittees = signal<(Committee & { id: string; creatorName?: string })[]>([]);
+  availableCommittees = signal<(Committee & { id: string; creatorName?: string; creatorTrustScore?: number })[]>([]);
   
   joinBusy = signal(false);
   joinError = signal<string | undefined>(undefined);
@@ -215,12 +221,13 @@ export class CommitteesListComponent implements OnDestroy {
     });
 
     this.subAvailable = this.committeesSvc.listAvailable(uid).subscribe(async rows => {
-      // Fetch creator names for each available committee
+      // Fetch creator names and trust scores for each available committee
       const enrichedRows = await Promise.all(rows.map(async (c) => {
         const profile = await this.userProfile.getOnce(c.creatorId);
         return {
           ...c,
-          creatorName: profile?.displayName || 'Unknown User'
+          creatorName: profile?.displayName || 'Unknown User',
+          creatorTrustScore: profile?.trustScore || 500
         };
       }));
       this.availableCommittees.set(enrichedRows);

@@ -161,6 +161,34 @@ import { UserProfileService } from '../../core/services/user-profile.service';
         <!-- Right Column: Transactions & Members -->
         <section class="lg:col-span-7 space-y-6">
           
+          <!-- Member Management (Creator Only) -->
+          <div *ngIf="isCreator()" class="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
+            <h3 class="font-h3 text-primary dark:text-white mb-2 flex items-center gap-2">
+              <span class="material-symbols-outlined text-secondary">person_add</span> Manage Members
+            </h3>
+            <p class="text-sm text-slate-500 mb-5">Directly add a user to this committee using their registered email address.</p>
+            
+            <div class="flex gap-3 relative">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">mail</span>
+              </div>
+              <input type="email" #addEmailInput placeholder="Enter user's email address..." 
+                     class="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary/20 transition-all"
+                     [disabled]="addMemberBusy()"
+                     (keydown.enter)="addMember(addEmailInput.value); addEmailInput.value = ''">
+              <button (click)="addMember(addEmailInput.value); addEmailInput.value = ''"
+                      [disabled]="addMemberBusy() || !addEmailInput.value"
+                      class="px-6 py-3 bg-secondary hover:bg-secondary/90 text-white text-sm font-bold rounded-xl shadow-lg shadow-secondary/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap">
+                <span *ngIf="addMemberBusy()" class="material-symbols-outlined text-[16px] animate-spin mr-1 align-middle">autorenew</span>
+                {{ addMemberBusy() ? 'Adding...' : 'Add Member' }}
+              </button>
+            </div>
+            <div *ngIf="addMemberError()" class="mt-3 p-3 rounded-lg bg-error/10 border border-error/20 flex gap-2 items-start text-error text-xs">
+               <span class="material-symbols-outlined text-[16px]">error</span>
+               <p>{{ addMemberError() }}</p>
+            </div>
+          </div>
+
           <div class="rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm">
             <div class="flex justify-between items-end mb-6">
               <h3 class="font-h3 text-primary dark:text-white">Cycle {{ committee()!.currentCycle }} Ledger</h3>
@@ -247,6 +275,10 @@ export class CommitteeDetailComponent implements OnDestroy {
   winnerName = signal<string>('');
   showConfirmModal = signal(false);
 
+  // Member Management State
+  addMemberBusy = signal(false);
+  addMemberError = signal('');
+
   private routeSub?: Subscription;
   private txsSub?: Subscription;
   private animationInterval?: any;
@@ -265,6 +297,11 @@ export class CommitteeDetailComponent implements OnDestroy {
     const isCreator = uid === c.creatorId;
     const isAdmin = this.auth.hasRole('admin');
     return isCreator || isAdmin;
+  });
+
+  isCreator = computed(() => {
+    const c = this.committee();
+    return c ? this.auth.getUid() === c.creatorId : false;
   });
 
   eligibleMembers = computed(() => {
@@ -419,5 +456,25 @@ export class CommitteeDetailComponent implements OnDestroy {
     this.drawState.set('idle');
     this.winnerName.set('');
     this.currentAnimatedName.set('???');
+  }
+
+  // Member Management Workflow
+  async addMember(email: string) {
+    if (!email) return;
+    const c = this.committee();
+    if (!c) return;
+    
+    this.addMemberBusy.set(true);
+    this.addMemberError.set('');
+    
+    try {
+      await this.committees.addMemberByEmail(c.id, email, this.auth.getUid()!);
+      await this.hydrate(c.id); // Reload committee to show updated capacity
+      this.addMemberError.set(''); // Clear any errors if successful
+    } catch (e: any) {
+      this.addMemberError.set(e.message || 'Failed to add member. Make sure the email is registered.');
+    } finally {
+      this.addMemberBusy.set(false);
+    }
   }
 }

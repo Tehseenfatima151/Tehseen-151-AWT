@@ -2,11 +2,20 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { AuthLayoutComponent } from './layouts/auth-layout/auth-layout.component';
 import { MainLayoutComponent } from './layouts/main-layout/main-layout.component';
+import { PublicLayoutComponent } from './layouts/public-layout/public-layout.component';
 import { guestGuard } from './core/guards/guest.guard';
 import { kycCompleteGuard } from './core/guards/kyc-complete.guard';
 import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
+  {
+    path: '',
+    component: PublicLayoutComponent,
+    canActivate: [guestGuard],
+    children: [
+      { path: '', loadComponent: () => import('./features/landing/landing.component').then(m => m.LandingComponent) }
+    ]
+  },
   {
     path: '',
     component: AuthLayoutComponent,
@@ -19,7 +28,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/auth/forgot-password/forgot-password.component').then(m => m.ForgotPasswordComponent),
       },
-      { path: '', pathMatch: 'full', redirectTo: 'login' },
     ],
   },
   {
@@ -148,5 +156,5 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
     ],
   },
-  { path: '**', redirectTo: 'login' },
+  { path: '**', redirectTo: '' },
 ];

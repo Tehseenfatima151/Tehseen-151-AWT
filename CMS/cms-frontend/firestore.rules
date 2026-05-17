@@ -22,8 +22,13 @@ service cloud.firestore {
       allow create, update: if signedIn() && (uid() == userId || isAdmin());
     }
 
+    match /publicProfiles/{userId} {
+      allow read: if true;
+      allow write: if signedIn() && (uid() == userId || isAdmin());
+    }
+
     match /committees/{committeeId} {
-      allow read: if signedIn();
+      allow read: if true;
       allow write: if signedIn();
     }
 

@@ -74,11 +74,32 @@ export class UserProfileService {
     } else {
       await updateDoc(r, { ...payload, updatedAt: serverTimestamp() });
     }
+    await this.syncPublicProfile(uid, { ...base, ...payload });
   }
 
   async update(uid: string, data: Partial<TrustCircleUser>): Promise<void> {
     if (!isFirebaseConfigured()) return;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     await updateDoc(this.ref(uid), { ...(data as any), updatedAt: serverTimestamp() });
+    await this.syncPublicProfile(uid, data);
+  }
+
+  private async syncPublicProfile(uid: string, data: Partial<TrustCircleUser>): Promise<void> {
+    if (!isFirebaseConfigured()) return;
+    const publicRef = doc(getDb(), 'publicProfiles', uid);
+    const publicData: any = { updatedAt: serverTimestamp() };
+    
+    // Only pick safe fields
+    if (data.displayName !== undefined) publicData.displayName = data.displayName;
+    if (data.trustScore !== undefined) publicData.trustScore = data.trustScore;
+    if (data.createdAt !== undefined) publicData.memberSince = data.createdAt;
+    
+    // In a real app we'd trigger a cloud function to count completed committees,
+    // for now we set default if creating.
+    if (data.createdAt) {
+      publicData.completedCommittees = 0;
+    }
+    
+    await setDoc(publicRef, publicData, { merge: true });
   }
 }
