@@ -1,5 +1,7 @@
 # VoteSphere — Modern Election Management System
 
+🌍 **Live Demo:** [https://votesphere-fmrolcpi7-shinefatim151-8164s-projects.vercel.app](https://votesphere-fmrolcpi7-shinefatim151-8164s-projects.vercel.app)
+
 VoteSphere is a highly secure, comprehensive, and scalable web-based Election Management System (EMS). Designed for organizations, universities, and communities, VoteSphere makes it effortless to create, manage, and participate in transparent digital elections.
 
 ## ✨ Key Features
