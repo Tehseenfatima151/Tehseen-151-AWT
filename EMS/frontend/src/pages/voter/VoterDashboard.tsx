@@ -12,15 +12,23 @@ export default function VoterDashboard() {
   const { user } = useAuthStore();
   const { elections, fetchElections } = useElectionStore();
   const { registrations, fetchMyData, joinElection } = useVotingStore();
-  const { getUserNotifications } = useNotificationStore();
+  const { getUserNotifications, addNotification } = useNotificationStore();
 
   const [joining, setJoining] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [confirmWaitlistElection, setConfirmWaitlistElection] = useState<any | null>(null);
 
-  // Fetch fresh data on mount
+  // Fetch fresh data on mount and poll for time-based auto-progression
   useEffect(() => {
     fetchElections();
     if (user?.id) fetchMyData(user.id);
+
+    // Poll every 15 seconds to check if any election has crossed its start/end time
+    const interval = setInterval(() => {
+      fetchElections();
+    }, 15000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const myRegs = registrations.filter(r => r.userId === user?.id);
@@ -34,6 +42,42 @@ export default function VoterDashboard() {
   
   const notifications = user ? getUserNotifications(user.id) : [];
   const unread = notifications.filter(n => !n.isRead).length;
+
+  // Auto-generate notifications for upcoming and active elections
+  useEffect(() => {
+    if (!user) return;
+    
+    // Notifications for Upcoming
+    upcomingElections.forEach(e => {
+      const title = `Upcoming Election: ${e.title}`;
+      const hasNotified = notifications.some(n => n.title === title);
+      
+      if (!hasNotified) {
+        const startDate = new Date(e.startDate).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+        addNotification({
+          userId: user.id,
+          type: 'info',
+          title,
+          message: `Get ready! "${e.title}" is starting on ${startDate}. Make sure you are registered to vote.`,
+        });
+      }
+    });
+
+    // Notifications for Active
+    activeElections.forEach(e => {
+      const title = `Active Election: ${e.title}`;
+      const hasNotified = notifications.some(n => n.title === title);
+      
+      if (!hasNotified) {
+        addNotification({
+          userId: user.id,
+          type: 'success',
+          title,
+          message: `The election "${e.title}" is now LIVE! Cast your vote before time runs out.`,
+        });
+      }
+    });
+  }, [upcomingElections.length, activeElections.length, user?.id]);
 
   const handleJoin = async (electionId: string) => {
     if (!user) return;
@@ -122,10 +166,22 @@ export default function VoterDashboard() {
                       </Link>
                     )}
                     {!reg && (
-                      <button onClick={() => handleJoin(e.id)} disabled={joining === e.id}
-                        className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl text-sm hover:opacity-90 disabled:opacity-60 transition-all shadow-lg shadow-primary/20 shrink-0">
-                        {joining === e.id ? 'Joining...' : 'Register to Vote'}
-                      </button>
+                      e.currentVoters < e.maxVoters ? (
+                        <button onClick={() => handleJoin(e.id)} disabled={joining === e.id}
+                          className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl text-sm hover:opacity-90 disabled:opacity-60 transition-all shadow-lg shadow-primary/20 shrink-0">
+                          {joining === e.id ? 'Joining...' : 'Register to Vote'}
+                        </button>
+                      ) : e.isWaitlistEnabled ? (
+                        <button onClick={() => setConfirmWaitlistElection(e)} disabled={joining === e.id}
+                          className="flex items-center gap-2 px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm transition-all shadow-lg shadow-amber-500/20 shrink-0">
+                          {joining === e.id ? 'Joining...' : 'Join Waitlist'}
+                        </button>
+                      ) : (
+                        <button disabled
+                          className="flex items-center gap-2 px-5 py-2.5 bg-muted text-muted-foreground font-bold rounded-xl text-sm shrink-0 cursor-not-allowed border border-border">
+                          Capacity Reached
+                        </button>
+                      )
                     )}
                   </div>
                 </motion.div>
@@ -173,10 +229,22 @@ export default function VoterDashboard() {
                     {reg ? (
                       <StatusBadge status={reg.status === 'waitlisted' ? 'waitlisted' : 'registered'} />
                     ) : (
-                      <button onClick={() => handleJoin(e.id)} disabled={joining === e.id}
-                        className="px-4 py-2 border border-border rounded-xl text-sm font-bold hover:bg-muted transition-all disabled:opacity-60">
-                        {joining === e.id ? 'Joining...' : 'Register'}
-                      </button>
+                      e.currentVoters < e.maxVoters ? (
+                        <button onClick={() => handleJoin(e.id)} disabled={joining === e.id}
+                          className="px-4 py-2 border border-border rounded-xl text-sm font-bold hover:bg-muted transition-all disabled:opacity-60">
+                          {joining === e.id ? 'Joining...' : 'Register'}
+                        </button>
+                      ) : e.isWaitlistEnabled ? (
+                        <button onClick={() => setConfirmWaitlistElection(e)} disabled={joining === e.id}
+                          className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-amber-500/20">
+                          {joining === e.id ? 'Joining...' : 'Join Waitlist'}
+                        </button>
+                      ) : (
+                        <button disabled
+                          className="px-4 py-2 bg-muted text-muted-foreground border border-border font-bold text-sm rounded-xl cursor-not-allowed">
+                          Capacity Reached
+                        </button>
+                      )
                     )}
                   </div>
                 </div>
@@ -191,6 +259,53 @@ export default function VoterDashboard() {
           <div className="text-5xl mb-4">🗳️</div>
           <h3 className="font-bold text-lg mb-2 text-foreground">No elections available</h3>
           <p className="text-sm">There are no active or upcoming elections at the moment. Check back later.</p>
+        </div>
+      )}
+
+      {confirmWaitlistElection && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-card border border-amber-200 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center gap-3 text-amber-600">
+              <div className="p-2 bg-amber-50 rounded-xl border border-amber-200">
+                <Clock size={24} />
+              </div>
+              <h4 className="font-bold text-lg">Join Election Waitlist</h4>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              The election <strong>{confirmWaitlistElection.title}</strong> has reached its registration capacity of <strong>{confirmWaitlistElection.maxVoters}</strong> voters.
+            </p>
+            
+            <div className="p-3 bg-amber-50/50 border border-amber-100 rounded-xl text-xs text-amber-800 space-y-1">
+              <p className="font-semibold">⚠️ Waitlist Terms:</p>
+              <p>• You will be placed on the queue as #{(confirmWaitlistElection.waitlistCount || 0) + 1}.</p>
+              <p>• If an existing registered voter leaves or is removed, you will be automatically promoted.</p>
+              <p>• You will receive a notification if you are activated.</p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setConfirmWaitlistElection(null)}
+                className="px-4 py-2 border border-border text-sm font-semibold rounded-xl hover:bg-muted transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  const electionId = confirmWaitlistElection.id;
+                  setConfirmWaitlistElection(null);
+                  handleJoin(electionId);
+                }}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20"
+              >
+                Confirm & Join Waitlist
+              </button>
+            </div>
+          </motion.div>
         </div>
       )}
     </div>

@@ -26,7 +26,7 @@ export default function SignupPage() {
     e.preventDefault();
     clearError();
     const success = await signup({ ...form, role });
-    if (success) navigate('/verify-email', { state: { email: form.email } });
+    if (success) navigate('/verify-otp', { state: { email: form.email, type: 'signup' } });
   };
 
   return (

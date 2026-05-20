@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ChevronRight, ChevronLeft, Check, FileText, Calendar, Users,
@@ -23,33 +23,105 @@ const TIMEZONES = ['UTC', 'America/New_York', 'America/Chicago', 'America/Los_An
 
 export default function CreateElection() {
   const { user } = useAuthStore();
-  const { createElection, updateElection, saveDraft, currentDraft } = useElectionStore();
+  const { createElection, updateElection, saveDraft, currentDraft, elections, fetchElections, submitForApproval } = useElectionStore();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get('edit');
+  const [isInitialized, setIsInitialized] = useState(false);
+
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [savedId, setSavedId] = useState<string | null>(null);
 
   const [form, setForm] = useState<Partial<Election>>({
-    title: currentDraft?.title || '',
-    description: currentDraft?.description || '',
-    category: currentDraft?.category || 'government',
-    organization: currentDraft?.organization || user?.organization || '',
-    startDate: currentDraft?.startDate || '',
-    endDate: currentDraft?.endDate || '',
-    registrationDeadline: currentDraft?.registrationDeadline || '',
-    timezone: currentDraft?.timezone || 'UTC',
-    maxVoters: currentDraft?.maxVoters || 1000,
-    isWaitlistEnabled: currentDraft?.isWaitlistEnabled ?? false,
-    requireSecretId: currentDraft?.requireSecretId ?? true,
-    require2FA: currentDraft?.require2FA ?? false,
-    allowAnonymous: currentDraft?.allowAnonymous ?? true,
-    candidates: currentDraft?.candidates || [],
+    title: '',
+    description: '',
+    category: 'government',
+    organization: user?.organization || '',
+    startDate: '',
+    endDate: '',
+    registrationDeadline: '',
+    timezone: 'UTC',
+    maxVoters: 1000,
+    isWaitlistEnabled: false,
+    requireSecretId: true,
+    require2FA: false,
+    allowAnonymous: true,
+    candidates: [],
     creatorId: user?.id || '',
     creatorName: user?.name || '',
     creatorEmail: user?.email || '',
   });
 
+  useEffect(() => {
+    if (editId) {
+      const existing = elections.find(e => e.id === editId);
+      if (existing) {
+        setForm({
+          id: existing.id,
+          title: existing.title,
+          description: existing.description,
+          category: existing.category,
+          organization: existing.organization,
+          startDate: existing.startDate ? existing.startDate.substring(0, 16) : '',
+          endDate: existing.endDate ? existing.endDate.substring(0, 16) : '',
+          registrationDeadline: existing.registrationDeadline ? existing.registrationDeadline.substring(0, 16) : '',
+          timezone: existing.timezone || 'UTC',
+          maxVoters: existing.maxVoters || 1000,
+          isWaitlistEnabled: existing.isWaitlistEnabled ?? false,
+          requireSecretId: existing.requireSecretId ?? true,
+          require2FA: existing.require2FA ?? false,
+          allowAnonymous: existing.allowAnonymous ?? true,
+          candidates: existing.candidates || [],
+          creatorId: existing.creatorId || '',
+          creatorName: existing.creatorName || '',
+          creatorEmail: existing.creatorEmail || '',
+          status: existing.status,
+        });
+        setSavedId(existing.id);
+        setIsInitialized(true);
+      } else {
+        if (user?.id) {
+          fetchElections({ creatorId: user.id });
+        }
+      }
+    } else {
+      if (currentDraft && !isInitialized) {
+        setForm(f => ({
+          ...f,
+          title: currentDraft.title || '',
+          description: currentDraft.description || '',
+          category: currentDraft.category || 'government',
+          organization: currentDraft.organization || user?.organization || '',
+          startDate: currentDraft.startDate || '',
+          endDate: currentDraft.endDate || '',
+          registrationDeadline: currentDraft.registrationDeadline || '',
+          timezone: currentDraft.timezone || 'UTC',
+          maxVoters: currentDraft.maxVoters || 1000,
+          isWaitlistEnabled: currentDraft.isWaitlistEnabled ?? false,
+          requireSecretId: currentDraft.requireSecretId ?? true,
+          require2FA: currentDraft.require2FA ?? false,
+          allowAnonymous: currentDraft.allowAnonymous ?? true,
+          candidates: currentDraft.candidates || [],
+          creatorId: user?.id || '',
+          creatorName: user?.name || '',
+          creatorEmail: user?.email || '',
+        }));
+      } else if (!isInitialized) {
+        setForm(f => ({
+          ...f,
+          organization: user?.organization || '',
+          creatorId: user?.id || '',
+          creatorName: user?.name || '',
+          creatorEmail: user?.email || '',
+        }));
+      }
+      setIsInitialized(true);
+    }
+  }, [editId, elections, user, fetchElections, currentDraft, isInitialized]);
+
   const [newCandidate, setNewCandidate] = useState({ name: '', designation: '', manifesto: '', photo: '' });
+  const isEditApprovedOrActive = !!(form.status && form.status !== 'draft' && form.status !== 'rejected');
 
   const setField = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm(f => ({ ...f, [k]: e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.type === 'number' ? +e.target.value : e.target.value }));
@@ -88,6 +160,9 @@ export default function CreateElection() {
     let id = savedId;
     if (!id) id = await createElection(form);
     else await updateElection(id, form);
+    if (!isEditApprovedOrActive && id) {
+      await submitForApproval(id);
+    }
     setIsLoading(false);
     navigate('/creator/elections');
   };
@@ -194,6 +269,11 @@ export default function CreateElection() {
           {step === 4 && (
             <>
               <h2 className="text-lg font-bold flex items-center gap-2"><User size={18} className="text-primary" /> Candidate Management</h2>
+              {isEditApprovedOrActive && (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800 font-medium">
+                  ⚠️ Candidate management is locked after approval to preserve election integrity.
+                </div>
+              )}
               {(form.candidates || []).length > 0 && (
                 <div className="space-y-2 mb-4">
                   {form.candidates!.map(c => (
@@ -203,23 +283,27 @@ export default function CreateElection() {
                         <p className="font-bold text-sm truncate">{c.name}</p>
                         <p className="text-xs text-muted-foreground">{c.designation}</p>
                       </div>
-                      <button onClick={() => removeCandidate(c.id)} className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                      {!isEditApprovedOrActive && (
+                        <button onClick={() => removeCandidate(c.id)} className="p-1.5 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"><Trash2 size={14} /></button>
+                      )}
                     </div>
                   ))}
                 </div>
               )}
-              <div className="border border-dashed border-primary/30 rounded-2xl p-4 space-y-3">
-                <h4 className="font-bold text-sm flex items-center gap-2"><PlusCircle size={15} className="text-primary" /> Add Candidate</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <input value={newCandidate.name} onChange={e => setNewCandidate(n => ({ ...n, name: e.target.value }))} placeholder="Full Name *" className="px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                  <input value={newCandidate.designation} onChange={e => setNewCandidate(n => ({ ...n, designation: e.target.value }))} placeholder="Designation/Title" className="px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+              {!isEditApprovedOrActive && (
+                <div className="border border-dashed border-primary/30 rounded-2xl p-4 space-y-3">
+                  <h4 className="font-bold text-sm flex items-center gap-2"><PlusCircle size={15} className="text-primary" /> Add Candidate</h4>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input value={newCandidate.name} onChange={e => setNewCandidate(n => ({ ...n, name: e.target.value }))} placeholder="Full Name *" className="px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                    <input value={newCandidate.designation} onChange={e => setNewCandidate(n => ({ ...n, designation: e.target.value }))} placeholder="Designation/Title" className="px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  </div>
+                  <input value={newCandidate.photo} onChange={e => setNewCandidate(n => ({ ...n, photo: e.target.value }))} placeholder="Photo URL (optional – auto-generated if empty)" className="w-full px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
+                  <textarea value={newCandidate.manifesto} onChange={e => setNewCandidate(n => ({ ...n, manifesto: e.target.value }))} placeholder="Manifesto / Description" rows={2} className="w-full px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
+                  <button onClick={addCandidate} disabled={!newCandidate.name} className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 disabled:opacity-50">
+                    <PlusCircle size={15} /> Add Candidate
+                  </button>
                 </div>
-                <input value={newCandidate.photo} onChange={e => setNewCandidate(n => ({ ...n, photo: e.target.value }))} placeholder="Photo URL (optional – auto-generated if empty)" className="w-full px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30" />
-                <textarea value={newCandidate.manifesto} onChange={e => setNewCandidate(n => ({ ...n, manifesto: e.target.value }))} placeholder="Manifesto / Description" rows={2} className="w-full px-3 py-2 border border-border rounded-xl text-sm bg-muted/30 focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none" />
-                <button onClick={addCandidate} disabled={!newCandidate.name} className="flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm font-bold rounded-xl hover:opacity-90 disabled:opacity-50">
-                  <PlusCircle size={15} /> Add Candidate
-                </button>
-              </div>
+              )}
             </>
           )}
 
@@ -261,9 +345,15 @@ export default function CreateElection() {
                   </div>
                 ))}
               </div>
-              <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
-                <strong>⚠️ After submission:</strong> Your election will be reviewed by a Super Admin before going live. You'll receive a notification once approved.
-              </div>
+              {isEditApprovedOrActive ? (
+                <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-800 font-medium">
+                  ℹ️ <strong>Live Update:</strong> This election is already approved/live. Saving changes will apply them immediately.
+                </div>
+              ) : (
+                <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-800">
+                  <strong>⚠️ After submission:</strong> Your election will be reviewed by a Super Admin before going live. You'll receive a notification once approved.
+                </div>
+              )}
             </>
           )}
         </motion.div>
@@ -288,7 +378,14 @@ export default function CreateElection() {
             </button>
           ) : (
             <button onClick={handleSubmit} disabled={isLoading} className="flex items-center gap-1.5 px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl text-sm hover:opacity-90 transition-all shadow-lg shadow-primary/20 disabled:opacity-60">
-              {isLoading ? <RefreshCw size={14} className="animate-spin" /> : <Send size={14} />} Submit for Approval
+              {isLoading ? (
+                <RefreshCw size={14} className="animate-spin" />
+              ) : isEditApprovedOrActive ? (
+                <Save size={14} />
+              ) : (
+                <Send size={14} />
+              )}
+              {isEditApprovedOrActive ? 'Save Changes' : 'Submit for Approval'}
             </button>
           )}
         </div>

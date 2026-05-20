@@ -107,6 +107,22 @@ export const votingService = {
     return (data ?? []).map((row: any) => ({ candidateId: row.candidate_id, candidateName: row.candidate_name, voteCount: row.vote_count ?? 0, percentage: row.percentage ?? 0 }));
   },
 
+  async getDetailedVotes(electionId: string): Promise<Array<{ id: string; voterHash: string; secretIdCode: string; castedAt: string; candidateName: string }>> {
+    const { data, error } = await sb.from('votes')
+      .select('id, voter_hash, secret_id_code, casted_at, candidates:candidate_id (name)')
+      .eq('election_id', electionId)
+      .order('casted_at', { ascending: false });
+    if (error) handleSupabaseError(error, 'getDetailedVotes');
+    return (data ?? []).map((row: any) => ({
+      id: row.id,
+      voterHash: row.voter_hash,
+      secretIdCode: row.secret_id_code,
+      castedAt: row.casted_at,
+      candidateName: row.candidates?.name ?? 'Unknown Candidate'
+    }));
+  },
+
+
   subscribeToResults(electionId: string, onUpdate: () => void): RealtimeChannel {
     return supabase.channel(`votes:${electionId}`)
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'votes', filter: `election_id=eq.${electionId}` }, () => onUpdate())

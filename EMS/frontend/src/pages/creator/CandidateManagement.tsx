@@ -5,6 +5,7 @@ import { useAuthStore } from '../../store/authStore';
 import { useElectionStore } from '../../store/electionStore';
 import { PageHeader, EmptyState } from '../../components/common/UIComponents';
 import type { Candidate } from '../../types';
+import { useEffect } from 'react';
 
 function CandidateForm({ initial, onSave, onCancel }: { initial?: Partial<Candidate>; onSave: (c: Partial<Candidate>) => void; onCancel: () => void }) {
   const [form, setForm] = useState({ name: initial?.name || '', designation: initial?.designation || '', manifesto: initial?.manifesto || '', photo: initial?.photo || '' });
@@ -33,6 +34,14 @@ export default function CandidateManagement() {
   const [selectedElectionId, setSelectedElectionId] = useState(myElections[0]?.id || '');
   const [showForm, setShowForm] = useState(false);
   const [editTarget, setEditTarget] = useState<Candidate | null>(null);
+
+  useEffect(() => {
+    if (!selectedElectionId && myElections.length > 0) {
+      setSelectedElectionId(myElections[0].id);
+    } else if (selectedElectionId && myElections.length > 0 && !myElections.some(e => e.id === selectedElectionId)) {
+      setSelectedElectionId(myElections[0].id);
+    }
+  }, [myElections, selectedElectionId]);
 
   const selectedElection = elections.find(e => e.id === selectedElectionId);
   const candidates = selectedElection?.candidates || [];

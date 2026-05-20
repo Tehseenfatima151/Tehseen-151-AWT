@@ -41,7 +41,7 @@ export default function OTPPage() {
     const success = await verifyOTP(code, email, type);
     if (success) {
       if (purpose === 'reset') navigate('/reset-password');
-      else navigate('/2fa');
+      else navigate('/login');
     }
   };
 
@@ -79,7 +79,6 @@ export default function OTPPage() {
                 className="w-12 h-14 text-center text-2xl font-bold border-2 border-border rounded-xl bg-muted/30 focus:outline-none focus:border-primary focus:bg-primary/5 transition-all" />
             ))}
           </div>
-          <p className="text-xs text-muted-foreground mb-4 font-medium">Hint: use <code className="bg-muted px-1 rounded">123456</code> for demo</p>
           <button type="submit" disabled={isLoading || otp.join('').length < 6}
             className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-all disabled:opacity-60">
             {isLoading ? <><RefreshCw size={16} className="animate-spin" /> Verifying...</> : <>Verify Code <ChevronRight size={16} /></>}

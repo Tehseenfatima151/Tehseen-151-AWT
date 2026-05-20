@@ -33,6 +33,7 @@ export default function PublicLayout() {
           <nav className="hidden md:flex items-center gap-6 text-sm font-semibold text-muted-foreground">
             <Link to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className={`hover:text-foreground transition-colors cursor-pointer ${location.pathname === '/' ? 'text-foreground' : ''}`}>Home</Link>
             <button onClick={() => document.getElementById('elections')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-foreground transition-colors cursor-pointer">Elections</button>
+            <button onClick={() => document.getElementById('live-results')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-foreground transition-colors cursor-pointer">Statistics</button>
             <button onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' })} className="hover:text-foreground transition-colors cursor-pointer">About</button>
           </nav>
 

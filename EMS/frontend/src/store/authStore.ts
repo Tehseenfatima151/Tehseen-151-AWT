@@ -7,6 +7,7 @@
 import { create } from 'zustand';
 import type { User, SignupData, LoginData } from '../types';
 import { authService } from '../services/authService';
+import { emailService } from '../services/emailService';
 import { supabase } from '../lib/supabase';
 
 interface AuthState {
@@ -18,6 +19,9 @@ interface AuthState {
   otpSent: boolean;
   otpVerified: boolean;
   pendingEmail: string | null;
+  tempSignupData: SignupData | null;
+  currentOTP: string | null;
+  otpExpiry: number | null;
   // MFA state
   mfaFactorId: string | null;
   mfaChallengeId: string | null;
@@ -47,6 +51,9 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   otpSent:         false,
   otpVerified:     false,
   pendingEmail:    null,
+  tempSignupData:  null,
+  currentOTP:      null,
+  otpExpiry:       null,
   mfaFactorId:     null,
   mfaChallengeId:  null,
 
@@ -94,18 +101,45 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // ── Signup ─────────────────────────────────────────────────
   signup: async (data: SignupData) => {
     set({ isLoading: true, error: null });
-    const { success, error } = await authService.signUp(data);
-    if (!success || error) {
-      set({ isLoading: false, error: error ?? 'Signup failed.' });
+    
+    // Custom EmailJS Flow
+    const otp = emailService.generateOTP();
+    const success = await emailService.sendOTP(data.email, otp, data.name);
+    
+    if (!success) {
+      set({ isLoading: false, error: 'Failed to send verification email. Please check your connection and try again.' });
       return false;
     }
-    set({ isLoading: false, pendingEmail: data.email, otpSent: true });
+
+    set({ 
+      isLoading: false, 
+      pendingEmail: data.email, 
+      otpSent: true,
+      tempSignupData: data,
+      currentOTP: otp,
+      otpExpiry: Date.now() + 5 * 60 * 1000 // 5 minutes
+    });
     return true;
   },
 
   // ── Send OTP ───────────────────────────────────────────────
   sendOTP: async (email: string) => {
     set({ isLoading: true });
+    const { tempSignupData } = get();
+    
+    // If we have tempSignupData, it's a signup OTP resend
+    if (tempSignupData && tempSignupData.email === email) {
+      const otp = emailService.generateOTP();
+      const success = await emailService.sendOTP(email, otp, tempSignupData.name);
+      if (success) {
+        set({ isLoading: false, otpSent: true, currentOTP: otp, otpExpiry: Date.now() + 5 * 60 * 1000 });
+      } else {
+        set({ isLoading: false, error: 'Failed to resend verification code.' });
+      }
+      return;
+    }
+    
+    // Otherwise fallback to native Supabase (magic link / auth)
     await authService.sendOtp(email);
     set({ isLoading: false, otpSent: true, pendingEmail: email });
   },
@@ -113,6 +147,47 @@ export const useAuthStore = create<AuthState>()((set, get) => ({
   // ── Verify OTP ─────────────────────────────────────────────
   verifyOTP: async (otp: string, passedEmail?: string, type: 'signup'|'email'|'recovery'|'magiclink' = 'signup') => {
     set({ isLoading: true, error: null });
+    
+    // Custom EmailJS Flow for Signup
+    if (type === 'signup') {
+      const { currentOTP, otpExpiry, tempSignupData } = get();
+      
+      if (!currentOTP || !tempSignupData) {
+        set({ isLoading: false, error: 'Session expired. Please sign up again.' });
+        return false;
+      }
+      
+      if (Date.now() > (otpExpiry || 0)) {
+        set({ isLoading: false, error: 'Verification code has expired. Please request a new one.' });
+        return false;
+      }
+      
+      // Verify against the actual generated OTP
+      if (otp !== currentOTP) {
+        set({ isLoading: false, error: 'Invalid verification code.' });
+        return false;
+      }
+      
+      // OTP is valid, now register the user in Supabase
+      const { success, error } = await authService.signUp(tempSignupData);
+      
+      if (!success || error) {
+        set({ isLoading: false, error: error ?? 'Failed to create database record. Please try again.' });
+        return false;
+      }
+      
+      // If we got here, account is created successfully
+      set({ 
+        isLoading: false, 
+        otpVerified: true,
+        currentOTP: null,
+        otpExpiry: null,
+        tempSignupData: null
+      });
+      return true;
+    }
+
+    // Native Supabase verification for other flows (recovery, magic link)
     const email = passedEmail || get().pendingEmail;
     if (!email) { set({ isLoading: false, error: 'Email is required for verification. Please try again.' }); return false; }
     const { success, error } = await authService.verifyOtp(email, otp, type);

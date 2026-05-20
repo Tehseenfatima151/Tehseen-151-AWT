@@ -53,7 +53,27 @@ export const useElectionStore = create<ElectionState>()((set, get) => ({
   fetchElections: async (options) => {
     set({ isLoading: true, error: null });
     try {
-      const elections = await electionService.fetchElections(options);
+      let elections = await electionService.fetchElections(options);
+      
+      // Auto-status progression (Simulated Cron Job)
+      const now = new Date();
+      elections = elections.map(e => {
+        const start = new Date(e.startDate);
+        const end = e.endDate ? new Date(e.endDate) : null;
+        
+        if (e.status === 'approved' && start <= now) {
+          const userId = useAuthStore.getState().user?.id ?? 'system';
+          electionService.publishElection(e.id, userId).catch(console.error);
+          return { ...e, status: 'active' as const };
+        }
+        if (e.status === 'active' && end && end <= now) {
+          const userId = useAuthStore.getState().user?.id ?? 'system';
+          electionService.endElection(e.id, userId).catch(console.error);
+          return { ...e, status: 'completed' as const };
+        }
+        return e;
+      });
+
       set({ elections, isLoading: false });
     } catch (e) {
       set({ isLoading: false, error: (e as Error).message });
@@ -68,6 +88,13 @@ export const useElectionStore = create<ElectionState>()((set, get) => ({
     const userId = useAuthStore.getState().user?.id ?? '';
     try {
       const newId = await electionService.createElection(data, userId);
+      
+      if (data.candidates && data.candidates.length > 0) {
+        for (const candidate of data.candidates) {
+          await electionService.addCandidate(newId, candidate);
+        }
+      }
+
       await get().fetchElections({ creatorId: userId });
       set({ isLoading: false });
       return newId;
@@ -82,10 +109,25 @@ export const useElectionStore = create<ElectionState>()((set, get) => ({
     set({ isLoading: true });
     try {
       await electionService.updateElection(id, data);
-      set(s => ({
-        elections: s.elections.map(e => e.id === id ? { ...e, ...data, updatedAt: new Date().toISOString() } : e),
-        isLoading: false,
-      }));
+      
+      if (data.candidates) {
+        const currentCandidates = get().elections.find(e => e.id === id)?.candidates || [];
+        const newCandidates = data.candidates;
+        
+        const toDelete = currentCandidates.filter(cc => !newCandidates.find(nc => nc.id === cc.id));
+        for (const c of toDelete) await electionService.deleteCandidate(c.id);
+        
+        for (const c of newCandidates) {
+          if (c.id.startsWith('cand-new-')) {
+            await electionService.addCandidate(id, c);
+          } else {
+            await electionService.updateCandidate(id, c.id, c);
+          }
+        }
+      }
+
+      await get().fetchElections({ creatorId: useAuthStore.getState().user?.id });
+      set({ isLoading: false });
     } catch (e) {
       set({ isLoading: false, error: (e as Error).message });
     }

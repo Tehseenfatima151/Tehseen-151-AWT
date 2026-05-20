@@ -59,7 +59,7 @@ export default function VotingFlow() {
   };
 
   const handleCastVote = async () => {
-    const hash = await castVote(electionId!, user!.id, selectedCandidateId);
+    const hash = await castVote(electionId!, selectedCandidateId, secretIdInput);
     if (hash) {
       setVoteHash(hash);
       setStep(3);

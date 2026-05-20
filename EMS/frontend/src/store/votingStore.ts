@@ -8,6 +8,7 @@ import { create } from 'zustand';
 import type { VoterRegistration, SecretId } from '../types';
 import { votingService } from '../services/votingService';
 import { useAuthStore } from './authStore';
+import { useElectionStore } from './electionStore';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 
 interface VotingState {
@@ -63,6 +64,8 @@ export const useVotingStore = create<VotingState>()((set, get) => ({
     }
     // Refresh data
     await get().fetchMyData(userId);
+    const user = useAuthStore.getState().user;
+    await useElectionStore.getState().fetchElections(user?.role === 'election_creator' ? { creatorId: user.id } : undefined);
     return { success: true, status: result.status };
   },
 
@@ -88,6 +91,8 @@ export const useVotingStore = create<VotingState>()((set, get) => ({
       ),
       isLoading: false,
     }));
+    const user = useAuthStore.getState().user;
+    await useElectionStore.getState().fetchElections(user?.role === 'election_creator' ? { creatorId: user.id } : undefined);
     return hash;
   },
 

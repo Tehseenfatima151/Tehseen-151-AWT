@@ -29,6 +29,7 @@ function ElectionCard({
   joining?: boolean;
   showVoteBtn?: boolean;
 }) {
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
   const isActive   = election.status === 'active';
   const isApproved = election.status === 'approved';
   const pct = election.maxVoters > 0
@@ -101,16 +102,79 @@ function ElectionCard({
             </span>
           )}
           {registrationStatus === null && (
-            <button
-              onClick={onJoin}
-              disabled={joining}
-              className="flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm rounded-xl hover:opacity-90 disabled:opacity-60 transition-all shadow-lg shadow-primary/20"
-            >
-              {joining ? <><span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> Joining...</> : <>Register <ArrowRight size={14} /></>}
-            </button>
+            election.currentVoters < election.maxVoters ? (
+              <button
+                onClick={onJoin}
+                disabled={joining}
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold text-sm rounded-xl hover:opacity-90 disabled:opacity-60 transition-all shadow-lg shadow-primary/20"
+              >
+                {joining ? <><span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> Joining...</> : <>Register <ArrowRight size={14} /></>}
+              </button>
+            ) : election.isWaitlistEnabled ? (
+              <button
+                onClick={() => setShowConfirmModal(true)}
+                disabled={joining}
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm rounded-xl hover:opacity-90 disabled:opacity-60 transition-all shadow-lg shadow-amber-500/20"
+              >
+                {joining ? <><span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin" /> Joining...</> : <>Join Waitlist <ArrowRight size={14} /></>}
+              </button>
+            ) : (
+              <button
+                disabled
+                className="flex items-center gap-1.5 px-4 py-2.5 bg-muted text-muted-foreground font-bold text-sm rounded-xl border border-border cursor-not-allowed shrink-0"
+              >
+                Capacity Reached
+              </button>
+            )
           )}
         </div>
       </div>
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-card border border-amber-200 max-w-md w-full rounded-2xl p-6 shadow-2xl space-y-4"
+          >
+            <div className="flex items-center gap-3 text-amber-600">
+              <div className="p-2 bg-amber-50 rounded-xl border border-amber-200">
+                <Clock size={24} />
+              </div>
+              <h4 className="font-bold text-lg">Join Election Waitlist</h4>
+            </div>
+            
+            <p className="text-sm text-muted-foreground">
+              The election <strong>{election.title}</strong> has reached its registration capacity of <strong>{election.maxVoters}</strong> voters.
+            </p>
+            
+            <div className="p-3 bg-amber-50/50 border border-amber-100 rounded-xl text-xs text-amber-800 space-y-1">
+              <p className="font-semibold">⚠️ Waitlist Terms:</p>
+              <p>• You will be placed on the queue as #{(election.waitlistCount || 0) + 1}.</p>
+              <p>• If an existing registered voter leaves or is removed, you will be automatically promoted.</p>
+              <p>• You will receive a notification if you are activated.</p>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 border border-border text-sm font-semibold rounded-xl hover:bg-muted transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  if (onJoin) onJoin();
+                }}
+                className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20"
+              >
+                Confirm & Join Waitlist
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </motion.div>
   );
 }
