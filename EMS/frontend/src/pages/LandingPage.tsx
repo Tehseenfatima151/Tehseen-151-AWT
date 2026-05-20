@@ -9,6 +9,7 @@ import {
 import { useElectionStore } from '../store/electionStore';
 import { electionService } from '../services/electionService';
 import { votingService } from '../services/votingService';
+import { supabase } from '../lib/supabase';
 
 const CATEGORY_COLORS: Record<string, string> = {
   government:   'bg-blue-100 text-blue-700',
@@ -60,6 +61,7 @@ export default function LandingPage() {
   const [auditResults, setAuditResults] = useState<any[]>([]);
   const [isAuditLoading, setIsAuditLoading] = useState(false);
   const [auditSearchQuery, setAuditSearchQuery] = useState('');
+  const [auditError, setAuditError] = useState<string | null>(null);
 
   // Fetch elections on mount
   useEffect(() => {
@@ -151,6 +153,9 @@ export default function LandingPage() {
     setAuditTab('ledger');
     setIsAuditLoading(true);
     setAuditSearchQuery('');
+    setAuditError(null);
+    setAuditVotes([]);
+    setAuditResults([]);
     try {
       const [votes, results] = await Promise.all([
         votingService.getDetailedVotes(election.id),
@@ -160,6 +165,7 @@ export default function LandingPage() {
       setAuditResults(results);
     } catch (err) {
       console.error('Error loading audit information:', err);
+      setAuditError('Failed to load audit data. Please try again.');
     } finally {
       setIsAuditLoading(false);
     }
@@ -168,18 +174,21 @@ export default function LandingPage() {
   useEffect(() => {
     if (!activeAuditElection || activeAuditElection.status !== 'active') return;
 
-    const channel = votingService.subscribeToResults(activeAuditElection.id, async () => {
-      try {
-        const [votes, results] = await Promise.all([
-          votingService.getDetailedVotes(activeAuditElection.id),
-          votingService.getElectionResults(activeAuditElection.id)
-        ]);
-        setAuditVotes(votes);
-        setAuditResults(results);
-      } catch (err) {
-        console.error('Realtime audit updates fetch error:', err);
-      }
-    });
+    // Use a distinct channel name to avoid conflict with the live-results subscription
+    const channel = supabase.channel(`audit-modal:${activeAuditElection.id}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'votes', filter: `election_id=eq.${activeAuditElection.id}` }, async () => {
+        try {
+          const [votes, results] = await Promise.all([
+            votingService.getDetailedVotes(activeAuditElection.id),
+            votingService.getElectionResults(activeAuditElection.id)
+          ]);
+          setAuditVotes(votes);
+          setAuditResults(results);
+        } catch (err) {
+          console.error('Realtime audit updates fetch error:', err);
+        }
+      })
+      .subscribe();
 
     return () => {
       channel.unsubscribe();
@@ -811,6 +820,19 @@ export default function LandingPage() {
                     <RefreshCw size={24} className="animate-spin text-primary" />
                     <span className="text-xs font-bold font-mono">Synchronizing Decentralized Audit Records...</span>
                   </div>
+                ) : auditError ? (
+                  <div className="text-center py-16 border border-dashed border-red-300 rounded-2xl bg-red-50/30 dark:bg-red-900/10">
+                    <AlertCircle className="mx-auto text-red-500 mb-3" size={28} />
+                    <p className="text-sm font-bold text-foreground mb-1">Failed to Load Audit Data</p>
+                    <p className="text-[11px] text-muted-foreground mb-4">{auditError}</p>
+                    <button
+                      onClick={() => handleOpenAuditModal(activeAuditElection)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-primary/10 hover:bg-primary/20 text-primary font-bold text-xs rounded-xl transition-all"
+                    >
+                      <RefreshCw size={13} />
+                      Retry
+                    </button>
+                  </div>
                 ) : auditTab === 'ledger' ? (
                   <div className="space-y-4">
                     {/* Search Field */}
@@ -828,8 +850,20 @@ export default function LandingPage() {
                     {filteredAuditVotes.length === 0 ? (
                       <div className="text-center py-16 border border-dashed border-border rounded-2xl bg-muted/10">
                         <AlertCircle className="mx-auto text-muted-foreground/60 mb-2" size={24} />
-                        <p className="text-xs font-bold text-foreground">No matching ballots found</p>
-                        <p className="text-[10px] text-muted-foreground">Adjust your query or check for spelling errors.</p>
+                        <p className="text-xs font-bold text-foreground">
+                          {auditSearchQuery.trim()
+                            ? 'No matching ballots found'
+                            : activeAuditElection?.status === 'active'
+                              ? 'No votes cast yet'
+                              : 'No ballots recorded'}
+                        </p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {auditSearchQuery.trim()
+                            ? 'Adjust your query or check for spelling errors.'
+                            : activeAuditElection?.status === 'active'
+                              ? 'Votes will appear here in real-time as they are cast.'
+                              : 'No votes were recorded for this election.'}
+                        </p>
                       </div>
                     ) : (
                       <div className="border border-border/80 rounded-2xl overflow-hidden">
