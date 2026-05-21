@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #d70f64;
+  --color-brand-hover: #c00d5a;
+  --color-surface: #ffffff;
+  --color-background-soft: #f7f7f7;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', 'Inter', "Segoe UI", sans-serif;
+  background-color: var(--color-background-soft);
+  color: #333;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(100px); }
+  to   { opacity: 1; transform: translateX(0); }
+}

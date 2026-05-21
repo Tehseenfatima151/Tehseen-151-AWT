@@ -1,0 +1,750 @@
+@import url("https://fonts.googleapis.com/css?family=Ubuntu:500");
+
+.auth-page {
+  min-height: 100vh;
+  background-color: var(--color-brand);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 24px 16px 32px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.auth-wrap {
+  position: relative;
+  width: min(100%, 440px);
+  max-width: 440px;
+  min-height: 600px;
+  margin-bottom: 36px;
+  overflow: visible;
+  --card-top: 188px;
+  --paw-half: 25px;
+}
+
+.auth-wrap.mode-login {
+  min-height: 620px;
+}
+
+.auth-wrap.mode-register {
+  min-height: 680px;
+}
+
+.backg {
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 100%;
+  z-index: 4;
+}
+
+.login {
+  height: auto;
+  min-height: 320px;
+  width: min(calc(100% - 40px), 392px);
+  max-width: 392px;
+  background-color: white;
+  position: absolute;
+  top: var(--card-top);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 28px 28px 78px;
+  box-sizing: border-box;
+  z-index: 10;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  overflow: visible;
+}
+
+.login.is-register {
+  min-height: 400px;
+}
+
+.auth-heading {
+  margin: 0 0 22px;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #4d4449;
+  text-align: center;
+  line-height: 1.3;
+}
+
+.auth-field {
+  margin-bottom: 18px;
+}
+
+.auth-field:last-of-type {
+  margin-bottom: 14px;
+}
+
+.auth-label {
+  display: block;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #6a5f66;
+  margin-bottom: 6px;
+  letter-spacing: 0.02em;
+}
+
+.auth-label--inline {
+  margin-bottom: 0;
+}
+
+.auth-password-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.auth-forgot-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 11px;
+  color: var(--color-brand);
+  cursor: pointer;
+  text-decoration: none;
+  opacity: 0.85;
+}
+
+.auth-forgot-link:hover {
+  text-decoration: underline;
+  opacity: 1;
+}
+
+.auth-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #4d4449;
+  padding-bottom: 6px;
+  transition: border-color 0.2s;
+}
+
+.auth-input-row:focus-within {
+  border-bottom-color: var(--color-brand);
+}
+
+.auth-input-row .fa {
+  flex-shrink: 0;
+}
+
+.auth-input-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.auth-input-row--password input {
+  padding-right: 4px;
+}
+
+.auth-password-wrap {
+  position: relative;
+}
+
+.auth-password-toggle {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  margin: 0;
+  cursor: pointer;
+  color: #6a5f66;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.auth-password-toggle:hover {
+  color: #4d4449;
+}
+
+.auth-field-error {
+  margin: 6px 0 0;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 11px;
+  color: #b00020;
+}
+
+.auth-remember {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin: 6px 0 18px;
+  padding-left: 0;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 13px;
+  color: #4d4449;
+  cursor: pointer;
+  user-select: none;
+  text-align: left;
+}
+
+.login .auth-remember input[type="checkbox"] {
+  width: auto;
+  min-width: 1rem;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--color-brand);
+  cursor: pointer;
+}
+
+.auth-submit {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  background-color: var(--color-brand);
+  outline: none;
+  border: none;
+  color: white;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 18px;
+  text-transform: uppercase;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+.auth-submit:hover:not(:disabled) {
+  background-color: var(--color-brand-hover, #c00d5a);
+}
+
+.auth-submit:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+}
+
+.auth-submit-inner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-mode-switch {
+  background: none;
+  border: none;
+  color: var(--color-brand);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 13px;
+  font-family: "Ubuntu", sans-serif;
+}
+
+/* ---- Modal (forgot password demo) ---- */
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.auth-modal {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px 22px 20px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+}
+
+.auth-modal-title {
+  margin: 0 0 8px;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 1.2rem;
+  color: #4d4449;
+}
+
+.auth-modal-hint {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: #6a5f66;
+  line-height: 1.45;
+}
+
+.auth-modal-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #cfc8cd;
+  border-radius: 8px;
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+  color: #4d4449;
+  margin-bottom: 12px;
+}
+
+.auth-modal-input:focus {
+  outline: 2px solid var(--color-brand);
+  outline-offset: 0;
+  border-color: var(--color-brand);
+}
+
+.auth-modal-error {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #b00020;
+}
+
+.auth-modal-success {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #2e7d32;
+}
+
+.auth-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.auth-modal-btn {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+
+.auth-modal-btn--ghost {
+  background: transparent;
+  color: #4d4449;
+}
+
+.auth-modal-btn--ghost:hover {
+  background: #f3f0f2;
+}
+
+.auth-modal-btn--primary {
+  background: var(--color-brand);
+  color: white;
+}
+
+.auth-modal-btn--primary:hover {
+  background: var(--color-brand-hover, #c00d5a);
+}
+
+/* ---- Panda ---- */
+.auth-wrap.mode-login .panda {
+  top: 8px;
+}
+
+.panda {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -67.5px;
+  z-index: 5;
+}
+
+.face {
+  height: 120px;
+  width: 135px;
+  background-color: white;
+  border-radius: 120px 120px 90px 90px;
+  position: relative;
+  bottom: 40px;
+}
+
+.earl,
+.earr {
+  background-color: #4d4449;
+  height: 40px;
+  width: 45px;
+  border-radius: 43px 43px 0 0;
+}
+
+.earl {
+  transform: rotate(-38deg);
+  position: relative;
+  top: 31px;
+  right: 2px;
+}
+
+.earr {
+  transform: rotate(38deg);
+  position: relative;
+  bottom: 8px;
+  left: 96px;
+}
+
+.eyel,
+.eyer {
+  background-color: #4d4449;
+  height: 35px;
+  width: 32px;
+  border-radius: 32px;
+  position: relative;
+}
+
+.eyel {
+  top: 5px;
+  left: 22px;
+  transform: rotate(-20deg);
+}
+
+.eyer {
+  transform: rotate(20deg);
+  bottom: 30.5px;
+  left: 80px;
+}
+
+.blshl,
+.blshr {
+  background-color: #ff9999;
+  height: 16px;
+  width: 22px;
+  border-radius: 50%;
+  position: relative;
+  opacity: 0.8;
+}
+
+.blshl {
+  transform: rotate(25deg);
+  top: 64px;
+  left: 17px;
+}
+
+.blshr {
+  transform: rotate(-25deg);
+  top: 46px;
+  left: 95px;
+}
+
+.eyeball1,
+.eyeball2 {
+  height: 10px;
+  width: 10px;
+  background-color: white;
+  border-radius: 50%;
+  position: relative;
+  transition: top 0.85s ease, left 0.85s ease;
+}
+
+.eyeball1.eyeball--tracking,
+.eyeball2.eyeball--tracking {
+  transition: top 0.12s ease-out, left 0.12s ease-out;
+}
+
+.eyeball1 {
+  left: 10px;
+  top: 10px;
+  transform: rotate(20deg);
+}
+
+.eyeball2 {
+  left: 10px;
+  top: 10px;
+  transform: rotate(-20deg);
+}
+
+.nose {
+  height: 17px;
+  width: 17px;
+  background-color: #4d4449;
+  border-radius: 20px 0 4px;
+  transform: rotate(45deg);
+  position: relative;
+  bottom: 30px;
+  left: 60px;
+}
+
+.line {
+  background-color: #4d4449;
+  height: 10px;
+  width: 2px;
+  position: relative;
+  transform: rotate(-45deg);
+  left: 18.5px;
+  top: 15px;
+}
+
+.m,
+.mm {
+  background-color: #4d4449;
+  height: 8px;
+  width: 15px;
+  border-radius: 0 0 8px 8px;
+  position: relative;
+}
+
+.m {
+  bottom: 21px;
+  left: 53px;
+}
+
+.m1 {
+  height: 6px;
+  width: 13px;
+  background-color: white;
+  border-radius: 0 0 10px 10px;
+  position: relative;
+  left: 1px;
+  bottom: 1px;
+}
+
+.mm {
+  bottom: 30px;
+  left: 68.5px;
+}
+
+/* Hands: above login card (z-index) so they can cover eyes at the card lip; rest = by card sides */
+.handl,
+.handr {
+  background-color: #4d4449;
+  height: 45px;
+  width: 35px;
+  border-radius: 10px 10px 30px 30px;
+  z-index: 15;
+  transition: transform 1s ease, top 1s ease, left 1s ease, height 1s ease, width 1s ease;
+  position: absolute;
+}
+
+.handl {
+  top: 182px;
+  left: 52px;
+  transform: rotate(0deg);
+}
+
+.handr {
+  top: 182px;
+  left: 353px;
+  transform: rotate(0deg);
+}
+
+/* Password: higher on Y so palms sit on eye patches, not mouth/cheeks */
+.auth-wrap.password-active .handl {
+  transform: rotate(-160deg);
+  transform-origin: 45% 88%;
+  top: 26px;
+  left: 176px;
+  height: 102px;
+  width: 46px;
+}
+
+.auth-wrap.password-active .handr {
+  transform: rotate(160deg);
+  transform-origin: 55% 88%;
+  top: 26px;
+  left: 216px;
+  height: 102px;
+  width: 46px;
+}
+
+/* Paws: half inside card, half below (reference layout) — do not cover button/text */
+.auth-card-paws {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(-1 * var(--paw-half));
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: clamp(72px, 22vw, 112px);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.pawl,
+.pawr {
+  background-color: #4d4449;
+  height: 50px;
+  width: 50px;
+  border-radius: 40px 40px 20px 20px;
+  position: relative;
+  top: auto;
+  left: auto;
+  margin: 0;
+  flex-shrink: 0;
+}
+
+.p1 {
+  background-color: white;
+  height: 25px;
+  width: 30px;
+  position: relative;
+  top: 21px;
+  left: 10px;
+  border-radius: 25px 25px 10px 10px;
+}
+
+.p2,
+.p3,
+.p4 {
+  background-color: white;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.p2 {
+  bottom: 13px;
+  left: 9.5px;
+}
+
+.p3 {
+  bottom: 17.2px;
+  right: 2.5px;
+}
+
+.p4 {
+  bottom: 27.2px;
+  left: 22px;
+}
+
+.login span {
+  color: #4d4449;
+  font-family: "Ubuntu", sans-serif;
+}
+
+.login input:not([type="checkbox"]):not([type="radio"]),
+.login select {
+  color: #4d4449;
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: "Ubuntu", sans-serif;
+  background: transparent;
+  padding: 4px 0;
+  margin: 0;
+  font-size: 15px;
+}
+
+.login select {
+  border-bottom: 1px solid #4d4449;
+  width: 100%;
+}
+
+.login .fa {
+  color: #4d4449;
+  font-size: 18px;
+  outline: none;
+}
+
+.toggle-row {
+  position: relative;
+  z-index: 2;
+  margin-top: 16px;
+  padding-top: 4px;
+}
+
+.toggle-row.toggle-link {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px 8px;
+  text-align: center;
+}
+
+.toggle-row__text {
+  display: inline;
+}
+
+.toggle-link,
+.status-message {
+  font-family: "Ubuntu", sans-serif;
+  font-size: 13px;
+  color: #4d4449;
+}
+
+.status-message {
+  position: relative;
+  z-index: 2;
+  margin-top: 14px;
+  min-height: 22px;
+  text-align: center;
+}
+
+.status-error {
+  color: #b00020;
+}
+
+.status-success {
+  color: #2e7d32;
+}
+
+@media (max-width: 420px) {
+  .handl {
+    left: 36px;
+  }
+
+  .handr {
+    left: calc(100% - 36px - 35px);
+  }
+
+  .auth-wrap.password-active .handl {
+    top: 24px;
+    left: calc(50% - 46px);
+    transform: rotate(-160deg);
+    transform-origin: 45% 88%;
+  }
+
+  .auth-wrap.password-active .handr {
+    top: 24px;
+    left: calc(50% + 0px);
+    transform: rotate(160deg);
+    transform-origin: 55% 88%;
+  }
+}
+
+@media (max-width: 380px) {
+  .auth-wrap {
+    transform: scale(0.94);
+    transform-origin: top center;
+  }
+
+  .login {
+    width: calc(100% - 28px);
+    padding: 22px 20px 72px;
+  }
+}
+
+@media (max-height: 760px) {
+  .auth-wrap.mode-login {
+    transform: scale(0.92);
+    transform-origin: top center;
+  }
+
+  .auth-wrap.mode-register {
+    transform: scale(0.9);
+    transform-origin: top center;
+  }
+}
