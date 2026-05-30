@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-scroll';
-import { FiHome, FiUser, FiCode, FiFolder, FiBriefcase, FiMail } from 'react-icons/fi';
+import { FiHome, FiUser, FiCode, FiFolder, FiBriefcase, FiMail, FiAward } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const navLinks = [
-  { name: 'Home',     to: 'home',     icon: <FiHome size={18} /> },
-  { name: 'About',    to: 'about',    icon: <FiUser size={18} /> },
-  { name: 'Skills',   to: 'skills',   icon: <FiCode size={18} /> },
-  { name: 'Projects', to: 'projects', icon: <FiFolder size={18} /> },
-  { name: 'Services', to: 'services', icon: <FiBriefcase size={18} /> },
-  { name: 'Contact',  to: 'contact',  icon: <FiMail size={18} /> },
+  { name: 'Home',       to: 'home',       icon: <FiHome size={18} /> },
+  { name: 'About',      to: 'about',      icon: <FiUser size={18} /> },
+  { name: 'Skills',     to: 'skills',     icon: <FiCode size={18} /> },
+  { name: 'Projects',   to: 'projects',   icon: <FiFolder size={18} /> },
+  { name: 'Services',   to: 'services',   icon: <FiBriefcase size={18} /> },
+  { name: 'Experience', to: 'experience', icon: <FiAward size={18} /> },
+  { name: 'Contact',    to: 'contact',    icon: <FiMail size={18} /> },
 ];
 
 const Navbar = () => {

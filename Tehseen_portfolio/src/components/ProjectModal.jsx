@@ -120,11 +120,11 @@ const ProjectModal = ({ project, onClose }) => {
             </div>
 
             <h2 className="text-3xl md:text-4xl font-bold font-poppins text-white mb-4 leading-tight">
-              {project.title}
+              {project.fullTitle || project.title}
             </h2>
             
             <p className="text-slate-300 text-lg leading-relaxed mb-8">
-              {project.description}
+              {project.fullDescription || project.description}
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
