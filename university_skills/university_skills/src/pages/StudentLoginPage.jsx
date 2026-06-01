@@ -67,14 +67,22 @@ export default function StudentLoginPage() {
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    const { data: profileRow } = await supabase.from('users').select('id, role').eq('id', user?.id ?? '').maybeSingle()
+    const { data: profileRow } = await supabase.from('users').select('id, role, is_approved').eq('id', user?.id ?? '').maybeSingle()
     if (!profileRow) {
       toast.error('Profile row not found in public.users for this account.')
+      await supabase.auth.signOut()
       setLoading(false)
       return
     }
     if (profileRow.role !== 'student') {
       toast.error('This account is not assigned student role in public.users.')
+      await supabase.auth.signOut()
+      setLoading(false)
+      return
+    }
+    if (profileRow.is_approved === false) {
+      toast.error('Your registration is pending administrator approval. Please try again once approved.')
+      await supabase.auth.signOut()
       setLoading(false)
       return
     }
@@ -228,8 +236,11 @@ export default function StudentLoginPage() {
             </>
           )}
 
-          <div className="mt-6">
-            <Link className="text-sm font-medium text-slate-600 underline-offset-4 hover:text-slate-900 hover:underline" to="/">
+          <div className="mt-6 flex items-center justify-between text-xs font-semibold text-slate-500 border-t border-slate-100 pt-4">
+            <Link className="text-indigo-650 hover:text-indigo-500 transition-colors" to="/student/register">
+              Don't have an account? Register here
+            </Link>
+            <Link className="hover:text-slate-700 transition-colors" to="/">
               Back to home
             </Link>
           </div>

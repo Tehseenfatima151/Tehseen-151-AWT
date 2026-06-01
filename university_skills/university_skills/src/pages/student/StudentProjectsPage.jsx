@@ -88,6 +88,7 @@ export default function StudentProjectsPage() {
       cover_image: item.cover_image ?? '',
     })
     setCoverFile(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
   return (

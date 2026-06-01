@@ -6,27 +6,47 @@ import { listMyApplications } from '../../services/studentService'
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 
+// Module-level cache to persist applications list across page transitions
+let applicationsCache = null
+
 export default function StudentApplicationsPage() {
   const { profile } = useAuth()
-  const [applications, setApplications] = useState([])
-  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchApplications()
-  }, [])
+  // Use cache if it matches the current user's session
+  const hasCache = applicationsCache && applicationsCache.userId === profile?.id
+
+  const [applications, setApplications] = useState(hasCache ? applicationsCache.applications : [])
+  const [loading, setLoading] = useState(!hasCache)
 
   const fetchApplications = async () => {
+    if (!profile?.id) return
     try {
-      setLoading(true)
+      if (!hasCache) {
+        setLoading(true)
+      }
       const { data, error } = await listMyApplications(profile.id)
       if (error) throw error
-      setApplications(data || [])
+      const apps = data || []
+      setApplications(apps)
+
+      // Update cache
+      applicationsCache = {
+        userId: profile.id,
+        applications: apps
+      }
     } catch (err) {
+      console.error('Failed to load applications:', err)
       toast.error('Failed to load applications')
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (profile?.id) {
+      fetchApplications()
+    }
+  }, [profile?.id])
 
   const getStatusBadge = (status) => {
     switch (status) {

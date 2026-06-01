@@ -1,33 +1,36 @@
 import { AnimatePresence } from 'framer-motion'
-import { Suspense, lazy } from 'react'
+import { Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import PageTransition from './components/common/PageTransition'
 
-const DashboardLayout = lazy(() => import('./components/layout/DashboardLayout'))
-const LandingPage = lazy(() => import('./pages/LandingPage'))
-const StudentLoginPage = lazy(() => import('./pages/StudentLoginPage'))
-const AdminLoginPage = lazy(() => import('./pages/AdminLoginPage'))
-const ResetPasswordPage = lazy(() => import('./pages/ResetPasswordPage'))
-const StudentDashboardPage = lazy(() => import('./pages/student/StudentDashboardPage'))
-const StudentProfilePage = lazy(() => import('./pages/student/StudentProfilePage'))
-const StudentSkillsPage = lazy(() => import('./pages/student/StudentSkillsPage'))
-const StudentProjectsPage = lazy(() => import('./pages/student/StudentProjectsPage'))
-const StudentServicesPage = lazy(() => import('./pages/student/StudentServicesPage'))
-const StudentCertificatesPage = lazy(() => import('./pages/student/StudentCertificatesPage'))
-const StudentPortfolioPage = lazy(() => import('./pages/student/StudentPortfolioPage'))
-const AdminDashboardPage = lazy(() => import('./pages/admin/AdminDashboardPage'))
-const AdminStudentsPage = lazy(() => import('./pages/admin/AdminStudentsPage'))
-const AdminModerationPage = lazy(() => import('./pages/admin/AdminModerationPage'))
-const AdminStudentPortfolioPage = lazy(() => import('./pages/admin/AdminStudentPortfolioPage'))
-const AdminLeaderboardPage = lazy(() => import('./pages/admin/AdminLeaderboardPage'))
-const AdminFeedbackPage = lazy(() => import('./pages/admin/AdminFeedbackPage'))
-const AdminOpportunitiesPage = lazy(() => import('./pages/admin/AdminOpportunitiesPage'))
-const AdminApplicationsPage = lazy(() => import('./pages/admin/AdminApplicationsPage'))
-const StudentOpportunitiesPage = lazy(() => import('./pages/student/StudentOpportunitiesPage'))
-const StudentApplicationsPage = lazy(() => import('./pages/student/StudentApplicationsPage'))
-const PublicPortfolioPage = lazy(() => import('./pages/PublicPortfolioPage'))
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
+import DashboardLayout from './components/layout/DashboardLayout'
+import LandingPage from './pages/LandingPage'
+import StudentLoginPage from './pages/StudentLoginPage'
+import StudentRegisterPage from './pages/StudentRegisterPage'
+import AdminLoginPage from './pages/AdminLoginPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import StudentDashboardPage from './pages/student/StudentDashboardPage'
+import StudentProfilePage from './pages/student/StudentProfilePage'
+import StudentSkillsPage from './pages/student/StudentSkillsPage'
+import StudentProjectsPage from './pages/student/StudentProjectsPage'
+import StudentServicesPage from './pages/student/StudentServicesPage'
+import StudentCertificatesPage from './pages/student/StudentCertificatesPage'
+import StudentPortfolioPage from './pages/student/StudentPortfolioPage'
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'
+import AdminStudentsPage from './pages/admin/AdminStudentsPage'
+import AdminModerationPage from './pages/admin/AdminModerationPage'
+import AdminStudentPortfolioPage from './pages/admin/AdminStudentPortfolioPage'
+import AdminLeaderboardPage from './pages/admin/AdminLeaderboardPage'
+import AdminFeedbackPage from './pages/admin/AdminFeedbackPage'
+import AdminOpportunitiesPage from './pages/admin/AdminOpportunitiesPage'
+import AdminApplicationsPage from './pages/admin/AdminApplicationsPage'
+import StudentOpportunitiesPage from './pages/student/StudentOpportunitiesPage'
+import StudentApplicationsPage from './pages/student/StudentApplicationsPage'
+import PublicPortfolioPage from './pages/PublicPortfolioPage'
+import StudentSettingsPage from './pages/student/StudentSettingsPage'
+import AdminSettingsPage from './pages/admin/AdminSettingsPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 function RouteFallback() {
   return (
@@ -79,6 +82,7 @@ function App() {
         <Routes location={location} key={location.pathname}>
           <Route path="/" element={withTransition(<LandingPage />)} />
           <Route path="/student/login" element={withTransition(<StudentLoginPage />)} />
+          <Route path="/student/register" element={withTransition(<StudentRegisterPage />)} />
           <Route path="/admin/login" element={withTransition(<AdminLoginPage />)} />
           <Route path="/auth/reset-password" element={withTransition(<ResetPasswordPage />)} />
           <Route path="/portfolio/:id" element={withTransition(<PublicPortfolioPage />)} />
@@ -100,6 +104,7 @@ function App() {
             <Route path="portfolio" element={withTransition(<StudentPortfolioPage />)} />
             <Route path="opportunities" element={withTransition(<StudentOpportunitiesPage />)} />
             <Route path="applications" element={withTransition(<StudentApplicationsPage />)} />
+            <Route path="settings" element={withTransition(<StudentSettingsPage />)} />
           </Route>
 
           <Route
@@ -118,6 +123,7 @@ function App() {
             <Route path="moderation" element={withTransition(<AdminModerationPage />)} />
             <Route path="opportunities" element={withTransition(<AdminOpportunitiesPage />)} />
             <Route path="applications" element={withTransition(<AdminApplicationsPage />)} />
+            <Route path="settings" element={withTransition(<AdminSettingsPage />)} />
           </Route>
 
           <Route path="*" element={withTransition(<NotFoundPage />)} />

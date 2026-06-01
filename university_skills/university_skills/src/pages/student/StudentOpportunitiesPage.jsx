@@ -6,20 +6,26 @@ import { listActiveOpportunities, applyToOpportunity, listMyApplications } from 
 import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom'
 
+// Module-level cache to persist opportunities list across page transitions
+let opportunitiesCache = null
+
 export default function StudentOpportunitiesPage() {
   const { profile } = useAuth()
-  const [opportunities, setOpportunities] = useState([])
-  const [applications, setApplications] = useState([])
-  const [loading, setLoading] = useState(true)
+
+  // Use cache if it matches the current user's session
+  const hasCache = opportunitiesCache && opportunitiesCache.userId === profile?.id
+
+  const [opportunities, setOpportunities] = useState(hasCache ? opportunitiesCache.opportunities : [])
+  const [applications, setApplications] = useState(hasCache ? opportunitiesCache.applications : [])
+  const [loading, setLoading] = useState(!hasCache)
   const [applying, setApplying] = useState(null)
 
-  useEffect(() => {
-    fetchData()
-  }, [])
-
   const fetchData = async () => {
+    if (!profile?.id) return
     try {
-      setLoading(true)
+      if (!hasCache) {
+        setLoading(true)
+      }
       const [oppsRes, appsRes] = await Promise.all([
         listActiveOpportunities(),
         listMyApplications(profile.id)
@@ -28,14 +34,31 @@ export default function StudentOpportunitiesPage() {
       if (oppsRes.error) throw oppsRes.error
       if (appsRes.error) throw appsRes.error
       
-      setOpportunities(oppsRes.data || [])
-      setApplications(appsRes.data || [])
+      const opps = oppsRes.data || []
+      const apps = appsRes.data || []
+      
+      setOpportunities(opps)
+      setApplications(apps)
+      
+      // Update cache
+      opportunitiesCache = {
+        userId: profile.id,
+        opportunities: opps,
+        applications: apps
+      }
     } catch (err) {
+      console.error('Failed to load opportunities:', err)
       toast.error('Failed to load opportunities')
     } finally {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (profile?.id) {
+      fetchData()
+    }
+  }, [profile?.id])
 
   const handleApply = async (oppId) => {
     try {

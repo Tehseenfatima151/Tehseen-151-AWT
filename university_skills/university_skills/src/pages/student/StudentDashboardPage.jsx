@@ -2,30 +2,123 @@ import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import StatCard from '../../components/common/StatCard'
 import { useAuth } from '../../context/AuthContext'
-import { getStudentStats, listFeedbackForStudent, listMyApplications } from '../../services/studentService'
-import { Bar, BarChart, CartesianGrid, Pie, PieChart, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
-import { Award, FolderKanban, Star, TrendingUp, Send, CheckCircle2 } from 'lucide-react'
+import { getStudentStats, listFeedbackForStudent, listMyApplications, listByUser } from '../../services/studentService'
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
+import { Award, FolderKanban, Star, TrendingUp, Send, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Skeleton } from '../../components/common/Skeleton.jsx'
 import { useNavigate } from 'react-router-dom'
+import { calculateProfileCompletion } from '../../utils/profileCompletion'
+
+// Module-level cache to persist dashboard data across component unmounts/remounts
+let dashboardCache = null
 
 export default function StudentDashboardPage() {
   const { profile } = useAuth()
   const navigate = useNavigate()
-  const [stats, setStats] = useState({ totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null })
-  const [applications, setApplications] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [feedback, setFeedback] = useState([])
+
+  // Use cache if it matches the current user's session
+  const hasCache = dashboardCache && dashboardCache.userId === profile?.id
+
+  const [stats, setStats] = useState(hasCache ? dashboardCache.stats : { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null })
+  const [applications, setApplications] = useState(hasCache ? dashboardCache.applications : [])
+  const [loading, setLoading] = useState(!hasCache)
+  const [feedback, setFeedback] = useState(hasCache ? dashboardCache.feedback : [])
+
+  const [education, setEducation] = useState(hasCache ? dashboardCache.education : [])
+  const [skills, setSkills] = useState(hasCache ? dashboardCache.skills : [])
+  const [projects, setProjects] = useState(hasCache ? dashboardCache.projects : [])
+  const [certificates, setCertificates] = useState(hasCache ? dashboardCache.certificates : [])
+  const [experience, setExperience] = useState(hasCache ? dashboardCache.experience : [])
 
   useEffect(() => {
     if (!profile?.id) return
-    setLoading(true)
+    
+    // Only show full loading skeleton if cache is empty
+    if (!hasCache) {
+      setLoading(true)
+    }
     
     Promise.all([
-      getStudentStats(profile.id).then(setStats),
-      listFeedbackForStudent(profile.id).then(({ data }) => setFeedback(data ?? [])),
-      listMyApplications(profile.id).then(({ data }) => setApplications(data ?? []))
-    ]).finally(() => setLoading(false))
-  }, [profile?.id])
+      getStudentStats(profile.id).then(res => {
+        setStats(res)
+        return res
+      }).catch(err => {
+        console.error('Error fetching student stats:', err)
+        return null
+      }),
+      listFeedbackForStudent(profile.id).then(({ data }) => {
+        const val = data ?? []
+        setFeedback(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching student feedback:', err)
+        return []
+      }),
+      listMyApplications(profile.id).then(({ data }) => {
+        const val = data ?? []
+        setApplications(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching student applications:', err)
+        return []
+      }),
+      listByUser('education', profile.id).then(({ data }) => {
+        const val = data ?? []
+        setEducation(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching education:', err)
+        return []
+      }),
+      listByUser('skills', profile.id).then(({ data }) => {
+        const val = data ?? []
+        setSkills(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching skills:', err)
+        return []
+      }),
+      listByUser('projects', profile.id).then(({ data }) => {
+        const val = data ?? []
+        setProjects(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching projects:', err)
+        return []
+      }),
+      listByUser('certificates', profile.id).then(({ data }) => {
+        const val = data ?? []
+        setCertificates(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching certificates:', err)
+        return []
+      }),
+      listByUser('experience', profile.id).then(({ data }) => {
+        const val = data ?? []
+        setExperience(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching experience:', err)
+        return []
+      })
+    ]).then(([statsVal, feedbackVal, applicationsVal, educationVal, skillsVal, projectsVal, certificatesVal, experienceVal]) => {
+      // Save fresh data to module-level cache
+      dashboardCache = {
+        userId: profile.id,
+        stats: statsVal ?? dashboardCache?.stats ?? { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null },
+        feedback: feedbackVal ?? dashboardCache?.feedback ?? [],
+        applications: applicationsVal ?? dashboardCache?.applications ?? [],
+        education: educationVal ?? dashboardCache?.education ?? [],
+        skills: skillsVal ?? dashboardCache?.skills ?? [],
+        projects: projectsVal ?? dashboardCache?.projects ?? [],
+        certificates: certificatesVal ?? dashboardCache?.certificates ?? [],
+        experience: experienceVal ?? dashboardCache?.experience ?? []
+      }
+    }).finally(() => {
+      setLoading(false)
+    })
+  }, [profile?.id, hasCache])
 
   const distribution = useMemo(
     () => [
@@ -48,7 +141,7 @@ export default function StudentDashboardPage() {
     document.getElementById('student-admin-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const statBtn = "flex h-full min-h-0 w-full min-w-0 rounded-2xl outline-none ring-sky-400 transition-all hover:-translate-y-1 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 bg-white/5 border border-white/10 backdrop-blur-md"
+  const statBtn = "group text-left w-full h-full rounded-2xl outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-sky-400 focus-visible:ring-offset-slate-950"
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
@@ -131,21 +224,58 @@ export default function StudentDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-[#0f172a] p-5 shadow-xl">
-          <h2 className="text-base font-semibold text-white">Profile Strength</h2>
-          <p className="mt-1 text-sm text-slate-400">A quick visual of your portfolio content</p>
-          <div className="mt-4 h-64">
-            {loading ? (
-              <Skeleton className="h-full w-full rounded-2xl bg-white/5" />
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <RechartsTooltip contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '12px', color: '#fff' }} />
-                  <Pie data={distribution} dataKey="value" nameKey="name" innerRadius={60} outerRadius={100} fill="#6366f1" stroke="#0f172a" strokeWidth={4} />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
+        <div className="rounded-2xl border border-white/10 bg-[#0f172a] p-5 shadow-xl flex flex-col justify-between">
+          {loading ? (
+            <Skeleton className="h-full w-full rounded-2xl bg-white/5" />
+          ) : (
+            (() => {
+              const { percentage, suggestions } = calculateProfileCompletion({
+                profile,
+                education,
+                skills,
+                projects,
+                certificates,
+                experience
+              })
+              return (
+                <div className="flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-base font-semibold text-white">Profile Completion</h2>
+                      <span className="text-sm font-bold text-sky-400">{percentage}%</span>
+                    </div>
+                    <p className="mt-1 text-sm text-slate-400">Optimize your portfolio for recruiters</p>
+                    
+                    {/* Progress Bar */}
+                    <div className="mt-4 h-2.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                      <div 
+                        className="h-full bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full transition-all duration-500" 
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+
+                    {/* Action Items List */}
+                    <div className="mt-5 space-y-2 max-h-40 overflow-y-auto pr-1 scrollbar-thin">
+                      {suggestions.length === 0 ? (
+                        <div className="text-xs text-emerald-400 font-medium bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/20">
+                          🎉 Your profile is 100% complete! You are fully discoverable.
+                        </div>
+                      ) : (
+                        suggestions.map((s, idx) => (
+                          <div key={idx} className="flex items-start justify-between gap-3 text-xs bg-white/[0.02] border border-white/5 rounded-lg p-2 hover:bg-white/[0.04] transition">
+                            <span className="text-slate-300">{s.text}</span>
+                            <button onClick={() => navigate(s.link)} className="text-[10px] font-bold text-sky-400 hover:text-sky-300 uppercase tracking-wider whitespace-nowrap">
+                              Add
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })()
+          )}
         </div>
       </div>
 

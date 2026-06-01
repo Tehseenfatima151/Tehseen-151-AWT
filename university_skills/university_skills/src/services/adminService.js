@@ -41,7 +41,7 @@ export async function createStudentAccount({ email, password, name, department, 
     email,
     password,
     email_confirm: true,
-    user_metadata: { role: 'student' },
+    user_metadata: { role: 'student', is_admin_created: true },
   })
   if (authError) throw authError
 
@@ -52,6 +52,7 @@ export async function createStudentAccount({ email, password, name, department, 
     role: 'student',
     department,
     semester,
+    is_approved: true,
   })
   if (profileError) throw profileError
 }
@@ -150,5 +151,12 @@ export async function updateApplicationStatus(id, status) {
 }
 
 export async function updateStudentAdminFields(userId, payload) {
+  if (payload.is_approved === true && supabaseAdmin) {
+    try {
+      await supabaseAdmin.auth.admin.updateUserById(userId, { email_confirm: true })
+    } catch (err) {
+      console.error('Failed to confirm email in auth admin:', err)
+    }
+  }
   return supabase.from('users').update(payload).eq('id', userId).select().single()
 }

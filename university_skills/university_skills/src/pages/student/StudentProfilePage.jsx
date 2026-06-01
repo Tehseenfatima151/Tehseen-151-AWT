@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import SectionCard from '../../components/common/SectionCard'
 import { useAuth } from '../../context/AuthContext'
-import { createItem, deleteItem, listByUser, updateProfile } from '../../services/studentService'
+import { createItem, deleteItem, listByUser, updateProfile, updateItem } from '../../services/studentService'
 import { uploadFile } from '../../services/uploadService'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
 import { fieldInputClass } from '../../utils/formFieldClasses'
@@ -40,6 +40,8 @@ export default function StudentProfilePage() {
   const [newEdu, setNewEdu] = useState({ degree: '', university: '', year: '' })
   const [newExp, setNewExp] = useState({ role: '', company: '', duration: '', description: '' })
   const [confirmDelete, setConfirmDelete] = useState(null)
+  const [editEduId, setEditEduId] = useState(null)
+  const [editExpId, setEditExpId] = useState(null)
 
   useEffect(() => {
     setForm(emptyProfileForm(profile))
@@ -116,22 +118,34 @@ export default function StudentProfilePage() {
 
   const addEducation = async (e) => {
     e.preventDefault()
-    const { error } = await createItem('education', { ...newEdu, user_id: profile.id })
-    if (error) return toast.error(error.message)
+    const payload = { ...newEdu, user_id: profile.id }
+    const res = editEduId 
+      ? await updateItem('education', editEduId, payload)
+      : await createItem('education', payload)
+    
+    if (res.error) return toast.error(res.error.message)
+    
     const { data } = await listByUser('education', profile.id)
     setEducation(data ?? [])
     setNewEdu({ degree: '', university: '', year: '' })
-    toast.success('Education added')
+    setEditEduId(null)
+    toast.success(editEduId ? 'Education updated' : 'Education added')
   }
 
   const addExperience = async (e) => {
     e.preventDefault()
-    const { error } = await createItem('experience', { ...newExp, user_id: profile.id })
-    if (error) return toast.error(error.message)
+    const payload = { ...newExp, user_id: profile.id }
+    const res = editExpId 
+      ? await updateItem('experience', editExpId, payload)
+      : await createItem('experience', payload)
+    
+    if (res.error) return toast.error(res.error.message)
+    
     const { data } = await listByUser('experience', profile.id)
     setExperience(data ?? [])
     setNewExp({ role: '', company: '', duration: '', description: '' })
-    toast.success('Experience added')
+    setEditExpId(null)
+    toast.success(editExpId ? 'Experience updated' : 'Experience added')
   }
 
   return (
@@ -284,7 +298,7 @@ export default function StudentProfilePage() {
         </form>
       </SectionCard>
 
-      <SectionCard title="Education">
+      <SectionCard title="Education" id="education-section">
         <form className="grid gap-3 md:grid-cols-2 lg:grid-cols-4" onSubmit={addEducation}>
           <div className="lg:col-span-1">
             <label htmlFor="edu-degree" className="mb-1 block text-sm font-medium text-slate-700">
@@ -304,10 +318,22 @@ export default function StudentProfilePage() {
             </label>
             <input id="edu-year" className={fieldInputClass} placeholder="e.g. 2026" value={newEdu.year} onChange={(e) => setNewEdu({ ...newEdu, year: e.target.value })} />
           </div>
-          <div className="flex items-end lg:col-span-1">
-            <button type="submit" className="w-full rounded-lg bg-sky-600 px-4 py-2 text-white">
-              Add education
+          <div className="flex items-end lg:col-span-1 gap-2">
+            <button type="submit" className="rounded-lg bg-sky-600 px-4 py-2 text-white flex-1">
+              {editEduId ? 'Update education' : 'Add education'}
             </button>
+            {editEduId && (
+              <button 
+                type="button" 
+                onClick={() => {
+                  setEditEduId(null)
+                  setNewEdu({ degree: '', university: '', year: '' })
+                }}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 bg-white"
+              >
+                Cancel
+              </button>
+            )}
           </div>
         </form>
         <div className="mt-3 space-y-2">
@@ -319,15 +345,36 @@ export default function StudentProfilePage() {
                   {item.university} • {item.year}
                 </p>
               </div>
-              <button type="button" className="rounded bg-red-500 px-3 py-1 text-white" onClick={() => setConfirmDelete({ table: 'education', id: item.id })}>
-                Delete
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  type="button" 
+                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-800 shadow-sm hover:bg-slate-50 transition-colors"
+                  onClick={() => {
+                    setEditEduId(item.id)
+                    setNewEdu({
+                      degree: item.degree ?? '',
+                      university: item.university ?? '',
+                      year: item.year ?? ''
+                    })
+                    document.getElementById('education-section')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  type="button" 
+                  className="rounded-lg bg-red-500 hover:bg-red-600 px-3 py-1.5 font-medium text-white transition-colors" 
+                  onClick={() => setConfirmDelete({ table: 'education', id: item.id })}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>
       </SectionCard>
 
-      <SectionCard title="Experience">
+      <SectionCard title="Experience" id="experience-section">
         <form className="grid gap-3 md:grid-cols-2" onSubmit={addExperience}>
           <div>
             <label htmlFor="exp-role" className="mb-1 block text-sm font-medium text-slate-700">
@@ -353,9 +400,23 @@ export default function StudentProfilePage() {
             </label>
             <textarea id="exp-description" className={fieldInputClass} placeholder="What you did and impact (optional)" value={newExp.description} onChange={(e) => setNewExp({ ...newExp, description: e.target.value })} />
           </div>
-          <button type="submit" className="rounded-lg bg-sky-600 px-4 py-2 text-white md:col-span-2">
-            Add experience
-          </button>
+          <div className="md:col-span-2 flex flex-wrap gap-2">
+            <button type="submit" className="rounded-lg bg-sky-600 px-4 py-2 text-white flex-1">
+              {editExpId ? 'Update experience' : 'Add experience'}
+            </button>
+            {editExpId && (
+              <button 
+                type="button" 
+                onClick={() => {
+                  setEditExpId(null)
+                  setNewExp({ role: '', company: '', duration: '', description: '' })
+                }}
+                className="rounded-lg border border-slate-300 px-4 py-2 text-slate-700 bg-white"
+              >
+                Cancel
+              </button>
+            )}
+          </div>
         </form>
         <div className="mt-3 space-y-2">
           {experience.map((item) => (
@@ -366,9 +427,31 @@ export default function StudentProfilePage() {
                   {item.company} • {item.duration}
                 </p>
               </div>
-              <button type="button" className="rounded bg-red-500 px-3 py-1 text-white" onClick={() => setConfirmDelete({ table: 'experience', id: item.id })}>
-                Delete
-              </button>
+              <div className="flex gap-2">
+                <button 
+                  type="button" 
+                  className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 font-medium text-slate-800 shadow-sm hover:bg-slate-50 transition-colors"
+                  onClick={() => {
+                    setEditExpId(item.id)
+                    setNewExp({
+                      role: item.role ?? '',
+                      company: item.company ?? '',
+                      duration: item.duration ?? '',
+                      description: item.description ?? ''
+                    })
+                    document.getElementById('experience-section')?.scrollIntoView({ behavior: 'smooth' })
+                  }}
+                >
+                  Edit
+                </button>
+                <button 
+                  type="button" 
+                  className="rounded-lg bg-red-500 hover:bg-red-600 px-3 py-1.5 font-medium text-white transition-colors" 
+                  onClick={() => setConfirmDelete({ table: 'experience', id: item.id })}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
           ))}
         </div>

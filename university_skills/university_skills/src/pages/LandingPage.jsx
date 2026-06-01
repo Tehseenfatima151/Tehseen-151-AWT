@@ -249,33 +249,85 @@ export default function LandingPage() {
           </div>
         </motion.section>
 
-        {/* Footer */}
-        <footer className="mt-20 border-t border-white/[0.07] py-10">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-sky-400" />
-              <span className="text-sm font-semibold text-white tracking-tight">CUI SkillSphere</span>
-            </div>
-            <p className="max-w-sm text-xs text-slate-500 leading-relaxed">
-              Talent Discovery & Portfolio Platform for COMSATS University Islamabad.
-              Built with React, Supabase &amp; Tailwind CSS.
-            </p>
-            <div className="flex items-center gap-4 mt-1 text-xs text-slate-600">
-              <span>© {new Date().getFullYear()} COMSATS University Islamabad</span>
-              <span>·</span>
-              <a
-                href="https://uni-skillsphere.vercel.app/"
-                target="_blank"
-                rel="noreferrer"
-                className="text-sky-500 hover:text-sky-400 transition-colors"
-              >
-                Live Demo
-              </a>
-            </div>
-          </div>
-        </footer>
-
       </div>
+
+      {/* Footer */}
+      <footer className="relative mt-44 border-t border-white/[0.08] bg-slate-950/40 py-6 backdrop-blur-sm">
+        {/* Subtle glow effect */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden">
+          <div className="h-[100px] w-[400px] rounded-full bg-sky-500/[0.02] blur-[80px]" />
+        </div>
+
+        <div className="mx-auto max-w-6xl px-4 md:px-6">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4 text-left">
+            
+            {/* Brand Column */}
+            <div className="flex flex-col gap-2.5 col-span-1 md:col-span-2">
+              <div className="flex items-center gap-2">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 shadow-md shadow-sky-500/25">
+                  <Sparkles className="h-3.5 w-3.5 text-white" />
+                </div>
+                <span className="text-sm font-bold tracking-tight text-white">CUI SkillSphere</span>
+              </div>
+              <p className="max-w-sm text-[11px] leading-relaxed text-slate-450">
+                Talent Discovery & Portfolio Platform for COMSATS University Islamabad. Empowering students to showcase skills and connect with opportunities.
+              </p>
+            </div>
+
+            {/* Portals Column */}
+            <div className="flex flex-col gap-2.5">
+              <h4 className="text-[11px] font-semibold tracking-wider text-slate-350 uppercase">Portals</h4>
+              <ul className="space-y-1.5 text-[11px] text-slate-450">
+                <li>
+                  <Link to="/student/login" className="transition-colors duration-200 hover:text-sky-400">
+                    Student Portal
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/admin/login" className="transition-colors duration-200 hover:text-sky-400">
+                    Admin Portal
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Resources Column */}
+            <div className="flex flex-col gap-2.5">
+              <h4 className="text-[11px] font-semibold tracking-wider text-slate-350 uppercase">Resources</h4>
+              <ul className="space-y-1.5 text-[11px] text-slate-450">
+                <li>
+                  <a
+                    href="https://uni-skillsphere.vercel.app/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-sky-400"
+                  >
+                    Live Demo <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://vhr-sis.comsats.edu.pk/"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 transition-colors duration-200 hover:text-sky-400"
+                  >
+                    CUI Official <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+
+          {/* Bottom Row */}
+          <div className="mt-6 border-t border-white/[0.05] pt-4 flex items-center justify-center text-[10px] text-slate-500">
+            <p>
+              © {new Date().getFullYear()} COMSATS University Islamabad. All rights reserved.
+            </p>
+          </div>
+        </div>
+      </footer>
     </SiteBackground>
   )
 }

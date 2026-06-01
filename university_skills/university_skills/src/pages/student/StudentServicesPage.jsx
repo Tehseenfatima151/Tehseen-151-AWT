@@ -173,6 +173,7 @@ export default function StudentServicesPage() {
                     offering_tags: item.offering_tags ?? '',
                     availability: item.availability ?? '',
                   })
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
               >
                 Edit

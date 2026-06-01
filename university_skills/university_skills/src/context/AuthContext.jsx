@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase'
 const AuthContext = createContext(null)
 
 // Only fetch columns the app actually uses — much faster than SELECT *
-const PROFILE_COLS = 'id,name,email,role,department,semester,profile_picture,is_verified_developer,is_top_performer,contact_email,linkedin_url,created_at'
+const PROFILE_COLS = 'id,name,email,role,department,semester,profile_picture,is_verified_developer,is_top_performer,contact_email,linkedin_url,created_at,bio,phone,address,dob,nationality,languages,professional_title,github_url,twitter_url,instagram_url,facebook_url,website_url'
 
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)

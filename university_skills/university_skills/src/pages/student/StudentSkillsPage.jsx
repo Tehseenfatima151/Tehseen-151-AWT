@@ -6,6 +6,11 @@ import { createItem, deleteItem, listByUser, updateItem } from '../../services/s
 import EmptyState from '../../components/common/EmptyState'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
 
+const CS_QUICK_SKILLS = [
+  'React.js', 'Node.js', 'Python', 'JavaScript', 'SQL',
+  'Git & GitHub', 'Java', 'C++', 'Data Structures', 'Tailwind CSS'
+]
+
 export default function StudentSkillsPage() {
   const { profile } = useAuth()
   const profileId = profile?.id
@@ -58,6 +63,28 @@ export default function StudentSkillsPage() {
     }
   }
 
+  const addQuickSkill = async (skillName) => {
+    if (!profileId) return
+    setSaving(true)
+    const payload = {
+      skill_name: skillName,
+      skill_level: 'Intermediate',
+      user_id: profileId,
+    }
+    try {
+      const res = await createItem('skills', payload)
+      if (res.error) return toast.error(res.error.message)
+      if (res.data) {
+        setItems((prev) => [res.data, ...prev])
+        toast.success(`"${skillName}" added quickly!`)
+      }
+    } catch (err) {
+      toast.error('Failed to add skill')
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <SectionCard title="Skills">
       <form className="mb-6 grid gap-3 md:grid-cols-2" onSubmit={submit}>
@@ -90,6 +117,36 @@ export default function StudentSkillsPage() {
           </select>
           <p className="mt-1 text-xs text-slate-500">Controls how full the bar looks on your portfolio (Beginner → Expert).</p>
         </div>
+        
+        {/* Quick Add Skills */}
+        <div className="md:col-span-2 border-t border-slate-100 pt-4">
+          <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-slate-700">
+            Quick Add Skills
+          </label>
+          <div className="flex flex-wrap gap-2">
+            {CS_QUICK_SKILLS.map((skill) => {
+              const alreadyAdded = items.some(
+                (item) => item.skill_name.toLowerCase() === skill.toLowerCase()
+              )
+              return (
+                <button
+                  key={skill}
+                  type="button"
+                  disabled={alreadyAdded || saving || !profileId}
+                  onClick={() => addQuickSkill(skill)}
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-all border ${
+                    alreadyAdded
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200 cursor-not-allowed'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-sky-500 hover:text-white hover:border-sky-500 active:scale-95 shadow-sm'
+                  }`}
+                >
+                  {alreadyAdded ? `✓ ${skill}` : `+ ${skill}`}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-2 md:col-span-2">
           <button type="submit" disabled={saving || !profileId} className="rounded-lg bg-sky-600 px-4 py-2 text-white disabled:opacity-60">
             {saving ? 'Saving…' : editId ? 'Update skill' : 'Add skill'}
@@ -121,6 +178,7 @@ export default function StudentSkillsPage() {
                 onClick={() => {
                   setEditId(item.id)
                   setForm({ skill_name: item.skill_name, skill_level: item.skill_level })
+                  window.scrollTo({ top: 0, behavior: 'smooth' })
                 }}
               >
                 Edit
