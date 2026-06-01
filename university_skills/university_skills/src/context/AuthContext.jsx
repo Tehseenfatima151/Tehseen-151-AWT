@@ -9,11 +9,13 @@ const PROFILE_COLS = 'id,name,email,role,department,semester,profile_picture,is_
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [profile, setProfile] = useState(null)
+  // loading = true until the very first auth check + profile fetch completes
   const [loading, setLoading] = useState(true)
+  // profileFetching = true while a profile fetch is in-flight (used by ProtectedRoute)
+  const [profileFetching, setProfileFetching] = useState(false)
   const profileLoadedForUserIdRef = useRef(null)
 
   const fetchProfile = useCallback(async (userId) => {
-    // Single attempt — retries just add latency for a happy path
     const { data, error } = await supabase
       .from('users')
       .select(PROFILE_COLS)
@@ -51,7 +53,6 @@ export function AuthProvider({ children }) {
     const initAuth = async () => {
       setLoading(true)
       try {
-        // getSession reads from local storage — no network round-trip, very fast
         const { data: { session: initialSession } } = await supabase.auth.getSession()
         if (!alive) return
         setSession(initialSession ?? null)
@@ -87,10 +88,14 @@ export function AuthProvider({ children }) {
         // Skip re-fetch on simple token refresh — same user, profile unchanged
         if (event === 'TOKEN_REFRESHED' && profileLoadedForUserIdRef.current === uid) return
 
+        // Mark profile as fetching so ProtectedRoute shows loading instead of redirecting
+        setProfileFetching(true)
         const ok = await fetchProfile(uid)
         profileLoadedForUserIdRef.current = ok ? uid : null
       } catch (error) {
         console.error('auth state change handling failed', error)
+      } finally {
+        setProfileFetching(false)
       }
     })
 
@@ -114,6 +119,7 @@ export function AuthProvider({ children }) {
       session,
       profile,
       loading,
+      profileFetching,
       refreshFromSession,
       signOut,
       refreshProfile: async (updatedRow) => {
@@ -127,7 +133,7 @@ export function AuthProvider({ children }) {
         }
       },
     }),
-    [session, profile, loading, refreshFromSession, signOut, fetchProfile],
+    [session, profile, loading, profileFetching, refreshFromSession, signOut, fetchProfile],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

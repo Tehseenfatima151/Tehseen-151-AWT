@@ -60,7 +60,20 @@ export default function StudentOpportunitiesPage() {
     }
   }, [profile?.id])
 
+  const isDeadlinePassed = (deadlineStr) => {
+    if (!deadlineStr) return false
+    const deadline = new Date(deadlineStr)
+    deadline.setHours(23, 59, 59, 999)
+    return new Date() > deadline
+  }
+
   const handleApply = async (oppId) => {
+    const opp = opportunities.find(o => o.id === oppId)
+    if (opp && isDeadlinePassed(opp.deadline)) {
+      toast.error('The deadline for this opportunity has passed!')
+      return
+    }
+
     try {
       setApplying(oppId)
       const { error } = await applyToOpportunity(oppId, profile.id)
@@ -155,11 +168,15 @@ export default function StudentOpportunitiesPage() {
                       <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-500/10 px-3 py-1.5 text-sm font-medium text-emerald-400 border border-emerald-500/20">
                         <CheckCircle2 className="w-4 h-4" /> Applied
                       </span>
+                    ) : isDeadlinePassed(opp.deadline) ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg bg-rose-500/10 px-3 py-1.5 text-sm font-medium text-rose-455 border border-rose-500/20 shadow-sm" title="This opportunity has expired.">
+                        Deadline Passed
+                      </span>
                     ) : (
                       <button
                         onClick={() => handleApply(opp.id)}
                         disabled={applying === opp.id}
-                        className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-400 disabled:opacity-50 hover:scale-105 active:scale-95"
+                        className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-400 disabled:opacity-50 hover:scale-105 active:scale-95 cursor-pointer"
                       >
                         {applying === opp.id ? 'Sending...' : <><Send className="w-4 h-4"/> Apply Now</>}
                       </button>

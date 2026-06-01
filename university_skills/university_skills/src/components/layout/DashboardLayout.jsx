@@ -14,6 +14,8 @@ import {
   subscribeToNotifications 
 } from '../../services/notificationService'
 import { motion, AnimatePresence } from 'framer-motion'
+import { generateDeadlineWarningsClient, getNotificationMetadata } from '../../utils/notificationUtility'
+
 
 const linkStyles = ({ isActive }) =>
   `relative flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition-all duration-300 group ${
@@ -67,14 +69,21 @@ export default function DashboardLayout({ portal }) {
       })
     }
 
-    // 1. Generate deadline warnings automatically (students only) and fetch notifications
+    // 1. Fetch notifications immediately so the bell badge loads fast
+    fetchNotifs()
+
+    // 2. Generate deadline warnings in the background (students only) — non-blocking
     if (portal === 'student') {
-      supabase.rpc('generate_deadline_warnings').then(({ error }) => {
-        if (error) console.error("Error generating deadline warnings:", error)
-        fetchNotifs()
+      Promise.allSettled([
+        supabase.rpc('generate_deadline_warnings'),
+        generateDeadlineWarningsClient(profile.id)
+      ]).then((results) => {
+        // Re-fetch after warnings are generated to pick up any new ones
+        const hadNewWarnings = results.some(r => r.status === 'fulfilled')
+        if (hadNewWarnings) fetchNotifs()
+      }).catch(() => {
+        // Silent fail — warnings are non-critical
       })
-    } else {
-      fetchNotifs()
     }
 
     // 2. Realtime subscription
@@ -210,45 +219,61 @@ export default function DashboardLayout({ portal }) {
                 No notifications yet.
               </div>
             ) : (
-              notifications.map((notif) => (
-                <div
-                  key={notif.id}
-                  onClick={() => handleNotificationClick(notif)}
-                  className={`flex items-start gap-2.5 rounded-lg p-2.5 cursor-pointer transition text-left border relative group ${
-                    notif.is_read 
-                      ? 'bg-transparent border-transparent hover:bg-white/[0.02]' 
-                      : 'bg-sky-500/[0.03] border-sky-500/10 hover:bg-sky-500/[0.06]'
-                  }`}
-                >
-                  {/* Read status blue dot */}
-                  {!notif.is_read && (
-                    <span className="absolute top-3.5 right-3 h-2 w-2 rounded-full bg-sky-500 shadow-md shadow-sky-500/40" />
-                  )}
-
-                  {/* Badge */}
-                  <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold border uppercase shrink-0 mt-0.5 ${getBadgeStyle(notif.type)}`}>
-                    {notif.type}
-                  </span>
-
-                  {/* Content */}
-                  <div className="flex-1 min-w-0 pr-4">
-                    <p className="text-xs font-semibold text-slate-200 truncate">{notif.title}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-normal break-words">{notif.message}</p>
-                    <p className="text-[9px] text-slate-500 mt-1">{formatRelativeTime(notif.created_at)}</p>
-                  </div>
-
-                  {/* Delete button on hover */}
-                  <button
-                    onClick={(e) => handleDeleteNotif(notif.id, e)}
-                    className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 text-slate-500 transition-all rounded"
-                    title="Delete notification"
+              notifications.slice(0, 5).map((notif) => {
+                const meta = getNotificationMetadata(notif, portal)
+                return (
+                  <div
+                    key={notif.id}
+                    onClick={() => handleNotificationClick(notif)}
+                    className={`flex items-start gap-2.5 rounded-lg p-2.5 cursor-pointer transition text-left border relative group ${
+                      notif.is_read 
+                        ? 'bg-transparent border-transparent hover:bg-white/[0.02]' 
+                        : 'bg-sky-500/[0.03] border-sky-500/10 hover:bg-sky-500/[0.06]'
+                    }`}
                   >
-                    <Trash2 size={12} />
-                  </button>
-                </div>
-              ))
+                    {/* Priority Dot */}
+                    <span className={`h-2.5 w-2.5 rounded-full shrink-0 mt-1.5 ${meta.priorityColor}`} title={`Priority: ${meta.priority}`} />
+
+                    {/* Content */}
+                    <div className="flex-1 min-w-0 pr-4">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={`px-1.5 py-0.5 rounded text-[8px] font-semibold border uppercase shrink-0 ${meta.badgeColor}`}>
+                          {meta.category}
+                        </span>
+                        {!notif.is_read && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-sky-500 shadow-md shadow-sky-500/40" />
+                        )}
+                      </div>
+                      <p className="text-xs font-semibold text-slate-200 mt-1 truncate">{notif.title}</p>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-normal break-words">{notif.message}</p>
+                      <p className="text-[9px] text-slate-500 mt-1">{formatRelativeTime(notif.created_at)}</p>
+                    </div>
+
+                    {/* Delete button on hover */}
+                    <button
+                      onClick={(e) => handleDeleteNotif(notif.id, e)}
+                      className="opacity-0 group-hover:opacity-100 p-1 hover:text-red-400 text-slate-500 transition-all rounded shrink-0"
+                      title="Delete notification"
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                )
+              })
             )}
           </div>
+
+          {notifications.length > 0 && (
+            <div className="mt-3 pt-2.5 border-t border-white/5 text-center flex justify-center">
+              <Link 
+                to={portal === 'admin' ? '/admin/notifications' : '/student/notifications'}
+                onClick={() => setNotifOpen(false)}
+                className="text-xs font-semibold text-sky-400 hover:text-sky-300 transition-colors"
+              >
+                View All Notifications ({notifications.length})
+              </Link>
+            </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>
@@ -324,14 +349,21 @@ export default function DashboardLayout({ portal }) {
                 setNotifOpen(!notifOpen)
                 setProfileOpen(false)
               }}
-              className="relative p-2 rounded-lg bg-white/5 text-slate-300 hover:text-white border border-white/5 transition"
+              className={`relative p-2 rounded-lg bg-white/5 border border-white/5 transition text-slate-300 hover:text-white ${
+                unreadCount > 0 ? 'ring-2 ring-sky-500/20 shadow-[0_0_15px_rgba(14,165,233,0.15)] animate-pulse-subtle' : ''
+              }`}
               aria-label="Toggle notifications"
             >
-              <Bell size={16} />
+              <Bell size={16} className={unreadCount > 0 ? 'animate-bounce-subtle text-sky-400' : ''} />
               {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[9px] font-bold text-white ring-2 ring-slate-950">
+                <motion.span
+                  initial={{ scale: 0.5 }}
+                  animate={{ scale: [1, 1.2, 1] }}
+                  key={unreadCount}
+                  className="absolute -top-1 -right-1 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[8px] font-bold text-white ring-2 ring-slate-950 shadow-md shadow-red-500/30"
+                >
                   {unreadCount}
-                </span>
+                </motion.span>
               )}
             </button>
             {renderNotificationDropdown(false)}
@@ -370,9 +402,18 @@ export default function DashboardLayout({ portal }) {
       </header>
 
       <div className="relative z-10 flex min-h-screen w-full">
+        {/* Mobile overlay backdrop */}
+        {open && (
+          <div
+            className="fixed inset-0 z-20 bg-black/60 backdrop-blur-sm md:hidden"
+            onClick={() => setOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* Sidebar */}
         <aside
-          className={`fixed inset-y-0 left-0 z-30 w-72 border-r border-white/10 bg-gradient-to-b from-slate-950/95 via-slate-950/85 to-slate-900/95 p-5 text-white backdrop-blur-xl transition-transform md:static md:translate-x-0 flex flex-col ${
+          className={`fixed inset-y-0 left-0 z-30 w-72 border-r border-white/10 bg-gradient-to-b from-slate-950/95 via-slate-950/85 to-slate-900/95 p-5 pt-[68px] md:pt-5 text-white backdrop-blur-xl transition-transform md:static md:translate-x-0 flex flex-col ${
             open ? 'translate-x-0' : '-translate-x-full'
           }`}
         >
@@ -432,7 +473,7 @@ export default function DashboardLayout({ portal }) {
         </aside>
 
         {/* Main Content Area */}
-        <main className="relative z-0 w-full flex-1 p-4 text-slate-300 md:p-6 flex flex-col">
+        <main className="relative z-0 min-w-0 flex-1 p-4 text-slate-300 md:p-6 flex flex-col overflow-x-hidden">
           
           {/* Desktop Top Header Bar */}
           <header className="mb-6 hidden md:flex items-center justify-between border-b border-white/5 pb-4">
@@ -450,14 +491,21 @@ export default function DashboardLayout({ portal }) {
                     setNotifOpen(!notifOpen)
                     setProfileOpen(false)
                   }}
-                  className="relative p-2.5 rounded-xl bg-slate-900/60 text-slate-300 hover:text-white border border-white/5 transition hover:bg-slate-900"
+                  className={`relative p-2.5 rounded-xl bg-slate-900/60 border border-white/5 transition hover:bg-slate-900 text-slate-300 hover:text-white ${
+                    unreadCount > 0 ? 'ring-2 ring-sky-500/20 shadow-[0_0_15px_rgba(14,165,233,0.15)] animate-pulse-subtle' : ''
+                  }`}
                   aria-label="Notifications"
                 >
-                  <Bell size={18} />
+                  <Bell size={18} className={unreadCount > 0 ? 'animate-bounce-subtle text-sky-400' : ''} />
                   {unreadCount > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white ring-2 ring-slate-950">
+                    <motion.span
+                      initial={{ scale: 0.5 }}
+                      animate={{ scale: [1, 1.2, 1] }}
+                      key={unreadCount}
+                      className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-slate-950 shadow-md shadow-red-500/30"
+                    >
                       {unreadCount}
-                    </span>
+                    </motion.span>
                   )}
                 </button>
                 {renderNotificationDropdown(true)}

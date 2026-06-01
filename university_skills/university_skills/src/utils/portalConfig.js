@@ -1,9 +1,10 @@
-import { Award, Briefcase, FolderKanban, GraduationCap, LayoutDashboard, MessageSquare, Shield, Trophy, UserCircle, Compass, FileText, Settings } from 'lucide-react'
+import { Award, Briefcase, FolderKanban, GraduationCap, LayoutDashboard, MessageSquare, Shield, Trophy, UserCircle, Compass, FileText, Settings, Bell } from 'lucide-react'
 
 export const studentNav = [
   { to: '/student', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/student/opportunities', label: 'Opportunities', icon: Compass },
   { to: '/student/applications', label: 'My Applications', icon: FileText },
+  { to: '/student/notifications', label: 'Notifications', icon: Bell },
   { to: '/student/profile', label: 'Profile', icon: UserCircle },
   { to: '/student/skills', label: 'Skills', icon: GraduationCap },
   { to: '/student/projects', label: 'Projects', icon: FolderKanban },
@@ -18,8 +19,10 @@ export const adminNav = [
   { to: '/admin/opportunities', label: 'Opportunities', icon: Compass },
   { to: '/admin/applications', label: 'Applications', icon: FileText },
   { to: '/admin/students', label: 'Student Management', icon: UserCircle },
+  { to: '/admin/notifications', label: 'Notifications', icon: Bell },
   { to: '/admin/feedback', label: 'Feedback', icon: MessageSquare },
   { to: '/admin/leaderboard', label: 'Leaderboard', icon: Trophy },
   { to: '/admin/moderation', label: 'Moderation', icon: Shield },
   { to: '/admin/settings', label: 'Settings', icon: Settings },
 ]
+

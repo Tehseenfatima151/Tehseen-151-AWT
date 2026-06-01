@@ -142,7 +142,7 @@ export async function deleteOpportunity(id) {
 export async function listApplications() {
   return adminDb
     .from('applications')
-    .select('*, opportunities(title), user:users!applications_student_id_fkey(name, email)')
+    .select('*, opportunities(title, deadline), user:users!applications_student_id_fkey(name, email)')
     .order('created_at', { ascending: false })
 }
 

@@ -4,7 +4,6 @@ import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { ArrowRight, Eye, EyeOff, ShieldCheck } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../context/AuthContext'
 import { SkeletonText } from '../components/common/Skeleton.jsx'
 import { getPasswordResetRedirectUrl, setAuthSessionOnly } from '../lib/authPersistence'
 import SiteBackground from '../components/layout/SiteBackground'
@@ -15,7 +14,6 @@ const inputClass =
 export default function AdminLoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { refreshFromSession } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
@@ -64,7 +62,8 @@ export default function AdminLoginPage() {
       setLoading(false)
       return
     }
-    await refreshFromSession()
+    // Do NOT call refreshFromSession() here — onAuthStateChange handles
+    // updating AuthContext. Calling it here caused a double-fetch race condition.
     const {
       data: { user },
     } = await supabase.auth.getUser()

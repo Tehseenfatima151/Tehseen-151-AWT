@@ -4,7 +4,6 @@ import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
 import { ArrowRight, Eye, EyeOff, GraduationCap } from 'lucide-react'
 import { supabase } from '../lib/supabase'
-import { useAuth } from '../context/AuthContext'
 import { SkeletonText } from '../components/common/Skeleton.jsx'
 import { getPasswordResetRedirectUrl, setAuthSessionOnly } from '../lib/authPersistence'
 import SiteBackground from '../components/layout/SiteBackground'
@@ -15,7 +14,6 @@ const inputClass =
 export default function StudentLoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { refreshFromSession } = useAuth()
   const [form, setForm] = useState({ email: '', password: '' })
   const [rememberMe, setRememberMe] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
@@ -63,7 +61,10 @@ export default function StudentLoginPage() {
       setLoading(false)
       return
     }
-    await refreshFromSession()
+    // Verify the profile row exists and has the right role before navigating.
+    // We do NOT call refreshFromSession() here — onAuthStateChange handles
+    // updating AuthContext. Calling it here caused a double-fetch race condition
+    // that wiped profile to null right after navigate('/student').
     const {
       data: { user },
     } = await supabase.auth.getUser()

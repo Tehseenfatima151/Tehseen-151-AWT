@@ -27,9 +27,11 @@ import AdminOpportunitiesPage from './pages/admin/AdminOpportunitiesPage'
 import AdminApplicationsPage from './pages/admin/AdminApplicationsPage'
 import StudentOpportunitiesPage from './pages/student/StudentOpportunitiesPage'
 import StudentApplicationsPage from './pages/student/StudentApplicationsPage'
+import StudentNotificationsPage from './pages/student/StudentNotificationsPage'
 import PublicPortfolioPage from './pages/PublicPortfolioPage'
 import StudentSettingsPage from './pages/student/StudentSettingsPage'
 import AdminSettingsPage from './pages/admin/AdminSettingsPage'
+import AdminNotificationsPage from './pages/admin/AdminNotificationsPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function RouteFallback() {
@@ -53,16 +55,24 @@ function SessionLoadingScreen() {
 }
 
 function ProtectedRoute({ role, children }) {
-  const { session, profile, loading } = useAuth()
+  const { session, profile, loading, profileFetching } = useAuth()
+
+  // Initial auth check in progress — wait
   if (loading) {
     return <SessionLoadingScreen />
   }
+
+  // No session → send to login
   if (!session) {
     return <Navigate to={role === 'admin' ? '/admin/login' : '/student/login'} replace />
   }
-  if (!profile) {
-    return <Navigate to={role === 'admin' ? '/admin/login' : '/student/login'} replace state={{ reason: 'no_profile' }} />
+
+  // Session exists but profile fetch is still in-flight (e.g. right after login)
+  // Wait instead of redirecting — this is the race condition that caused blank screen
+  if (profileFetching || !profile) {
+    return <SessionLoadingScreen />
   }
+
   if (profile.role !== role) {
     if (profile.role === 'admin') return <Navigate to="/admin" replace />
     if (profile.role === 'student') return <Navigate to="/student" replace />
@@ -104,6 +114,7 @@ function App() {
             <Route path="portfolio" element={withTransition(<StudentPortfolioPage />)} />
             <Route path="opportunities" element={withTransition(<StudentOpportunitiesPage />)} />
             <Route path="applications" element={withTransition(<StudentApplicationsPage />)} />
+            <Route path="notifications" element={withTransition(<StudentNotificationsPage />)} />
             <Route path="settings" element={withTransition(<StudentSettingsPage />)} />
           </Route>
 
@@ -123,6 +134,7 @@ function App() {
             <Route path="moderation" element={withTransition(<AdminModerationPage />)} />
             <Route path="opportunities" element={withTransition(<AdminOpportunitiesPage />)} />
             <Route path="applications" element={withTransition(<AdminApplicationsPage />)} />
+            <Route path="notifications" element={withTransition(<AdminNotificationsPage />)} />
             <Route path="settings" element={withTransition(<AdminSettingsPage />)} />
           </Route>
 
@@ -132,5 +144,6 @@ function App() {
     </Suspense>
   )
 }
+
 
 export default App

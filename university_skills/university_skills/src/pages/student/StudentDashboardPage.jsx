@@ -3,8 +3,9 @@ import { motion } from 'framer-motion'
 import StatCard from '../../components/common/StatCard'
 import { useAuth } from '../../context/AuthContext'
 import { getStudentStats, listFeedbackForStudent, listMyApplications, listByUser } from '../../services/studentService'
+import { listNotifications } from '../../services/notificationService'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
-import { Award, FolderKanban, Star, TrendingUp, Send, CheckCircle2, AlertCircle } from 'lucide-react'
+import { Award, FolderKanban, Star, TrendingUp, Send, CheckCircle2, AlertCircle, Bell } from 'lucide-react'
 import { Skeleton } from '../../components/common/Skeleton.jsx'
 import { useNavigate } from 'react-router-dom'
 import { calculateProfileCompletion } from '../../utils/profileCompletion'
@@ -23,6 +24,7 @@ export default function StudentDashboardPage() {
   const [applications, setApplications] = useState(hasCache ? dashboardCache.applications : [])
   const [loading, setLoading] = useState(!hasCache)
   const [feedback, setFeedback] = useState(hasCache ? dashboardCache.feedback : [])
+  const [notifications, setNotifications] = useState(hasCache ? dashboardCache.notifications : [])
 
   const [education, setEducation] = useState(hasCache ? dashboardCache.education : [])
   const [skills, setSkills] = useState(hasCache ? dashboardCache.skills : [])
@@ -101,8 +103,16 @@ export default function StudentDashboardPage() {
       }).catch(err => {
         console.error('Error fetching experience:', err)
         return []
+      }),
+      listNotifications(profile.id).then(({ data }) => {
+        const val = data ?? []
+        setNotifications(val)
+        return val
+      }).catch(err => {
+        console.error('Error fetching notifications:', err)
+        return []
       })
-    ]).then(([statsVal, feedbackVal, applicationsVal, educationVal, skillsVal, projectsVal, certificatesVal, experienceVal]) => {
+    ]).then(([statsVal, feedbackVal, applicationsVal, educationVal, skillsVal, projectsVal, certificatesVal, experienceVal, notificationsVal]) => {
       // Save fresh data to module-level cache
       dashboardCache = {
         userId: profile.id,
@@ -113,7 +123,8 @@ export default function StudentDashboardPage() {
         skills: skillsVal ?? dashboardCache?.skills ?? [],
         projects: projectsVal ?? dashboardCache?.projects ?? [],
         certificates: certificatesVal ?? dashboardCache?.certificates ?? [],
-        experience: experienceVal ?? dashboardCache?.experience ?? []
+        experience: experienceVal ?? dashboardCache?.experience ?? [],
+        notifications: notificationsVal ?? dashboardCache?.notifications ?? []
       }
     }).finally(() => {
       setLoading(false)
@@ -137,6 +148,15 @@ export default function StudentDashboardPage() {
     return { total, accepted, rejected, pending }
   }, [applications])
 
+  const unreadNotificationsCount = useMemo(() => {
+    return notifications.filter(n => !n.is_read).length
+  }, [notifications])
+
+  const recentActivityCount = useMemo(() => {
+    const last24h = Date.now() - 24 * 60 * 60 * 1000
+    return notifications.filter(n => new Date(n.created_at).getTime() >= last24h).length
+  }, [notifications])
+
   const scrollToAdminFeedback = () => {
     document.getElementById('student-admin-feedback')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
@@ -152,9 +172,10 @@ export default function StudentDashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-5">
         {loading ? (
           <>
+             <Skeleton className="h-[124px] rounded-2xl bg-white/5" />
              <Skeleton className="h-[124px] rounded-2xl bg-white/5" />
              <Skeleton className="h-[124px] rounded-2xl bg-white/5" />
              <Skeleton className="h-[124px] rounded-2xl bg-white/5" />
@@ -170,6 +191,17 @@ export default function StudentDashboardPage() {
             </motion.button>
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => navigate('/student/applications')} className={statBtn}>
               <StatCard compact uniformCompact label="Apps Sent" value={applicationStats.total} icon={Send} accent="indigo" />
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" onClick={() => navigate('/student/notifications')} className={statBtn}>
+              <StatCard 
+                compact 
+                uniformCompact 
+                label="Inbox Alerts" 
+                value={unreadNotificationsCount} 
+                icon={Bell} 
+                accent="indigo" 
+                hint={recentActivityCount > 0 ? `${recentActivityCount} new last 24h` : 'No recent activity'} 
+              />
             </motion.button>
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="button" onClick={scrollToAdminFeedback} className={statBtn}>
               <StatCard
