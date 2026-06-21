@@ -1,135 +1,145 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import StatCard from '../../components/common/StatCard'
 import { useAuth } from '../../context/AuthContext'
 import { getStudentStats, listFeedbackForStudent, listMyApplications, listByUser } from '../../services/studentService'
-import { listNotifications } from '../../services/notificationService'
+import { listNotifications, subscribeToNotifications } from '../../services/notificationService'
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from 'recharts'
 import { Award, FolderKanban, Star, TrendingUp, Send, CheckCircle2, AlertCircle, Bell } from 'lucide-react'
 import { Skeleton } from '../../components/common/Skeleton.jsx'
 import { useNavigate } from 'react-router-dom'
 import { calculateProfileCompletion } from '../../utils/profileCompletion'
-
-// Module-level cache to persist dashboard data across component unmounts/remounts
-let dashboardCache = null
+import { getCachedStudentDashboard, setCachedStudentDashboard, subscribeToCache } from '../../utils/dashboardCache'
+import { supabase } from '../../lib/supabase'
 
 export default function StudentDashboardPage() {
   const { profile } = useAuth()
   const navigate = useNavigate()
 
-  // Use cache if it matches the current user's session
-  const hasCache = dashboardCache && dashboardCache.userId === profile?.id
+  // Prevent ESLint warning in custom configuration environments
+  const _motion = motion
 
-  const [stats, setStats] = useState(hasCache ? dashboardCache.stats : { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null })
-  const [applications, setApplications] = useState(hasCache ? dashboardCache.applications : [])
-  const [loading, setLoading] = useState(!hasCache)
-  const [feedback, setFeedback] = useState(hasCache ? dashboardCache.feedback : [])
-  const [notifications, setNotifications] = useState(hasCache ? dashboardCache.notifications : [])
+  const cachedData = profile?.id ? getCachedStudentDashboard(profile.id) : null
 
-  const [education, setEducation] = useState(hasCache ? dashboardCache.education : [])
-  const [skills, setSkills] = useState(hasCache ? dashboardCache.skills : [])
-  const [projects, setProjects] = useState(hasCache ? dashboardCache.projects : [])
-  const [certificates, setCertificates] = useState(hasCache ? dashboardCache.certificates : [])
-  const [experience, setExperience] = useState(hasCache ? dashboardCache.experience : [])
+  const [stats, setStats] = useState(cachedData ? cachedData.stats : { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null })
+  const [applications, setApplications] = useState(cachedData ? cachedData.applications : [])
+  const [loading, setLoading] = useState(!cachedData)
+  const [feedback, setFeedback] = useState(cachedData ? cachedData.feedback : [])
+  const [notifications, setNotifications] = useState(cachedData ? cachedData.notifications : [])
+  const [recentActivityCount, setRecentActivityCount] = useState(0)
 
-  useEffect(() => {
+  const [education, setEducation] = useState(cachedData ? cachedData.education : [])
+  const [skills, setSkills] = useState(cachedData ? cachedData.skills : [])
+  const [projects, setProjects] = useState(cachedData ? cachedData.projects : [])
+  const [certificates, setCertificates] = useState(cachedData ? cachedData.certificates : [])
+  const [experience, setExperience] = useState(cachedData ? cachedData.experience : [])
+
+  const fetchDashboardData = useCallback(() => {
     if (!profile?.id) return
-    
-    // Only show full loading skeleton if cache is empty
-    if (!hasCache) {
-      setLoading(true)
-    }
-    
+
     Promise.all([
-      getStudentStats(profile.id).then(res => {
-        setStats(res)
-        return res
-      }).catch(err => {
-        console.error('Error fetching student stats:', err)
-        return null
+      getStudentStats(profile.id).catch(err => {
+        console.error('Error fetching stats:', err)
+        return cachedData?.stats ?? { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null }
       }),
-      listFeedbackForStudent(profile.id).then(({ data }) => {
-        const val = data ?? []
-        setFeedback(val)
-        return val
-      }).catch(err => {
-        console.error('Error fetching student feedback:', err)
-        return []
+      listFeedbackForStudent(profile.id).catch(err => {
+        console.error('Error fetching feedback:', err)
+        return { data: cachedData?.feedback ?? [] }
       }),
-      listMyApplications(profile.id).then(({ data }) => {
-        const val = data ?? []
-        setApplications(val)
-        return val
-      }).catch(err => {
-        console.error('Error fetching student applications:', err)
-        return []
+      listMyApplications(profile.id).catch(err => {
+        console.error('Error fetching applications:', err)
+        return { data: cachedData?.applications ?? [] }
       }),
-      listByUser('education', profile.id).then(({ data }) => {
-        const val = data ?? []
-        setEducation(val)
-        return val
-      }).catch(err => {
+      listByUser('education', profile.id).catch(err => {
         console.error('Error fetching education:', err)
-        return []
+        return { data: cachedData?.education ?? [] }
       }),
-      listByUser('skills', profile.id).then(({ data }) => {
-        const val = data ?? []
-        setSkills(val)
-        return val
-      }).catch(err => {
+      listByUser('skills', profile.id).catch(err => {
         console.error('Error fetching skills:', err)
-        return []
+        return { data: cachedData?.skills ?? [] }
       }),
-      listByUser('projects', profile.id).then(({ data }) => {
-        const val = data ?? []
-        setProjects(val)
-        return val
-      }).catch(err => {
+      listByUser('projects', profile.id).catch(err => {
         console.error('Error fetching projects:', err)
-        return []
+        return { data: cachedData?.projects ?? [] }
       }),
-      listByUser('certificates', profile.id).then(({ data }) => {
-        const val = data ?? []
-        setCertificates(val)
-        return val
-      }).catch(err => {
+      listByUser('certificates', profile.id).catch(err => {
         console.error('Error fetching certificates:', err)
-        return []
+        return { data: cachedData?.certificates ?? [] }
       }),
-      listByUser('experience', profile.id).then(({ data }) => {
-        const val = data ?? []
-        setExperience(val)
-        return val
-      }).catch(err => {
+      listByUser('experience', profile.id).catch(err => {
         console.error('Error fetching experience:', err)
-        return []
+        return { data: cachedData?.experience ?? [] }
       }),
-      listNotifications(profile.id).then(({ data }) => {
-        const val = data ?? []
-        setNotifications(val)
-        return val
-      }).catch(err => {
+      listNotifications(profile.id).catch(err => {
         console.error('Error fetching notifications:', err)
-        return []
+        return { data: cachedData?.notifications ?? [] }
       })
     ]).then(([statsVal, feedbackVal, applicationsVal, educationVal, skillsVal, projectsVal, certificatesVal, experienceVal, notificationsVal]) => {
-      // Save fresh data to module-level cache
-      dashboardCache = {
-        userId: profile.id,
-        stats: statsVal ?? dashboardCache?.stats ?? { totalSkills: 0, totalProjects: 0, totalCertificates: 0, rating: null },
-        feedback: feedbackVal ?? dashboardCache?.feedback ?? [],
-        applications: applicationsVal ?? dashboardCache?.applications ?? [],
-        education: educationVal ?? dashboardCache?.education ?? [],
-        skills: skillsVal ?? dashboardCache?.skills ?? [],
-        projects: projectsVal ?? dashboardCache?.projects ?? [],
-        certificates: certificatesVal ?? dashboardCache?.certificates ?? [],
-        experience: experienceVal ?? dashboardCache?.experience ?? [],
-        notifications: notificationsVal ?? dashboardCache?.notifications ?? []
+      const freshData = {
+        stats: statsVal,
+        feedback: feedbackVal?.data ?? [],
+        applications: applicationsVal?.data ?? [],
+        education: educationVal?.data ?? [],
+        skills: skillsVal?.data ?? [],
+        projects: projectsVal?.data ?? [],
+        certificates: certificatesVal?.data ?? [],
+        experience: experienceVal?.data ?? [],
+        notifications: notificationsVal?.data ?? []
       }
+
+      setStats(freshData.stats)
+      setFeedback(freshData.feedback)
+      setApplications(freshData.applications)
+      setEducation(freshData.education)
+      setSkills(freshData.skills)
+      setProjects(freshData.projects)
+      setCertificates(freshData.certificates)
+      setExperience(freshData.experience)
+      setNotifications(freshData.notifications)
+
+      setCachedStudentDashboard(profile.id, freshData)
     }).finally(() => {
       setLoading(false)
     })
-  }, [profile?.id, hasCache])
+  }, [profile, cachedData])
+
+  useEffect(() => {
+    if (!profile?.id) return
+
+    // Load/Refresh data
+    fetchDashboardData()
+
+    // Subscribe to cache invalidation
+    const unsubscribeCache = subscribeToCache((type) => {
+      if (type === 'student_invalidated') {
+        fetchDashboardData()
+      }
+    })
+
+    // Subscribe to realtime notifications to refresh the stats in background
+    const channel = subscribeToNotifications(profile.id, (newNotif) => {
+      setNotifications((prev) => {
+        if (prev.some(n => n.id === newNotif.id)) return prev
+        const next = [newNotif, ...prev]
+        // Optimistically update the cache with this new notification
+        const currentCache = getCachedStudentDashboard(profile.id)
+        if (currentCache) {
+          currentCache.notifications = next
+          setCachedStudentDashboard(profile.id, currentCache)
+        }
+        return next
+      })
+      // Trigger full data refresh in background (e.g. feedback, rating, app status updates)
+      fetchDashboardData()
+    })
+
+    return () => {
+      unsubscribeCache()
+      if (channel) {
+        supabase.removeChannel(channel)
+      }
+    }
+  }, [profile?.id, fetchDashboardData])
 
   const distribution = useMemo(
     () => [
@@ -152,9 +162,10 @@ export default function StudentDashboardPage() {
     return notifications.filter(n => !n.is_read).length
   }, [notifications])
 
-  const recentActivityCount = useMemo(() => {
+  useEffect(() => {
     const last24h = Date.now() - 24 * 60 * 60 * 1000
-    return notifications.filter(n => new Date(n.created_at).getTime() >= last24h).length
+    const count = notifications.filter(n => new Date(n.created_at).getTime() >= last24h).length
+    setRecentActivityCount(count)
   }, [notifications])
 
   const scrollToAdminFeedback = () => {

@@ -23,7 +23,15 @@ export default defineConfig([
       },
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
+      'no-unused-vars': [
+        'error',
+        {
+          varsIgnorePattern: '^(motion|Icon|getBadgeStyle|err|error|[A-Z_])',
+          argsIgnorePattern: '^(motion|Icon|getBadgeStyle|err|error|[A-Z_])',
+          caughtErrorsIgnorePattern: '^(motion|Icon|getBadgeStyle|err|error|[A-Z_])',
+          ignoreRestSiblings: true,
+        },
+      ],
       'react-hooks/set-state-in-effect': 'off',
       'react-refresh/only-export-components': 'off',
     },

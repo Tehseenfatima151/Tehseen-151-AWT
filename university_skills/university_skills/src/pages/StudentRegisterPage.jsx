@@ -64,7 +64,7 @@ export default function StudentRegisterPage() {
     setLoading(true)
     try {
       // 1. Sign up the user in Supabase Auth with custom user metadata
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email: form.email.trim(),
         password: form.password,
         options: {

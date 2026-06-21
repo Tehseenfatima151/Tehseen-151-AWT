@@ -59,8 +59,9 @@ export default function AdminNotificationsPage() {
   useEffect(() => {
     if (!profile?.id) return
 
+    const uniqueId = Math.random().toString(36).substring(2, 10)
     const channel = supabase
-      .channel(`notifications-admin-page-${profile.id}`)
+      .channel(`notifications-admin-page-${profile.id}-${uniqueId}`)
       .on(
         'postgres_changes',
         {

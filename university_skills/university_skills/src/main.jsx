@@ -7,12 +7,12 @@ import { AuthProvider } from './context/AuthContext.jsx'
 import { ErrorBoundary } from './components/ErrorBoundary.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <ErrorBoundary>
-    <BrowserRouter>
+  <BrowserRouter>
+    <ErrorBoundary>
       <AuthProvider>
         <App />
         <Toaster position="top-right" />
       </AuthProvider>
-    </BrowserRouter>
-  </ErrorBoundary>,
+    </ErrorBoundary>
+  </BrowserRouter>,
 )

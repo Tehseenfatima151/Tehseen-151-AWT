@@ -50,8 +50,9 @@ export async function deleteNotification(notificationId) {
  * Invokes the callback function with the new notification record on INSERT.
  */
 export function subscribeToNotifications(userId, onNewNotification) {
+  const uniqueId = Math.random().toString(36).substring(2, 10)
   return supabase
-    .channel(`notifications-user-${userId}`)
+    .channel(`notifications-user-${userId}-${uniqueId}`)
     .on(
       'postgres_changes',
       {

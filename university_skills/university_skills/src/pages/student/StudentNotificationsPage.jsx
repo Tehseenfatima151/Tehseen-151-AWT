@@ -59,8 +59,9 @@ export default function StudentNotificationsPage() {
   useEffect(() => {
     if (!profile?.id) return
 
+    const uniqueId = Math.random().toString(36).substring(2, 10)
     const channel = supabase
-      .channel(`notifications-page-${profile.id}`)
+      .channel(`notifications-page-${profile.id}-${uniqueId}`)
       .on(
         'postgres_changes',
         {

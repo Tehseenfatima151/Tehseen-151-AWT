@@ -61,11 +61,10 @@ export default function LandingPage() {
           </div>
           <div className="mx-auto mt-6 w-full max-w-3xl md:mt-7">
             <p className="rounded-2xl border border-sky-400/15 bg-gradient-to-b from-sky-500/[0.07] to-white/[0.02] px-6 py-4 text-center text-base leading-relaxed shadow-[0_0_40px_-12px_rgba(56,189,248,0.25)] ring-1 ring-white/[0.04] backdrop-blur-sm md:text-lg">
-              <span className="font-medium text-slate-100">Build, manage & showcase your portfolio</span>
-              <span className="text-slate-500"> — </span>
               <span className="text-slate-300">
-                one hub for{' '}
-                <span className="font-semibold text-sky-100">COMSATS</span> students & talent discovery.
+                A smart talent ecosystem where students{' '}
+                <span className="font-semibold text-sky-100">showcase skills</span>, build professional portfolios, and discover{' '}
+                <span className="font-semibold text-sky-100">real opportunities</span>.
               </span>
             </p>
           </div>

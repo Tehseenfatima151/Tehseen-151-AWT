@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase'
+import { invalidateStudentDashboardCache, invalidateAdminDashboardCache } from '../utils/dashboardCache'
 
 export async function getStudentStats(userId) {
   const [skills, projects, certificates, rating] = await Promise.all([
@@ -17,7 +18,10 @@ export async function getStudentStats(userId) {
 }
 
 export async function updateProfile(userId, payload) {
-  return supabase.from('users').update(payload).eq('id', userId).select().single()
+  const res = await supabase.from('users').update(payload).eq('id', userId).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function listByUser(table, userId) {
@@ -25,15 +29,24 @@ export async function listByUser(table, userId) {
 }
 
 export async function createItem(table, payload) {
-  return supabase.from(table).insert(payload).select().single()
+  const res = await supabase.from(table).insert(payload).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function updateItem(table, id, payload) {
-  return supabase.from(table).update(payload).eq('id', id).select().single()
+  const res = await supabase.from(table).update(payload).eq('id', id).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function deleteItem(table, id) {
-  return supabase.from(table).delete().eq('id', id)
+  const res = await supabase.from(table).delete().eq('id', id)
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function listFeedbackForStudent(userId) {
@@ -57,9 +70,12 @@ export async function listMyApplications(userId) {
 }
 
 export async function applyToOpportunity(opportunityId, userId) {
-  return supabase.from('applications').insert({
+  const res = await supabase.from('applications').insert({
     opportunity_id: opportunityId,
     student_id: userId,
     status: 'pending'
   }).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }

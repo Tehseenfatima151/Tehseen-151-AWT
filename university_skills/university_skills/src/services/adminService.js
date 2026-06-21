@@ -1,4 +1,5 @@
 import { supabase, supabaseAdmin } from '../lib/supabase'
+import { invalidateStudentDashboardCache, invalidateAdminDashboardCache } from '../utils/dashboardCache'
 
 // Use supabaseAdmin if available (bypasses RLS for admin operations)
 // Falls back to regular supabase client if service key not set
@@ -55,12 +56,14 @@ export async function createStudentAccount({ email, password, name, department, 
     is_approved: true,
   })
   if (profileError) throw profileError
+  invalidateAdminDashboardCache()
 }
 
 export async function deleteStudent(userId) {
   if (!supabaseAdmin) throw new Error('Missing VITE_SUPABASE_SERVICE_ROLE_KEY')
   await supabase.from('users').delete().eq('id', userId)
   await supabaseAdmin.auth.admin.deleteUser(userId)
+  invalidateAdminDashboardCache()
 }
 
 export async function listModerationData(table) {
@@ -95,11 +98,17 @@ export async function getStudentPortfolio(userId) {
 }
 
 export async function upsertStudentRating(userId, rating) {
-  return supabase.from('ratings').upsert({ user_id: userId, rating }, { onConflict: 'user_id' }).select().single()
+  const res = await supabase.from('ratings').upsert({ user_id: userId, rating }, { onConflict: 'user_id' }).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function addFeedback({ userId, adminId, message }) {
-  return supabase.from('feedback').insert({ user_id: userId, admin_id: adminId, message }).select().single()
+  const res = await supabase.from('feedback').insert({ user_id: userId, admin_id: adminId, message }).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function listLeaderboard(limit = 20) {
@@ -127,15 +136,24 @@ export async function listOpportunities() {
 }
 
 export async function createOpportunity(payload) {
-  return adminDb.from('opportunities').insert([payload]).select()
+  const res = await adminDb.from('opportunities').insert([payload]).select()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function updateOpportunity(id, payload) {
-  return adminDb.from('opportunities').update(payload).eq('id', id).select()
+  const res = await adminDb.from('opportunities').update(payload).eq('id', id).select()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function deleteOpportunity(id) {
-  return adminDb.from('opportunities').delete().eq('id', id)
+  const res = await adminDb.from('opportunities').delete().eq('id', id)
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 // Application Management — uses adminDb to bypass RLS deadlocks
@@ -147,7 +165,10 @@ export async function listApplications() {
 }
 
 export async function updateApplicationStatus(id, status) {
-  return adminDb.from('applications').update({ status }).eq('id', id).select()
+  const res = await adminDb.from('applications').update({ status }).eq('id', id).select()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }
 
 export async function updateStudentAdminFields(userId, payload) {
@@ -158,5 +179,8 @@ export async function updateStudentAdminFields(userId, payload) {
       console.error('Failed to confirm email in auth admin:', err)
     }
   }
-  return supabase.from('users').update(payload).eq('id', userId).select().single()
+  const res = await supabase.from('users').update(payload).eq('id', userId).select().single()
+  invalidateStudentDashboardCache()
+  invalidateAdminDashboardCache()
+  return res
 }

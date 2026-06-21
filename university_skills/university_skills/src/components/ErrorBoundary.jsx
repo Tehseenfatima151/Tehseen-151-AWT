@@ -25,6 +25,13 @@ export class ErrorBoundary extends Component {
           <p className="mt-2 max-w-md text-center text-sm text-sky-100/90">
             An unexpected error occurred. You can try again or return home.
           </p>
+          {this.state.error && (
+            <pre className="mt-4 max-w-2xl max-h-60 overflow-auto rounded-xl bg-black/50 p-4 text-left text-xs font-mono text-red-400 border border-red-500/20 whitespace-pre-wrap">
+              {this.state.error.toString()}
+              {"\n\n"}
+              {this.state.error.stack}
+            </pre>
+          )}
           <button
             type="button"
             onClick={() => this.setState({ hasError: false, error: null })}

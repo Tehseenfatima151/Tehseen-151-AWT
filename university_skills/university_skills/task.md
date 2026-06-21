@@ -1,0 +1,21 @@
+# Task Checklist - Session Loading Performance & Realtime Updates
+
+- [x] Implement Stale-While-Revalidate Caching in `AuthContext.jsx`
+  - [x] Add `skillsphere_session` and `skillsphere_profile` localStorage caching
+  - [x] Read from cache synchronously on initial state initialization
+  - [x] Initialize `loading = false` if cache exists to bypass session loading screen
+  - [x] Update cache on session change, profile change, and custom profile refresh
+  - [x] Clear cache immediately on `signOut` for instant redirection
+- [x] Add Background Verification & Error Recovery in `AuthContext.jsx`
+  - [x] Fetch fresh session/profile in the background on load
+  - [x] If background fetch fails due to network, keep rendering cached profile but log error (resilience)
+  - [x] If session has expired/invalidated, clear cache and redirect to login page
+  - [x] Prevent race conditions during concurrent session loading and routing
+- [x] Verify Realtime Subscriptions Remain Active after Refresh
+  - [x] Ensure any active Supabase listeners are cleaned up properly and re-initialized correctly
+- [x] Add Section-Specific Loaders & Remove Blocking UI loaders
+  - [x] Review `App.jsx` and `ProtectedRoute` to ensure full-screen loading is only shown when there's truly no cache
+  - [x] Review main student/admin dashboard pages for smooth, non-blocking section-level loaders
+- [x] Eliminate Manual Browser Refresh Needs
+  - [x] Check and ensure CRUD operations for Skills, Projects, Certificates, Opportunities, Applications automatically update local UI states or re-fetch data instantly
+  - [x] Audit React state synchronization across the dashboard components
